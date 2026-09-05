@@ -23,14 +23,15 @@ const Lab = (() => {
   /* Swing keyframes. Turns in degrees, positive = backswing (away from target), negative = through.
      hands and club are in root space: +x toward target, +y up, +z toward the ball. */
   const KEYS = [
-    { t: 0.00, pelvis: 0,   torso: 0,    tilt: 32, side: 0,  ext: 0,  head: 0,   shift: 0.00, hands: [0.02, 0.84, 0.35],  club: null,                    trailHeel: 0,    leadHeel: 0 },
-    { t: 0.18, pelvis: 8,   torso: 30,   tilt: 32, side: 2,  ext: 0,  head: -5,  shift: -0.02, hands: [-0.32, 0.86, 0.22], club: [-0.85, -0.15, 0.50],   trailHeel: 0,    leadHeel: 0 },
-    { t: 0.34, pelvis: 28,  torso: 65,   tilt: 31, side: 6,  ext: 0,  head: -10, shift: -0.03, hands: [-0.48, 1.12, -0.02], club: [-0.25, 0.85, -0.45],   trailHeel: 0,    leadHeel: 0.15 },
-    { t: 0.50, pelvis: 45,  torso: 95,   tilt: 30, side: 10, ext: 2,  head: -18, shift: -0.03, hands: [-0.30, 1.50, -0.22], club: [0.85, 0.15, -0.50],    trailHeel: 0,    leadHeel: 0.3 },
-    { t: 0.60, pelvis: 15,  torso: 65,   tilt: 31, side: 14, ext: 0,  head: -12, shift: 0.02,  hands: [-0.42, 1.05, -0.02], club: [-0.55, -0.75, 0.35],   trailHeel: 0.1,  leadHeel: 0 },
-    { t: 0.70, pelvis: -40, torso: -22,  tilt: 30, side: 22, ext: 2,  head: -5,  shift: 0.06,  hands: [0.08, 0.88, 0.40],   club: null,                    trailHeel: 0.35, leadHeel: 0 },
-    { t: 0.80, pelvis: -70, torso: -80,  tilt: 22, side: 16, ext: 8,  head: 35,  shift: 0.08,  hands: [0.52, 1.02, 0.30],   club: [0.75, 0.20, 0.62],     trailHeel: 0.7,  leadHeel: 0 },
-    { t: 1.00, pelvis: -90, torso: -125, tilt: 6,  side: 4,  ext: 18, head: 95,  shift: 0.10,  hands: [0.05, 1.55, -0.35],  club: [-0.30, -0.35, -0.88],  trailHeel: 1.0,  leadHeel: 0 }
+    { t: 0.00, pelvis: 0,   torso: 0,    tilt: 32, side: 0,  ext: 0,  head: 0,   shift: 0.00, hands: [0.02, 0.84, 0.35],   club: null,                     trailHeel: 0,    leadHeel: 0 },
+    { t: 0.18, pelvis: 8,   torso: 30,   tilt: 32, side: 2,  ext: 0,  head: -5,  shift: -0.02, hands: [-0.32, 0.86, 0.22],  club: [-0.542, -0.723, 0.429], trailHeel: 0,    leadHeel: 0 },
+    { t: 0.34, pelvis: 28,  torso: 65,   tilt: 31, side: 6,  ext: 0,  head: -10, shift: -0.03, hands: [-0.48, 1.12, -0.02], club: [-0.347, 0.938, -0.039], trailHeel: 0,    leadHeel: 0.15 },
+    { t: 0.50, pelvis: 45,  torso: 95,   tilt: 30, side: 10, ext: 2,  head: -18, shift: -0.03, hands: [-0.30, 1.50, -0.22], club: [-0.960, 0.113, -0.260], trailHeel: 0,    leadHeel: 0.3 },
+    { t: 0.60, pelvis: 15,  torso: 65,   tilt: 31, side: 14, ext: 0,  head: -12, shift: 0.02,  hands: [-0.42, 1.05, -0.02], club: [-0.948, 0.304, -0.097], trailHeel: 0.1,  leadHeel: 0 },
+    { t: 0.65, pelvis: -14, torso: 20,   tilt: 31, side: 18, ext: 1,  head: -8,  shift: 0.04,  hands: [-0.16, 0.95, 0.22],  club: [-0.808, -0.527, 0.269], trailHeel: 0.22, leadHeel: 0 },
+    { t: 0.70, pelvis: -40, torso: -22,  tilt: 30, side: 22, ext: 2,  head: -5,  shift: 0.06,  hands: [0.08, 0.88, 0.40],   club: null,                     trailHeel: 0.35, leadHeel: 0 },
+    { t: 0.80, pelvis: -70, torso: -80,  tilt: 22, side: 16, ext: 8,  head: 35,  shift: 0.08,  hands: [0.52, 1.02, 0.30],   club: [0.854, 0.386, 0.351],   trailHeel: 0.7,  leadHeel: 0 },
+    { t: 1.00, pelvis: -90, torso: -125, tilt: 6,  side: 4,  ext: 18, head: 95,  shift: 0.10,  hands: [0.05, 1.55, -0.35],  club: [-0.486, -0.432, -0.756], trailHeel: 1.0,  leadHeel: 0 }
   ];
 
   const REGION_LABELS = {
@@ -704,7 +705,8 @@ const Lab = (() => {
     // place the ball where the club head sits at address
     handCurve = new THREE.CatmullRomCurve3(KEYS.map(k => V3(...k.hands)), false, 'catmullrom', 0.5);
     const addressDir = V3().copy(ballPos).sub(V3(...KEYS[0].hands)).normalize();
-    const impactDir = V3().copy(ballPos).sub(V3(...KEYS[5].hands)).normalize();
+    const impactKey = KEYS.find(k => k.club === null && k.t > 0.5) || KEYS[KEYS.length - 1];
+    const impactDir = V3().copy(ballPos).sub(V3(...impactKey.hands)).normalize();
     clubCurve = new THREE.CatmullRomCurve3(KEYS.map(k => k.club ? V3(...k.club).normalize() : (k.t === 0 ? addressDir : impactDir)), false, 'catmullrom', 0.5);
     ball.position.copy(V3(...KEYS[0].hands).add(addressDir.multiplyScalar(CLUB_LEN))).setY(0);
     ball.position.z += 0.015;
