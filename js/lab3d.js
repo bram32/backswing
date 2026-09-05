@@ -408,17 +408,28 @@ const Lab = (() => {
   /* ---------- posing ---------- */
   const tmp = { a: V3(), b: V3(), c: V3(), d: V3(), q: new THREE.Quaternion(), up: V3(0, 1, 0) };
 
-  function placeSegment(group, A, B) {
+  function placeSegment(group, A, B, baseLen) {
     group.position.copy(A).add(B).multiplyScalar(0.5);
-    tmp.a.copy(B).sub(A).normalize();
+    tmp.a.copy(B).sub(A);
+    const len = tmp.a.length() || 1e-6;
+    tmp.a.divideScalar(len);
     group.quaternion.setFromUnitVectors(tmp.up, tmp.a);
+    /* When the target is past the joint's reach the bone stretches a little
+       rather than the hand letting go of the club. Capped so it never rubbers. */
+    group.scale.y = baseLen ? clamp(len / baseLen, 1, 1.16) : 1;
   }
 
+  /* Solves the elbow (or knee) position. It never moves H: a hand that is out of
+     reach keeps hold of the club and the arm straightens toward it, because a
+     detached hand reads as a broken figure while a slightly long arm does not. */
   function solveIK(S, H, Lu, Lf, pole) {
     const d = tmp.a.copy(H).sub(S);
     let L = d.length();
     const maxL = Lu + Lf - 0.004;
-    if (L > maxL) { d.multiplyScalar(maxL / L); H.copy(S).add(d); L = maxL; }
+    if (L > maxL) {
+      const dn2 = tmp.b.copy(d).divideScalar(L);
+      return V3().copy(S).add(dn2.multiplyScalar(Lu * (L / (Lu + Lf))));
+    }
     const dn = tmp.b.copy(d).divideScalar(L);
     const a = clamp((Lu * Lu - Lf * Lf + L * L) / (2 * L), -Lu, Lu);
     const h = Math.sqrt(Math.max(Lu * Lu - a * a, 0));
@@ -427,6 +438,17 @@ const Lab = (() => {
     if (pd.lengthSq() < 1e-6) pd.set(0, 0, 1);
     pd.normalize();
     return V3().copy(S).add(dn.multiplyScalar(a)).add(pd.multiplyScalar(h));
+  }
+
+  /* Lets a shoulder (or hip) slide toward an out-of-reach target, the way the
+     shoulder blade actually glides on the ribcage. Mutates S in place. */
+  const GIRDLE_GIVE = 0.085;
+  function reachOut(S, H) {
+    const d = tmp.d.copy(H).sub(S);
+    const L = d.length();
+    const over = L - (ARM.upper + ARM.fore - 0.004);
+    if (over > 0) S.add(d.divideScalar(L).multiplyScalar(Math.min(over, GIRDLE_GIVE)));
+    return S;
   }
 
   let ballPos = V3(0.10, 0.03, 0.62);
@@ -517,10 +539,14 @@ const Lab = (() => {
     const handR = grip.clone().add(clubDir.clone().multiplyScalar(0.07));
     const poleL = shL.clone().add(V3(0.5, -0.4, 0)).sub(chestFwd.clone().multiplyScalar(0.3));
     const poleR = shR.clone().add(V3(-0.5, -0.4, 0)).sub(chestFwd.clone().multiplyScalar(0.3));
+    /* The shoulder girdle travels: the lead shoulder protracts across the chest
+       at the top and the trail shoulder reaches through the finish. Without this
+       the keyframed hand path is out of reach and the hands leave the grip. */
+    reachOut(shL, handL); reachOut(shR, handR);
     const elL = solveIK(shL, handL, ARM.upper, ARM.fore, poleL);
     const elR = solveIK(shR, handR, ARM.upper, ARM.fore, poleR);
-    placeSegment(f.arms.L.upper, shL, elL); placeSegment(f.arms.L.fore, elL, handL);
-    placeSegment(f.arms.R.upper, shR, elR); placeSegment(f.arms.R.fore, elR, handR);
+    placeSegment(f.arms.L.upper, shL, elL, ARM.upper); placeSegment(f.arms.L.fore, elL, handL, ARM.fore);
+    placeSegment(f.arms.R.upper, shR, elR, ARM.upper); placeSegment(f.arms.R.fore, elR, handR, ARM.fore);
     f.arms.L.elbow.position.copy(elL); f.arms.R.elbow.position.copy(elR);
     f.dyn['elbow:L'].position.copy(elL); f.dyn['elbow:R'].position.copy(elR);
     f.dyn['wrist:L'].position.copy(handL); f.dyn['wrist:R'].position.copy(handR);
@@ -548,8 +574,8 @@ const Lab = (() => {
     const aL = ankle('L', p.leadHeel), aR = ankle('R', p.trailHeel);
     const knL = solveIK(hipL, aL.a, LEG.thigh, LEG.shin, hipL.clone().add(V3(0.15, -0.5, 1.2)));
     const knR = solveIK(hipR, aR.a, LEG.thigh, LEG.shin, hipR.clone().add(V3(-0.15, -0.5, 1.2)));
-    placeSegment(f.legs.L.thigh, hipL, knL); placeSegment(f.legs.L.shin, knL, aL.a);
-    placeSegment(f.legs.R.thigh, hipR, knR); placeSegment(f.legs.R.shin, knR, aR.a);
+    placeSegment(f.legs.L.thigh, hipL, knL, LEG.thigh); placeSegment(f.legs.L.shin, knL, aL.a, LEG.shin);
+    placeSegment(f.legs.R.thigh, hipR, knR, LEG.thigh); placeSegment(f.legs.R.shin, knR, aR.a, LEG.shin);
     f.legs.L.knee.position.copy(knL); f.legs.R.knee.position.copy(knR);
     f.dyn['knee:L'].position.copy(knL); f.dyn['knee:R'].position.copy(knR);
     [['L', aL], ['R', aR]].forEach(([s, a]) => {
