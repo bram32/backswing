@@ -55,6 +55,14 @@ Add the TestFlight tester to a group (internal first, external as fallback)
 
 Build and upload a TestFlight build
 
+### ios testers_api
+
+```sh
+[bundle exec] fastlane ios testers_api
+```
+
+Add the TestFlight tester through the public App Store Connect API
+
 ----
 
 This README.md is auto-generated and will be re-generated every time [_fastlane_](https://fastlane.tools) is run.

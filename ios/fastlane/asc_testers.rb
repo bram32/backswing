@@ -2,7 +2,7 @@
 # Env: ASC_KEY_ID, ASC_ISSUER_ID, ASC_KEY_PATH. Prints a summary, never the key.
 require 'openssl'; require 'json'; require 'net/http'; require 'base64'
 KEY_ID = ENV.fetch('ASC_KEY_ID'); ISSUER = ENV.fetch('ASC_ISSUER_ID'); KEY_PATH = ENV.fetch('ASC_KEY_PATH')
-BUNDLE = 'com.brampek.freerelief'; EMAIL = 'brampek@gmail.com'; FIRST = 'Bram'; LAST = 'Pek'
+BUNDLE = 'com.brampek.backswing'; EMAIL = 'brampek@gmail.com'; FIRST = 'Bram'; LAST = 'Pek'
 INTERNAL = 'Free Relief internal'; EXTERNAL = 'Free Relief testers'
 def b64(s) = Base64.urlsafe_encode64(s, padding: false)
 def jwt

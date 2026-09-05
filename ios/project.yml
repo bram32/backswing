@@ -48,7 +48,10 @@ targets:
         UIRequiresFullScreen: false
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.brampek.freerelief
+        # legacy bundle id: kept so the existing App Store Connect record and
+        # TestFlight testers keep working. The App Store Connect API cannot create
+        # app records, so changing this needs a new record made on the website.
+        PRODUCT_BUNDLE_IDENTIFIER: com.brampek.backswing
         PRODUCT_NAME: FreeRelief
         TARGETED_DEVICE_FAMILY: "1,2"
         CODE_SIGN_STYLE: Automatic

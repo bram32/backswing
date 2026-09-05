@@ -171,7 +171,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = JYMA2YQJV9;
 				ENABLE_NS_ASSERTIONS = NO;
@@ -231,7 +231,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = JYMA2YQJV9;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -276,7 +276,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.brampek.freerelief;
+				PRODUCT_BUNDLE_IDENTIFIER = com.brampek.backswing;
 				PRODUCT_NAME = FreeRelief;
 				SDKROOT = iphoneos;
 				SUPPORTS_MACCATALYST = NO;
@@ -296,7 +296,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.brampek.freerelief;
+				PRODUCT_BUNDLE_IDENTIFIER = com.brampek.backswing;
 				PRODUCT_NAME = FreeRelief;
 				SDKROOT = iphoneos;
 				SUPPORTS_MACCATALYST = NO;

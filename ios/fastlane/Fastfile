@@ -18,7 +18,7 @@ default_platform(:ios)
 
 PROJECT  = "FreeRelief.xcodeproj"
 SCHEME   = "FreeRelief"
-BUNDLE   = "com.brampek.freerelief"
+BUNDLE   = "com.brampek.backswing"
 TEAM_ID  = "JYMA2YQJV9"
 TESTER   = { email: "brampek@gmail.com", first_name: "Bram", last_name: "Pek" }
 INTERNAL_GROUP = "Free Relief internal"
@@ -244,6 +244,6 @@ platform :ios do
   desc "Add the TestFlight tester through the public App Store Connect API"
   lane :testers_api do
     asc_api_key
-    sh("ruby #{File.expand_path('asc_testers.rb', __dir__)}")
+    sh("ruby", File.expand_path("asc_testers.rb", __dir__))
   end
 end
