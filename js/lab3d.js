@@ -15,7 +15,9 @@ const Lab = (() => {
 
   const COLORS = {
     bg: 0x061a11, bone: 0xe9dfc6, disc: 0x7fb9c9, skin: 0x8fd9b6, rim: 0xbff5dc,
-    accent: 0xf6c544, stop: 0xf0564f, ground: 0x143523, groundAlt: 0x0f2b1c, metal: 0xcfd6d3
+    accent: 0xf6c544, stop: 0xf0564f, ground: 0x143523, groundAlt: 0x0f2b1c, metal: 0xcfd6d3,
+    ok: 0x5ccb8c, warn: 0xf08a3e, ember: 0xff7a2f,
+    fog: 0x0b2a21, skyZenith: 0x020d0a, skyMid: 0x05221d, skyHorizon: 0x0d4f48, skySun: 0xff9d4e
   };
 
   /* Swing keyframes. Turns in degrees, positive = backswing (away from target), negative = through.
@@ -49,6 +51,15 @@ const Lab = (() => {
   let renderer, scene, camera, composer, controls, clock, raf = null, container;
   let F = null;            // figure
   let ball, particles, groundRing;
+  let spriteTex = null, sky = null, sunDisc = null, shafts = null, hexRing = null;
+  let clubTrail = null, handTrail = null;
+  let arcHip = null, arcSh = null, arcX = null, labHip = null, labSh = null, labX = null, arcGroup = null;
+  let embers = null, lumbarLight = null;
+  let shock = null, flashLight = null, ballMesh = null, ballHome = null;
+  let ghostGroup = null, ghostDirty = true;
+  let finishPass = null;
+  let lastInteract = 0, shakeAmt = 0, prevT = 0, fxOk = true;
+  const impact = { ring: 0, flash: 0, launch: -1 };
   let hitMeshes = [];
   let hover = null, selected = null;
   let listeners = {};
@@ -60,7 +71,7 @@ const Lab = (() => {
   const state = {
     t: 0, playing: false, loop: false, speed: 'study', dir: 1, holdUntil: 0,
     faults: { hips: false, tspine: false, reverse: false },
-    camera: 'free'
+    camera: 'free', ghosts: false, trace: true
   };
 
   /* ---------- helpers ---------- */
@@ -74,16 +85,22 @@ const Lab = (() => {
 
   /* Interpolate the keyframes at t (0..1). Positions use Catmull-Rom for a smooth arc. */
   let handCurve = null, clubCurve = null;
-  function sample(t) {
+  /* keyframe index -> curve parameter, shared by sample() and the swing trace */
+  function keySpan(t) {
     t = clamp(t, 0, 1);
     let i = 0;
     while (i < KEYS.length - 2 && t > KEYS[i + 1].t) i++;
     const a = KEYS[i], b = KEYS[i + 1];
-    const u = smooth(clamp((t - a.t) / (b.t - a.t), 0, 1));
+    return { i, a, b, u: smooth(clamp((t - a.t) / (b.t - a.t), 0, 1)) };
+  }
+  function curveParam(t) { const k = keySpan(t); return (k.i + k.u) / (KEYS.length - 1); }
+  function sample(t) {
+    t = clamp(t, 0, 1);
+    const k = keySpan(t), a = k.a, b = k.b, u = k.u;
     const out = {};
-    ['pelvis', 'torso', 'tilt', 'side', 'ext', 'head', 'shift', 'trailHeel', 'leadHeel'].forEach(k => out[k] = lerp(a[k], b[k], u));
+    ['pelvis', 'torso', 'tilt', 'side', 'ext', 'head', 'shift', 'trailHeel', 'leadHeel'].forEach(k2 => out[k2] = lerp(a[k2], b[k2], u));
     // curve parameter runs over keyframe indices
-    const cu = (i + u) / (KEYS.length - 1);
+    const cu = (k.i + u) / (KEYS.length - 1);
     out.hands = handCurve.getPoint(cu);
     out.club = clubCurve.getPoint(cu).normalize();
     out.t = t;
@@ -565,7 +582,7 @@ const Lab = (() => {
     for (let i = 0; i < d.length; i += 4) { const n = (Math.random() - 0.5) * 14; d[i] += n; d[i + 1] += n; d[i + 2] += n; }
     g.putImageData(img, 0, 0);
     const tex = new THREE.CanvasTexture(c);
-    tex.encoding = THREE.sRGBEncoding; tex.wrapS = tex.wrapT = THREE.RepeatWrapping; tex.repeat.set(1.6, 1.6);
+    tex.encoding = THREE.sRGBEncoding; tex.wrapS = tex.wrapT = THREE.RepeatWrapping; tex.repeat.set(4.9, 4.9);
     tex.anisotropy = 8;
     return tex;
   }
@@ -581,8 +598,9 @@ const Lab = (() => {
 
   function buildScene() {
     scene = new THREE.Scene();
-    scene.background = new THREE.Color(COLORS.bg);
-    scene.fog = new THREE.FogExp2(COLORS.bg, 0.085);
+    scene.background = new THREE.Color(COLORS.fog);
+    scene.fog = new THREE.FogExp2(COLORS.fog, 0.055);
+    spriteTex = makeSprite();
 
     const pmrem = new THREE.PMREMGenerator(renderer);
     scene.environment = pmrem.fromScene(new THREE.RoomEnvironment(), 0.04).texture;
@@ -602,12 +620,23 @@ const Lab = (() => {
     const fill = new THREE.DirectionalLight(0x9ec9ff, 0.7);
     fill.position.set(-3, 2, -1);
     scene.add(fill);
-    const rim = new THREE.DirectionalLight(0xf6c544, 1.1);
-    rim.position.set(-1.5, 3, -4);
+    const rim = new THREE.DirectionalLight(0xffb063, 1.15);   // stands in for the low sun behind the golfer
+    rim.position.copy(SUN_DIR).multiplyScalar(6);
     scene.add(rim);
 
     // ground
-    const ground = new THREE.Mesh(new THREE.CircleGeometry(9, 64), new THREE.MeshStandardMaterial({ map: makeGroundTexture(), roughness: 0.96, metalness: 0 }));
+    const groundGeo = new THREE.RingGeometry(0.0001, 30, 96, 12);
+    const gp = groundGeo.attributes.position;
+    const gc = new Float32Array(gp.count * 3);
+    for (let i = 0; i < gp.count; i++) {
+      const rr = Math.hypot(gp.getX(i), gp.getY(i)) / 30;
+      const k = 1 - 0.86 * smooth(clamp((rr - 0.06) / 0.5, 0, 1));
+      gc[i * 3] = gc[i * 3 + 1] = gc[i * 3 + 2] = k;
+    }
+    groundGeo.setAttribute('color', new THREE.BufferAttribute(gc, 3));
+    const ground = new THREE.Mesh(groundGeo, new THREE.MeshStandardMaterial({
+      map: makeGroundTexture(), roughness: 0.72, metalness: 0.03, vertexColors: true, envMapIntensity: 0.35
+    }));
     ground.rotation.x = -Math.PI / 2; ground.receiveShadow = true;
     scene.add(ground);
     groundRing = new THREE.Mesh(new THREE.RingGeometry(1.22, 1.25, 96), new THREE.MeshBasicMaterial({ color: COLORS.rim, transparent: true, opacity: 0.35, side: THREE.DoubleSide }));
@@ -619,9 +648,10 @@ const Lab = (() => {
 
     // ball and tee
     ball = new THREE.Group();
-    const b = sphere(0.0214, new THREE.MeshPhysicalMaterial({ color: 0xffffff, roughness: 0.35, clearcoat: 0.8 }), 24);
+    const b = sphere(0.0214, new THREE.MeshPhysicalMaterial({ color: 0xffffff, roughness: 0.35, clearcoat: 0.8, transparent: true, opacity: 1 }), 24);
     b.position.y = 0.0214 + 0.028;
     ball.add(b);
+    ballMesh = b; ballHome = b.position.clone();
     const tee = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.004, 0.035, 10), new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.8 }));
     tee.position.y = 0.0175; tee.castShadow = true;
     ball.add(tee);
@@ -635,7 +665,7 @@ const Lab = (() => {
     }
     const pg = new THREE.BufferGeometry();
     pg.setAttribute('position', new THREE.BufferAttribute(arr, 3));
-    particles = new THREE.Points(pg, new THREE.PointsMaterial({ color: COLORS.rim, size: 0.035, map: makeSprite(), transparent: true, opacity: 0.55, depthWrite: false, blending: THREE.AdditiveBlending, sizeAttenuation: true }));
+    particles = new THREE.Points(pg, new THREE.PointsMaterial({ color: COLORS.rim, size: 0.035, map: spriteTex, transparent: true, opacity: 0.55, depthWrite: false, blending: THREE.AdditiveBlending, sizeAttenuation: true }));
     particles.userData.vel = vel;
     scene.add(particles);
 
@@ -653,6 +683,560 @@ const Lab = (() => {
     ball.position.copy(V3(...KEYS[0].hands).add(addressDir.multiplyScalar(CLUB_LEN))).setY(0);
     ball.position.z += 0.015;
     ballPos.copy(ball.position);
+
+    buildEffects();
+  }
+
+  /* ================= atmosphere, trace, gauges, embers, ghosts =================
+     Everything below is decoration: it reads the swing but never drives it, and every
+     builder is wrapped by the caller so a failure on a software renderer can only cost
+     an effect, never the scene. */
+
+  const SUN_DIR = new THREE.Vector3(-0.34, 0.075, -1).normalize();
+
+  function makeGlowTexture(size, stops) {
+    const c = document.createElement('canvas'); c.width = c.height = size;
+    const g = c.getContext('2d');
+    const rg = g.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
+    stops.forEach(([o, col]) => rg.addColorStop(o, col));
+    g.fillStyle = rg; g.fillRect(0, 0, size, size);
+    return new THREE.CanvasTexture(c);
+  }
+
+  /* Dawn sky: a big inverted sphere, gradient in the fragment shader, warm band at the sun. */
+  function buildSky() {
+    const mat = new THREE.ShaderMaterial({
+      side: THREE.BackSide, depthWrite: false, depthTest: false, fog: false,
+      uniforms: {
+        uZenith: { value: new THREE.Color(COLORS.skyZenith) },
+        uMid: { value: new THREE.Color(COLORS.skyMid) },
+        uHorizon: { value: new THREE.Color(COLORS.skyHorizon) },
+        uGold: { value: new THREE.Color(COLORS.skySun) },
+        uSun: { value: SUN_DIR.clone() }
+      },
+      vertexShader: 'varying vec3 vDir;\nvoid main(){ vDir = position; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
+      fragmentShader: [
+        'varying vec3 vDir;',
+        'uniform vec3 uZenith, uMid, uHorizon, uGold, uSun;',
+        'void main(){',
+        '  vec3 d = normalize(vDir);',
+        '  float h = d.y;',
+        '  vec3 col = mix(uMid, uZenith, smoothstep(0.06, 0.70, h));',
+        '  col = mix(uHorizon, col, smoothstep(-0.03, 0.26, h));',
+        '  float sd = max(dot(d, normalize(uSun)), 0.0);',
+        '  float band = exp(-abs(h) * 20.0);',
+        '  col += uGold * pow(sd, 3.0) * band * 0.42;',
+        '  col += uGold * pow(sd, 22.0) * exp(-abs(h) * 6.0) * 0.20;',
+        '  col += uGold * pow(sd, 90.0) * 0.55;',
+        '  col *= mix(0.22, 1.0, smoothstep(-0.32, 0.0, h));',
+        '  gl_FragColor = vec4(col, 1.0);',
+        '  #include <tonemapping_fragment>',
+        '}'
+      ].join('\n')
+    });
+    sky = new THREE.Mesh(new THREE.SphereGeometry(34, 40, 24), mat);
+    sky.frustumCulled = false; sky.renderOrder = -20;
+    scene.add(sky);
+
+    sunDisc = new THREE.Sprite(new THREE.SpriteMaterial({
+      map: makeGlowTexture(128, [[0, 'rgba(255,245,215,1)'], [0.12, 'rgba(255,206,132,0.75)'], [0.38, 'rgba(255,158,80,0.16)'], [1, 'rgba(255,150,70,0)']]),
+      transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, fog: false, opacity: 0.62
+    }));
+    sunDisc.position.copy(SUN_DIR).multiplyScalar(26);
+    sunDisc.scale.set(5.4, 5.4, 1);
+    sunDisc.renderOrder = 1;
+    scene.add(sunDisc);
+  }
+
+  /* Three billboarded gradient planes near the sun read as light shafts through the trees. */
+  function buildShafts() {
+    const c = document.createElement('canvas'); c.width = 32; c.height = 256;
+    const g = c.getContext('2d');
+    const lg = g.createLinearGradient(0, 0, 0, 256);
+    lg.addColorStop(0, 'rgba(255,214,150,0)'); lg.addColorStop(0.42, 'rgba(255,214,150,0.75)'); lg.addColorStop(1, 'rgba(255,214,150,0)');
+    g.fillStyle = lg; g.fillRect(0, 0, 32, 256);
+    const hg = g.createLinearGradient(0, 0, 32, 0);
+    hg.addColorStop(0, 'rgba(0,0,0,1)'); hg.addColorStop(0.5, 'rgba(0,0,0,0)'); hg.addColorStop(1, 'rgba(0,0,0,1)');
+    g.globalCompositeOperation = 'destination-out'; g.fillStyle = hg; g.fillRect(0, 0, 32, 256);
+    const tex = new THREE.CanvasTexture(c);
+    shafts = new THREE.Group();
+    const base = Math.atan2(SUN_DIR.x, SUN_DIR.z);
+    [[-0.15, 1.7, 0.085], [0.02, 1.0, 0.10], [0.21, 2.3, 0.06]].forEach(([off, w, op], i) => {
+      const m = new THREE.Mesh(new THREE.PlaneGeometry(w, 13), new THREE.MeshBasicMaterial({
+        map: tex, transparent: true, opacity: op, blending: THREE.AdditiveBlending, depthWrite: false, fog: false, side: THREE.DoubleSide
+      }));
+      const a = base + off;
+      m.position.set(Math.sin(a) * 16, 5.2, Math.cos(a) * 16);
+      m.rotation.order = 'YXZ';
+      m.rotation.z = (i - 1) * 0.1;
+      m.userData.phase = i * 2.1;
+      m.userData.y0 = 5.2;
+      shafts.add(m);
+    });
+    scene.add(shafts);
+  }
+
+  /* Slowly turning hex/scan plate under the golfer. */
+  function makeHexTexture() {
+    const S = 512, c = document.createElement('canvas'); c.width = c.height = S;
+    const g = c.getContext('2d');
+    g.clearRect(0, 0, S, S);
+    const r = 26, h = Math.sqrt(3) / 2 * r;
+    g.strokeStyle = 'rgba(191,245,220,0.55)'; g.lineWidth = 1.1;
+    for (let row = -1; row * h * 2 < S + 60; row++) {
+      for (let col = -1; col * r * 1.5 < S + 60; col++) {
+        const cx = col * r * 1.5, cy = row * h * 2 + (col % 2 ? h : 0);
+        g.beginPath();
+        for (let k = 0; k < 6; k++) {
+          const a = k * Math.PI / 3;
+          const x = cx + r * 0.86 * Math.cos(a), y = cy + r * 0.86 * Math.sin(a);
+          k ? g.lineTo(x, y) : g.moveTo(x, y);
+        }
+        g.closePath(); g.stroke();
+      }
+    }
+    g.globalCompositeOperation = 'source-atop';
+    for (let y = 0; y < S; y += 6) { g.fillStyle = 'rgba(0,0,0,0.45)'; g.fillRect(0, y, S, 3); }
+    g.globalCompositeOperation = 'source-over';
+    for (let k = 0; k < 48; k++) {
+      const a = k / 48 * Math.PI * 2, long = k % 4 === 0;
+      g.strokeStyle = long ? 'rgba(246,197,68,0.75)' : 'rgba(191,245,220,0.5)';
+      g.lineWidth = long ? 2.4 : 1.2;
+      g.beginPath();
+      g.moveTo(S / 2 + Math.cos(a) * (long ? 214 : 224), S / 2 + Math.sin(a) * (long ? 214 : 224));
+      g.lineTo(S / 2 + Math.cos(a) * 244, S / 2 + Math.sin(a) * 244);
+      g.stroke();
+    }
+    return new THREE.CanvasTexture(c);
+  }
+
+  function buildHexRing() {
+    const mat = new THREE.MeshBasicMaterial({
+      map: makeHexTexture(), transparent: true, opacity: 0.30, depthWrite: false,
+      blending: THREE.AdditiveBlending, side: THREE.DoubleSide, fog: false
+    });
+    hexRing = new THREE.Mesh(new THREE.RingGeometry(0.42, 1.21, 96, 1), mat);
+    hexRing.rotation.x = -Math.PI / 2;
+    hexRing.position.y = 0.006;
+    hexRing.renderOrder = 3;
+    scene.add(hexRing);
+  }
+
+  /* ---------- swing trace ----------
+     The club head is a pure function of t (grip curve + shaft direction), so the trail is
+     rebuilt from the last slice of the swing every frame: no history to clear on seek. */
+  const TRACE = { club: 44, hand: 26, spanClub: 0.255, spanHand: 0.13 };
+  const tracePts = [];
+  for (let i = 0; i < 64; i++) tracePts.push(V3());
+  const traceTmp = { dir: V3(), cam: V3(), side: V3(), col: new THREE.Color() };
+
+  function traceAt(t, out, head) {
+    const cu = curveParam(t);
+    handCurve.getPoint(cu, out);
+    if (head) { clubCurve.getPoint(cu, traceTmp.dir); out.addScaledVector(traceTmp.dir.normalize(), CLUB_LEN); }
+    return out;
+  }
+
+  function makeRibbon(n) {
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(n * 9), 3).setUsage(THREE.DynamicDrawUsage));
+    geo.setAttribute('color', new THREE.BufferAttribute(new Float32Array(n * 9), 3).setUsage(THREE.DynamicDrawUsage));
+    const idx = new Uint16Array((n - 1) * 12);
+    for (let i = 0; i < n - 1; i++) {
+      const a = i * 3;
+      idx.set([a, a + 1, a + 3, a + 1, a + 4, a + 3, a + 1, a + 2, a + 4, a + 2, a + 5, a + 4], i * 12);
+    }
+    geo.setIndex(new THREE.BufferAttribute(idx, 1));
+    const mesh = new THREE.Mesh(geo, new THREE.MeshBasicMaterial({
+      vertexColors: true, transparent: true, blending: THREE.AdditiveBlending,
+      depthWrite: false, side: THREE.DoubleSide, fog: false
+    }));
+    mesh.frustumCulled = false; mesh.renderOrder = 8;
+    mesh.userData.n = n;
+    return mesh;
+  }
+
+  function updateRibbon(mesh, t, span, head, width, color, gain) {
+    const n = mesh.userData.n;
+    const P = mesh.geometry.attributes.position, C = mesh.geometry.attributes.color;
+    for (let i = 0; i < n; i++) traceAt(Math.max(t - span * (i / (n - 1)), 0), tracePts[i], head);
+    for (let i = 0; i < n; i++) {
+      const u = i / (n - 1);
+      const a = tracePts[Math.max(i - 1, 0)], b = tracePts[Math.min(i + 1, n - 1)], c = tracePts[i];
+      traceTmp.dir.copy(b).sub(a);
+      traceTmp.cam.copy(camera.position).sub(c);
+      traceTmp.side.crossVectors(traceTmp.dir, traceTmp.cam);
+      const l = traceTmp.side.length();
+      if (l > 1e-6) traceTmp.side.multiplyScalar(1 / l); else traceTmp.side.set(0, 1, 0);
+      const w = width * (0.26 + 0.74 * (1 - u)) * 0.5;
+      const b3 = i * 3;
+      P.setXYZ(b3, c.x + traceTmp.side.x * w, c.y + traceTmp.side.y * w, c.z + traceTmp.side.z * w);
+      P.setXYZ(b3 + 1, c.x, c.y, c.z);
+      P.setXYZ(b3 + 2, c.x - traceTmp.side.x * w, c.y - traceTmp.side.y * w, c.z - traceTmp.side.z * w);
+      const alive = (t - span * u) > 0 ? 1 : 0;
+      let f = Math.pow(1 - u, 1.7) * gain * alive;
+      if (i < 3) f += (3 - i) * 0.12 * alive;
+      traceTmp.col.copy(color).multiplyScalar(f);
+      const e = 0.22;
+      C.setXYZ(b3, traceTmp.col.r * e, traceTmp.col.g * e, traceTmp.col.b * e);
+      C.setXYZ(b3 + 1, traceTmp.col.r, traceTmp.col.g, traceTmp.col.b);
+      C.setXYZ(b3 + 2, traceTmp.col.r * e, traceTmp.col.g * e, traceTmp.col.b * e);
+    }
+    P.needsUpdate = true; C.needsUpdate = true;
+  }
+
+  function buildTrails() {
+    clubTrail = makeRibbon(TRACE.club);
+    handTrail = makeRibbon(TRACE.hand);
+    scene.add(clubTrail); scene.add(handTrail);
+  }
+
+  /* ---------- rotation gauges ---------- */
+  const ARCSEG = 64;
+  const cOk = new THREE.Color(COLORS.ok), cWarn = new THREE.Color(COLORS.warn), cRim = new THREE.Color(COLORS.rim);
+  const arcCol = new THREE.Color();
+
+  function makeArc(y, r0, r1, color) {
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.BufferAttribute(new Float32Array((ARCSEG + 1) * 6), 3).setUsage(THREE.DynamicDrawUsage));
+    geo.setAttribute('color', new THREE.BufferAttribute(new Float32Array((ARCSEG + 1) * 6), 3).setUsage(THREE.DynamicDrawUsage));
+    const idx = new Uint16Array(ARCSEG * 6);
+    for (let i = 0; i < ARCSEG; i++) { const a = i * 2; idx.set([a, a + 1, a + 2, a + 1, a + 3, a + 2], i * 6); }
+    geo.setIndex(new THREE.BufferAttribute(idx, 1));
+    const mesh = new THREE.Mesh(geo, new THREE.MeshBasicMaterial({
+      vertexColors: true, transparent: true, opacity: 0, blending: THREE.AdditiveBlending,
+      depthWrite: false, side: THREE.DoubleSide, fog: false
+    }));
+    mesh.frustumCulled = false; mesh.renderOrder = 7;
+    mesh.userData = { y, r0, r1, color: new THREE.Color(color) };
+    return mesh;
+  }
+
+  function updateArc(mesh, cx, a0, a1, color) {
+    const u = mesh.userData, P = mesh.geometry.attributes.position, C = mesh.geometry.attributes.color;
+    const c = color || u.color, span = a1 - a0;
+    for (let i = 0; i <= ARCSEG; i++) {
+      const k = i / ARCSEG, a = a0 + span * k;
+      const s = Math.sin(a), co = Math.cos(a);
+      P.setXYZ(i * 2, cx + u.r0 * s, u.y, u.r0 * co);
+      P.setXYZ(i * 2 + 1, cx + u.r1 * s, u.y, u.r1 * co);
+      const lead = 0.42 + 1.15 * Math.pow(k, 2.5);
+      C.setXYZ(i * 2, c.r * lead, c.g * lead, c.b * lead);
+      C.setXYZ(i * 2 + 1, c.r * lead * 0.45, c.g * lead * 0.45, c.b * lead * 0.45);
+    }
+    P.needsUpdate = true; C.needsUpdate = true;
+    mesh.material.opacity = clamp((Math.abs(span) - 0.04) / 0.10, 0, 1);   // dead zone: no gauge under ~2 degrees
+    return a0 + span; // leading angle, for the label
+  }
+
+  function makeLabel() {
+    const c = document.createElement('canvas'); c.width = 192; c.height = 84;
+    const tex = new THREE.CanvasTexture(c);
+    const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, depthTest: false, depthWrite: false, fog: false, opacity: 0 }));
+    sp.scale.set(0.36, 0.157, 1);
+    sp.renderOrder = 30;
+    sp.userData = { c, tex, last: '' };
+    return sp;
+  }
+
+  function setLabel(sp, num, caption, css) {
+    const key = num + '|' + caption + '|' + css;
+    if (sp.userData.last === key) return;
+    sp.userData.last = key;
+    const c = sp.userData.c, g = c.getContext('2d');
+    g.clearRect(0, 0, 192, 84);
+    g.textAlign = 'center'; g.textBaseline = 'middle';
+    g.shadowColor = 'rgba(0,0,0,0.85)'; g.shadowBlur = 10;
+    g.fillStyle = css;
+    g.font = '800 46px Archivo, system-ui, sans-serif';
+    g.fillText(num + '°', 96, 32);
+    g.font = '700 20px Atkinson Hyperlegible, system-ui, sans-serif';
+    g.fillStyle = 'rgba(233,244,236,0.85)';
+    g.fillText(caption, 96, 66);
+    sp.userData.tex.needsUpdate = true;
+  }
+
+  function buildArcs() {
+    arcGroup = new THREE.Group();
+    arcHip = makeArc(0.90, 0.40, 0.475, COLORS.ok);
+    arcSh = makeArc(1.40, 0.52, 0.595, COLORS.accent);
+    arcX = makeArc(1.17, 0.475, 0.515, COLORS.warn);
+    labHip = makeLabel(); labSh = makeLabel(); labX = makeLabel();
+    [arcHip, arcSh, arcX, labHip, labSh, labX].forEach(o => arcGroup.add(o));
+    scene.add(arcGroup);
+  }
+
+  function updateGauges(L, p) {
+    if (!arcGroup) return;
+    const cx = p.shift;
+    const aHip = -L.hipTurn * DEG, aSh = -p.torso * DEG;
+    updateArc(arcHip, cx, 0, aHip);
+    updateArc(arcSh, cx, 0, aSh);
+    const x = Math.abs(L.xfactor);
+    arcCol.copy(cOk).lerp(cWarn, clamp((x - 30) / 22, 0, 1)).lerp(cStop, clamp((x - 52) / 20, 0, 1));
+    updateArc(arcX, cx, aHip, aSh, arcCol);
+    const place = (sp, arc, a, r) => {
+      sp.position.set(cx + Math.sin(a) * r, arc.userData.y + 0.075, Math.cos(a) * r);
+      sp.material.opacity = arc.material.opacity;
+    };
+    place(labHip, arcHip, aHip, 0.60);
+    place(labSh, arcSh, aSh, 0.72);
+    place(labX, arcX, (aHip + aSh) / 2, 0.66);
+    setLabel(labHip, Math.round(Math.abs(L.hipTurn)), 'hips', '#5ccb8c');
+    setLabel(labSh, Math.round(Math.abs(p.torso)), 'shoulders', '#f6c544');
+    setLabel(labX, Math.round(x), 'X-factor', '#' + arcCol.getHexString());
+  }
+
+  /* ---------- lumbar overload ---------- */
+  const EMB = 96;
+  const embHot = new THREE.Color(0xffd08a), embMid = new THREE.Color(COLORS.ember), embCold = new THREE.Color(COLORS.stop);
+  const embCol = new THREE.Color();
+
+  function buildEmbers() {
+    const geo = new THREE.BufferGeometry();
+    const pos = new Float32Array(EMB * 3);
+    for (let i = 0; i < EMB; i++) pos[i * 3 + 1] = -50;
+    geo.setAttribute('position', new THREE.BufferAttribute(pos, 3).setUsage(THREE.DynamicDrawUsage));
+    geo.setAttribute('color', new THREE.BufferAttribute(new Float32Array(EMB * 3), 3).setUsage(THREE.DynamicDrawUsage));
+    embers = new THREE.Points(geo, new THREE.PointsMaterial({
+      size: 0.075, map: spriteTex, vertexColors: true, transparent: true, opacity: 1,
+      depthWrite: false, blending: THREE.AdditiveBlending, sizeAttenuation: true, fog: false
+    }));
+    embers.frustumCulled = false; embers.renderOrder = 9;
+    embers.userData = { life: new Float32Array(EMB), vel: new Float32Array(EMB * 3), cursor: 0, budget: 0 };
+    scene.add(embers);
+    lumbarLight = new THREE.PointLight(0xff7a3c, 0, 0.85, 2);
+    scene.add(lumbarLight);
+  }
+
+  function updateEmbers(dt, stress) {
+    if (!embers) return;
+    const d = embers.userData, P = embers.geometry.attributes.position, C = embers.geometry.attributes.color;
+    const over = clamp(stress - 1, 0, 1.2);
+    const lum = F.vertebrae[2];
+    lum.getWorldPosition(tmp.a);
+    if (lumbarLight) {
+      const pulse = reduced ? 0.85 : 0.6 + 0.4 * Math.sin(clock.elapsedTime * 5.5);
+      lumbarLight.position.copy(tmp.a);
+      lumbarLight.intensity += ((over > 0 ? 0.9 + over * 4.5 * pulse : 0) - lumbarLight.intensity) * Math.min(1, dt * 9);
+      lumbarLight.color.copy(embMid).lerp(embCold, clamp(over, 0, 1));
+    }
+    if (over > 0 && !reduced) {
+      d.budget += dt * (20 + over * 70);
+      while (d.budget >= 1) {
+        d.budget -= 1;
+        const i = d.cursor; d.cursor = (d.cursor + 1) % EMB;
+        const v = F.vertebrae[Math.floor(Math.random() * 5)];
+        const ang = Math.random() * Math.PI * 2;
+        tmp.b.set(Math.sin(ang) * 0.15, (Math.random() - 0.5) * 0.04, Math.cos(ang) * 0.13 - 0.02);
+        v.localToWorld(tmp.b);
+        P.setXYZ(i, tmp.b.x, tmp.b.y, tmp.b.z);
+        d.vel[i * 3] = (Math.random() - 0.5) * 0.14;
+        d.vel[i * 3 + 1] = 0.20 + Math.random() * 0.36;
+        d.vel[i * 3 + 2] = (Math.random() - 0.5) * 0.14;
+        d.life[i] = 1;
+      }
+    }
+    let any = false;
+    for (let i = 0; i < EMB; i++) {
+      if (d.life[i] <= 0) continue;
+      any = true;
+      d.life[i] = Math.max(0, d.life[i] - dt / (0.75 + (i % 5) * 0.09));
+      const l = d.life[i];
+      P.setXYZ(i, P.getX(i) + d.vel[i * 3] * dt, P.getY(i) + d.vel[i * 3 + 1] * dt, P.getZ(i) + d.vel[i * 3 + 2] * dt);
+      d.vel[i * 3 + 1] += dt * 0.10;
+      embCol.copy(embCold).lerp(embMid, clamp(l * 1.6, 0, 1)).lerp(embHot, clamp((l - 0.72) / 0.28, 0, 1));
+      const f = clamp(l * 5, 0, 1) * Math.pow(l, 0.45) * 1.7;
+      C.setXYZ(i, embCol.r * f, embCol.g * f, embCol.b * f);
+      if (l <= 0) { P.setXYZ(i, 0, -50, 0); C.setXYZ(i, 0, 0, 0); }
+    }
+    embers.visible = any;
+    if (any) { P.needsUpdate = true; C.needsUpdate = true; }
+  }
+
+  /* ---------- impact ---------- */
+  function buildImpact() {
+    shock = new THREE.Mesh(new THREE.RingGeometry(0.84, 1.0, 80), new THREE.MeshBasicMaterial({
+      color: 0xffe9b8, transparent: true, opacity: 0, blending: THREE.AdditiveBlending,
+      depthWrite: false, side: THREE.DoubleSide, fog: false
+    }));
+    shock.rotation.x = -Math.PI / 2;
+    shock.position.set(ballPos.x, 0.014, ballPos.z);
+    shock.visible = false; shock.renderOrder = 6;
+    scene.add(shock);
+    flashLight = new THREE.PointLight(0xfff0c8, 0, 3.5, 2);
+    flashLight.position.set(ballPos.x, 0.12, ballPos.z);
+    scene.add(flashLight);
+  }
+
+  function fireImpact() {
+    impact.ring = 1; impact.flash = 1;
+    if (state.playing) impact.launch = 0;
+    if (!reduced) shakeAmt = 1;
+  }
+
+  function resetImpact() {
+    impact.ring = 0; impact.flash = 0; impact.launch = -1; shakeAmt = 0;
+    if (shock) { shock.visible = false; shock.material.opacity = 0; }
+    if (flashLight) flashLight.intensity = 0;
+    if (ballMesh && ballHome) { ballMesh.position.copy(ballHome); ballMesh.material.opacity = 1; ballMesh.visible = true; }
+  }
+
+  function updateImpact(dt) {
+    if (impact.ring > 0 && shock) {
+      impact.ring = Math.max(0, impact.ring - dt / 0.75);
+      const k = 1 - impact.ring;
+      shock.visible = true;
+      shock.scale.setScalar(0.12 + k * k * 2.0);
+      shock.material.opacity = Math.pow(impact.ring, 1.1);
+      if (impact.ring === 0) shock.visible = false;
+    }
+    if (impact.flash > 0 && flashLight) {
+      impact.flash = Math.max(0, impact.flash - dt / 0.22);
+      flashLight.intensity = impact.flash * impact.flash * 12;
+    }
+    if (impact.launch >= 0 && ballMesh) {
+      impact.launch += dt / 1.5;
+      const u = impact.launch;
+      if (u >= 1) { impact.launch = -1; ballMesh.visible = false; }
+      else {
+        ballMesh.visible = true;
+        ballMesh.position.set(ballHome.x + 12 * u, ballHome.y + (7.6 * u - 6.2 * u * u), ballHome.z - 0.9 * u);
+        ballMesh.material.opacity = clamp(1 - (u - 0.45) / 0.55, 0, 1);
+      }
+    }
+    if (shakeAmt > 0) shakeAmt = Math.max(0, shakeAmt - dt / 0.42);
+  }
+
+  /* ---------- ghosts ---------- */
+  const GHOSTS = [
+    { t: 0.00, color: 0x8ff0d4 },
+    { t: 0.50, color: 0xffd166 },
+    { t: 0.70, color: 0xff9d70 }
+  ];
+
+  function ghostSegments() {
+    const segs = [];
+    let prev = F.pelvis.getWorldPosition(V3());
+    F.vertebrae.forEach(b => { const q = b.getWorldPosition(V3()); segs.push([prev, q]); prev = q; });
+    segs.push([prev, F.skull.localToWorld(V3(0, 0.11, 0.015))]);
+    const shL = F.t2.localToWorld(V3(0.20, -0.01, 0)), shR = F.t2.localToWorld(V3(-0.20, -0.01, 0));
+    const hipL = F.pelvis.localToWorld(V3(0.09, -0.03, 0.02)), hipR = F.pelvis.localToWorld(V3(-0.09, -0.03, 0.02));
+    segs.push([shL.clone(), shR.clone()]);
+    segs.push([hipL.clone(), hipR.clone()]);
+    ['L', 'R'].forEach(s => {
+      const sh = (s === 'L' ? shL : shR).clone(), hp = (s === 'L' ? hipL : hipR).clone();
+      const el = F.arms[s].elbow.position.clone(), hd = F.arms[s].hand.position.clone();
+      const kn = F.legs[s].knee.position.clone(), ft = F.legs[s].foot.position.clone();
+      segs.push([sh, el], [el.clone(), hd], [hp, kn], [kn.clone(), ft]);
+    });
+    const grip = F.club.position.clone();
+    const dir = V3(0, -1, 0).applyQuaternion(F.club.quaternion).multiplyScalar(CLUB_LEN);
+    segs.push([grip, grip.clone().add(dir)]);
+    return segs;
+  }
+
+  function disposeGhosts() {
+    if (!ghostGroup) return;
+    scene.remove(ghostGroup);
+    ghostGroup.traverse(o => { if (o.geometry) o.geometry.dispose(); if (o.material) o.material.dispose(); });
+    ghostGroup = null;
+  }
+
+  function buildGhosts() {
+    if (!inited || !F) return;
+    disposeGhosts();
+    ghostGroup = new THREE.Group();
+    const keep = state.t;
+    GHOSTS.forEach(gh => {
+      pose(gh.t);
+      const segs = ghostSegments();
+      const arr = new Float32Array(segs.length * 6), jnt = new Float32Array(segs.length * 3);
+      segs.forEach((sg, i) => {
+        arr.set([sg[0].x, sg[0].y, sg[0].z, sg[1].x, sg[1].y, sg[1].z], i * 6);
+        jnt.set([sg[1].x, sg[1].y, sg[1].z], i * 3);
+      });
+      const lg = new THREE.BufferGeometry();
+      lg.setAttribute('position', new THREE.BufferAttribute(arr, 3));
+      const line = new THREE.LineSegments(lg, new THREE.LineBasicMaterial({
+        color: gh.color, transparent: true, opacity: 0.7, blending: THREE.AdditiveBlending, depthWrite: false, fog: false
+      }));
+      line.renderOrder = 4; line.userData.t = gh.t; line.frustumCulled = false;
+      const pg = new THREE.BufferGeometry();
+      pg.setAttribute('position', new THREE.BufferAttribute(jnt, 3));
+      const dots = new THREE.Points(pg, new THREE.PointsMaterial({
+        color: gh.color, size: 0.034, map: spriteTex, transparent: true, opacity: 0.75,
+        depthWrite: false, blending: THREE.AdditiveBlending, sizeAttenuation: true, fog: false
+      }));
+      dots.renderOrder = 4; dots.userData.t = gh.t; dots.frustumCulled = false;
+      ghostGroup.add(line); ghostGroup.add(dots);
+    });
+    pose(keep);
+    ghostGroup.visible = state.ghosts;
+    scene.add(ghostGroup);
+    ghostDirty = false;
+  }
+
+  function updateGhosts() {
+    if (!ghostGroup || !ghostGroup.visible) return;
+    ghostGroup.children.forEach(o => {
+      const near = clamp((Math.abs(state.t - o.userData.t) - 0.012) / 0.05, 0, 1);
+      o.material.opacity = (o.isPoints ? 0.75 : 0.7) * near;
+      o.visible = near > 0.01;
+    });
+  }
+
+  /* ---------- vignette + grain ---------- */
+  const FinishShader = {
+    uniforms: { tDiffuse: { value: null }, uTime: { value: 0 }, uGrain: { value: 0.03 }, uVig: { value: 0.55 } },
+    vertexShader: 'varying vec2 vUv;\nvoid main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
+    fragmentShader: [
+      'uniform sampler2D tDiffuse; uniform float uTime; uniform float uGrain; uniform float uVig;',
+      'varying vec2 vUv;',
+      'float hash(vec2 p){ return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453); }',
+      'void main(){',
+      '  vec2 d = vUv - 0.5;',
+      '  float r2 = dot(d, d);',
+      '  vec2 off = d * r2 * 0.010;',
+      '  vec4 c = texture2D(tDiffuse, vUv);',
+      '  c.r = texture2D(tDiffuse, vUv + off).r;',
+      '  c.b = texture2D(tDiffuse, vUv - off).b;',
+      '  float vig = pow(clamp(1.0 - r2 * 1.15, 0.0, 1.0), 1.2);',
+      '  c.rgb *= mix(1.0, vig, uVig);',
+      '  float g = hash(vUv * vec2(1024.0, 700.0) + fract(uTime * 0.7) * 91.0) - 0.5;',
+      '  c.rgb += g * uGrain * (0.35 + 0.65 * (1.0 - vig));',
+      '  gl_FragColor = c;',
+      '}'
+    ].join('\n')
+  };
+
+  function buildEffects() {
+    const steps = [buildSky, buildShafts, buildHexRing, buildTrails, buildArcs, buildEmbers, buildImpact];
+    steps.forEach(fn => { try { fn(); } catch (e) { if (window.console) console.warn('lab3d: effect skipped', e); } });
+  }
+
+  /* Per-frame effect update. Never throws into the render loop. */
+  function updateEffects(dt, r) {
+    const p = r.p, L = r.L;
+    if (clubTrail && state.trace) {
+      updateRibbon(clubTrail, state.t, TRACE.spanClub, true, 0.075, cAccent, 1.35);
+      updateRibbon(handTrail, state.t, TRACE.spanHand, false, 0.04, cRim, 0.6);
+    }
+    updateGauges(L, p);
+    updateEmbers(dt, L.stress.lumbar);
+    updateImpact(dt);
+    updateGhosts();
+    if (hexRing) {
+      hexRing.rotation.z -= dt * (reduced ? 0.02 : 0.09);
+      hexRing.material.opacity = 0.22 + 0.10 * Math.sin(clock.elapsedTime * 0.9);
+    }
+    if (shafts) {
+      shafts.children.forEach(m => {
+        m.rotation.y = Math.atan2(camera.position.x - m.position.x, camera.position.z - m.position.z);
+        if (!reduced) m.position.y = m.userData.y0 + Math.sin(clock.elapsedTime * 0.16 + m.userData.phase) * 0.4;
+      });
+    }
+    if (finishPass) finishPass.uniforms.uTime.value = clock.elapsedTime;
   }
 
   /* ---------- rendering ---------- */
@@ -676,9 +1260,13 @@ const Lab = (() => {
     const target = new THREE.WebGLRenderTarget(size.x, size.y, { samples: 4 });
     composer = new THREE.EffectComposer(renderer, target);
     composer.addPass(new THREE.RenderPass(scene, camera));
-    const bloom = new THREE.UnrealBloomPass(new THREE.Vector2(size.x, size.y), 0.38, 0.25, 0.9);
+    const bloom = new THREE.UnrealBloomPass(new THREE.Vector2(size.x, size.y), 0.45, 0.32, 0.88);
     composer.addPass(bloom);
     composer.addPass(new THREE.ShaderPass(THREE.GammaCorrectionShader));
+    try {
+      finishPass = new THREE.ShaderPass(FinishShader);
+      composer.addPass(finishPass);
+    } catch (e) { finishPass = null; }
   }
 
   function resize() {
@@ -693,6 +1281,7 @@ const Lab = (() => {
   function setCamera(name, instant) {
     const c = CAMERAS[name] || CAMERAS.free;
     state.camera = name;
+    touch();
     if (instant) { camera.position.set(...c.pos); controls.target.set(...c.target); controls.update(); return; }
     camTween = { from: camera.position.clone(), to: V3(...c.pos), tFrom: controls.target.clone(), tTo: V3(...c.target), t: 0 };
   }
@@ -700,11 +1289,14 @@ const Lab = (() => {
   function step(dt) {
     if (state.playing) {
       const dur = state.speed === 'real' ? 1.5 : 4.6;
+      // at real speed the strike gets a short slow-motion dilation
+      let adv = dt;
+      if (state.speed === 'real' && state.dir > 0 && state.t > 0.655 && state.t < 0.745) adv *= 0.28;
       if (state.holdUntil > 0) {
         state.holdUntil -= dt;
-        if (state.holdUntil <= 0) { state.holdUntil = 0; if (state.loop) { state.t = 0; } else { state.dir = -1; } }
+        if (state.holdUntil <= 0) { state.holdUntil = 0; if (state.loop) { state.t = 0; resetImpact(); } else { state.dir = -1; } }
       } else if (state.dir > 0) {
-        state.t += dt / dur;
+        state.t += adv / dur;
         if (state.t >= 1) { state.t = 1; state.holdUntil = 0.9; }
       } else {
         state.t -= dt / 1.1;
@@ -729,6 +1321,18 @@ const Lab = (() => {
       a.needsUpdate = true;
     }
     if (groundRing) groundRing.material.opacity = 0.28 + 0.1 * Math.sin(clock.elapsedTime * 1.4);
+
+    // the ball is struck the moment playback crosses the impact key
+    if (state.playing && state.dir > 0 && prevT < 0.70 && state.t >= 0.70) fireImpact();
+    if (state.t < 0.66 && impact.launch < 0 && ballMesh && ballMesh.visible === false) resetImpact();
+    prevT = state.t;
+
+    // idle cinematic: nothing has happened for a while, so drift the camera
+    if (controls) {
+      const idle = !reduced && !state.playing && !camTween && (performance.now() - lastInteract) > 8000;
+      controls.autoRotate = idle;
+      controls.autoRotateSpeed = 0.3;
+    }
   }
 
   function frame() {
@@ -737,7 +1341,16 @@ const Lab = (() => {
     step(dt);
     const r = pose(state.t);
     controls.update();
+    if (fxOk) { try { updateEffects(dt, r); } catch (e) { fxOk = false; if (window.console) console.warn('lab3d: effects disabled', e); } }
+    let sx = 0, sy = 0, sz = 0;
+    if (shakeAmt > 0) {
+      const a = shakeAmt * shakeAmt * 0.05;
+      sx = (Math.random() - 0.5) * a; sy = (Math.random() - 0.5) * a; sz = (Math.random() - 0.5) * a;
+      camera.position.set(camera.position.x + sx, camera.position.y + sy, camera.position.z + sz);
+      camera.updateMatrixWorld();
+    }
     composer.render();
+    if (sx || sy || sz) camera.position.set(camera.position.x - sx, camera.position.y - sy, camera.position.z - sz);
     const now = performance.now();
     if (now - lastHud > 90) {
       lastHud = now;
@@ -774,8 +1387,12 @@ const Lab = (() => {
     emit('select', selected ? { key: selected.userData.region, area: selected.userData.region.split(':')[0], label: REGION_LABELS[selected.userData.region] } : null);
   }
 
+  function touch() { lastInteract = performance.now(); if (controls) controls.autoRotate = false; }
+
   function bindPointer() {
     const el = renderer.domElement;
+    el.addEventListener('pointerdown', touch);
+    el.addEventListener('wheel', touch, { passive: true });
     el.addEventListener('pointermove', (ev) => { if (!downAt) setHover(pick(ev)); });
     el.addEventListener('pointerleave', () => setHover(null));
     el.addEventListener('pointerdown', (ev) => { downAt = [ev.clientX, ev.clientY]; });
@@ -809,6 +1426,7 @@ const Lab = (() => {
     if (window.ResizeObserver) new ResizeObserver(resize).observe(container);
     else window.addEventListener('resize', resize);
     inited = true;
+    lastInteract = performance.now();
     pose(0);
     if (!reduced && !opts.noAuto) { setTimeout(() => play(), 900); }
     return true;
@@ -816,17 +1434,31 @@ const Lab = (() => {
 
   function start() { if (inited && raf === null) { clock.getDelta(); frame(); } }
   function stop() { if (raf !== null) { cancelAnimationFrame(raf); raf = null; } }
-  function play() { if (!inited) return; if (state.t >= 1) state.t = 0; state.dir = 1; state.holdUntil = 0; state.playing = true; emit('play', true); }
+  function play() { if (!inited) return; touch(); if (state.t >= 1) { state.t = 0; resetImpact(); } state.dir = 1; state.holdUntil = 0; state.playing = true; emit('play', true); }
   function pause() { state.playing = false; state.holdUntil = 0; state.dir = 1; emit('play', false); }
-  function toggle() { state.playing ? pause() : play(); }
-  function seek(t) { pause(); state.t = clamp(t, 0, 1); }
-  function setFault(k, v) { state.faults[k] = !!v; }
+  function toggle() { touch(); state.playing ? pause() : play(); }
+  function seek(t) { touch(); pause(); state.t = clamp(t, 0, 1); prevT = state.t; resetImpact(); }
+  function setFault(k, v) { state.faults[k] = !!v; ghostDirty = true; if (state.ghosts) { try { buildGhosts(); } catch (e) { } } }
   function setSpeed(s) { state.speed = s; }
   function setLoop(v) { state.loop = !!v; }
+  function setGhosts(v) {
+    state.ghosts = !!v;
+    try {
+      if (state.ghosts && (!ghostGroup || ghostDirty)) buildGhosts();
+      if (ghostGroup) ghostGroup.visible = state.ghosts;
+    } catch (e) { if (window.console) console.warn('lab3d: ghosts unavailable', e); }
+    return state.ghosts;
+  }
+  function setTrace(v) {
+    state.trace = !!v;
+    if (clubTrail) clubTrail.visible = state.trace;
+    if (handTrail) handTrail.visible = state.trace;
+    return state.trace;
+  }
   function selectRegion(key) { const m = hitMeshes.find(h => h.userData.region === key); select(m || null); }
   function getState() { return state; }
 
-  return { init, start, stop, play, pause, toggle, seek, setFault, setSpeed, setLoop, setCamera, selectRegion, on, getState, phaseName, CAP };
+  return { init, start, stop, play, pause, toggle, seek, setFault, setSpeed, setLoop, setCamera, setGhosts, setTrace, selectRegion, on, getState, phaseName, CAP };
 })();
 
 window.Lab = Lab;

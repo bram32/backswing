@@ -205,6 +205,8 @@ main { min-width: 0; }
 .lab-speed { display: flex; gap: 4px; }
 .lab-speed button { height: 30px; padding: 0 10px; border: 1px solid var(--line); border-radius: 7px; background: transparent; color: var(--ink-2); font-size: 0.8rem; font-weight: 700; }
 .lab-speed button[aria-pressed="true"] { background: var(--inset); color: var(--ink); border-color: var(--line-strong); }
+.lab-viz { margin-top: -12px; }
+.lab-viz button[aria-pressed="true"] { background: var(--accent-soft); color: var(--accent-text); border-color: var(--accent); }
 .readouts { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
 .readout { padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; }
 .readout .num { font-size: 1.6rem; display: block; line-height: 1; }

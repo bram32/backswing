@@ -35,3 +35,11 @@ if (fs.existsSync(assetsSrc)) {
   console.log('dist/site/assets', pngs.length, 'png');
 }
 console.log('dist/site staged');
+// PWA: manifest + service worker (icon PNGs are already covered by the assets copy above)
+for (const f of ['manifest.webmanifest', 'sw.js']) {
+  if (fs.existsSync(path.join(root, f))) fs.copyFileSync(path.join(root, f), path.join(site, f));
+}
+const pwaIcons = ['assets/icon-192.png', 'assets/icon-512.png', 'assets/icon-maskable-512.png', 'assets/apple-touch-icon-180.png'];
+const missingIcons = pwaIcons.filter((f) => !fs.existsSync(path.join(site, f)));
+if (missingIcons.length) console.warn('dist/site missing PWA icons:', missingIcons.join(', '));
+console.log('dist/site pwa: manifest.webmanifest, sw.js,', pwaIcons.length - missingIcons.length, 'icons');

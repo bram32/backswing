@@ -92,7 +92,7 @@ const EXERCISES = [
     ],
     cue: 'Chest up, club back, heels heavy.',
     avoid: 'Heels lifting. Squat less deep instead.',
-    golf: 'Golfers who can squat with heels down almost never early-extend (thrust the hips at the ball) in the downswing.'
+    golf: 'If you cannot squat with the heels down, the body tends to find the missing range by standing up out of posture (early extension).'
   },
   {
     id: 'armcircles', name: 'Arm circles and cross-body swings', areas: ['shoulder'], type: 'warmup', pose: 'armCircles',
@@ -109,7 +109,7 @@ const EXERCISES = [
   },
   {
     id: 'wristrot', name: 'Wrist and forearm circles with a club', areas: ['wrist', 'elbow'], type: 'warmup', pose: 'pronation',
-    secs: 30, sides: false, reps: '10 each way', where: 'course', gear: 'A club',
+    secs: 30, sides: false, reps: '10 each way, each hand', where: 'course', gear: 'A club',
     why: 'Warms the tendons on both sides of the elbow that absorb impact with the ground.',
     steps: [
       'Hold a club near the head so the grip end points up, elbow tucked at your side.',
@@ -133,7 +133,7 @@ const EXERCISES = [
     ],
     cue: 'Turn the chest, let the arms follow. Finish balanced.',
     avoid: 'Going straight to full-speed driver swings on a cold body.',
-    golf: 'Golfers who warm up for even five minutes report fewer injuries and swing faster on the first tee.'
+    golf: 'Golfers who warm up properly tend to swing faster on the first tee, and warming up is linked with fewer injuries.'
   },
   {
     id: 'catcow', name: 'Cat-cow', areas: ['lowback', 'upback'], type: 'mobility', pose: 'quadruped',
@@ -152,7 +152,7 @@ const EXERCISES = [
   {
     id: 'openbook', name: 'Open book', areas: ['upback'], type: 'mobility', pose: 'sideLying',
     secs: 45, sides: true, reps: '8 slow reps each side', where: 'home', gear: 'Floor',
-    why: 'The single best mid-back rotation drill. The hips are pinned, so all the turn has to come from the thoracic spine.',
+    why: 'One of the best mid-back rotation drills. The hips are pinned, so most of the turn has to come from the thoracic spine.',
     steps: [
       'Lie on your side with knees bent to 90 degrees and stacked, arms straight out in front.',
       'Keep the knees pressed together and on the floor.',
@@ -161,7 +161,7 @@ const EXERCISES = [
     ],
     cue: 'Knees glued together. If they lift, the lower back is cheating.',
     avoid: 'Letting the top knee float up to get the arm further.',
-    golf: 'The thoracic spine should give you about 35 degrees of turn each way. Most desk-bound golfers have half that.'
+    golf: 'The thoracic spine should give you roughly 35 degrees of turn each way. Most desk-bound golfers have a good deal less.'
   },
   {
     id: 'thread', name: 'Thread the needle', areas: ['upback', 'shoulder'], type: 'mobility', pose: 'threadNeedle',
@@ -208,7 +208,7 @@ const EXERCISES = [
   {
     id: 'hip9090', name: '90/90 hip switches', areas: ['hip', 'lowback'], type: 'mobility', pose: 'seated9090',
     secs: 60, sides: false, reps: '10 switches', where: 'home', gear: 'Floor',
-    why: 'Hip internal rotation is the movement most golfers lack. Without it the lower back has to make up the difference on every swing.',
+    why: 'Hip internal rotation is one of the movements golfers most often lack. Without it the lower back makes up the difference on every swing.',
     steps: [
       'Sit on the floor with one leg bent in front at 90 degrees and the other bent to the side at 90 degrees.',
       'Sit tall. Hands lightly on the floor behind you for balance if needed.',
@@ -217,7 +217,7 @@ const EXERCISES = [
     ],
     cue: 'Sit up. The taller you are, the more the hips have to do the work.',
     avoid: 'Rounding forward to force the knees down.',
-    golf: 'The lead hip needs roughly 45 degrees of internal rotation through impact. Stiff hips sway and slide, and the back pays for it.'
+    golf: 'The lead hip turns inward as the pelvis rotates through impact, and you want roughly 35 to 45 degrees of it. Stiff hips sway and slide, and the back pays for it.'
   },
   {
     id: 'hipflexor', name: 'Half-kneeling hip flexor stretch', areas: ['hip', 'lowback'], type: 'stretch', pose: 'halfKneel',
@@ -245,7 +245,7 @@ const EXERCISES = [
     ],
     cue: 'Sit back into it. Breathe.',
     avoid: 'Rounding the spine to get lower.',
-    golf: 'That deep ache in the buttock after a round is usually the piriformis and glutes, not the spine.'
+    golf: 'That deep ache in the buttock after a round is usually the deep glute muscles, not the spine.'
   },
   {
     id: 'deadbug', name: 'Dead bug', areas: ['lowback'], type: 'stability', pose: 'deadbug',
@@ -273,7 +273,7 @@ const EXERCISES = [
     ],
     cue: 'Make a fist with the reaching hand and point the heel back. Long, not high.',
     avoid: 'Twisting the hips to lift the leg.',
-    golf: 'Recommended by spine researchers as one of the three safest exercises for a sore back.'
+    golf: 'One of the "big three" exercises spine researchers use to build back endurance without loading the spine.'
   },
   {
     id: 'sideplank', name: 'Side plank', areas: ['lowback', 'hip'], type: 'stability', pose: 'sidePlank',
@@ -427,21 +427,21 @@ const EXERCISES = [
     ],
     cue: 'Keep the shoulder relaxed.',
     avoid: 'Pressing hard through a sharp pain.',
-    golf: 'The lead arm absorbs the shock of impact. A stiff, cold extensor group is the usual cause of lead-elbow pain.'
+    golf: 'The lead arm absorbs the shock of impact. A stiff, cold extensor group is a common cause of lead-elbow pain.'
   },
   {
     id: 'eccwrist', name: 'Eccentric wrist curls', areas: ['elbow'], type: 'strength', pose: 'wristCurl',
     secs: 60, sides: true, reps: '3 sets of 15, slow lowering', where: 'home', gear: 'Light dumbbell, tin of beans, or a club',
-    why: 'The evidence-backed fix for elbow tendon pain. Slow lowering rebuilds the tendon rather than irritating it.',
+    why: 'The best-evidenced part of the fix for elbow tendon pain. Slow lowering rebuilds the tendon rather than irritating it.',
     steps: [
       'Sit with the forearm on your thigh, wrist just past the knee, holding a light weight.',
       'Palm up for the inside of the elbow, palm down for the outside.',
       'Use the other hand to lift the weight up.',
       'Lower it slowly over three to four seconds using only the sore arm. Repeat.'
     ],
-    cue: 'Up with help, down slow on your own. A dull ache during is fine; sharp pain is not.',
-    avoid: 'Going heavy. Light and slow is the whole point.',
-    golf: 'Do this daily for six weeks and most golfer’s and tennis elbow settles. Skip it and it lingers for a year.'
+    cue: 'Up with help, down slow on your own. A dull ache up to about 4 out of 10 is fine, and it should settle by the next day.',
+    avoid: 'Going heavy, or pushing into sharp pain. Light and slow is the whole point.',
+    golf: 'Most elbow tendon pain settles over six to twelve weeks of steady loading like this. Left alone, it tends to drag on much longer.'
   },
   {
     id: 'pronation', name: 'Pronation and supination with a club', areas: ['elbow', 'wrist'], type: 'strength', pose: 'pronation',
@@ -451,7 +451,7 @@ const EXERCISES = [
       'Hold a club by the grip end with the head pointing up, elbow bent 90 degrees at your side.',
       'Slowly rotate the palm down, letting the club fall to one side under control.',
       'Rotate back and over to the other side.',
-      'Hold the club lower down the shaft to make it easier.'
+      'Slide your hand up the shaft toward the head to make it easier.'
     ],
     cue: 'Slow and controlled. The weight of the club head does the work.',
     avoid: 'Letting the elbow leave your side.',
@@ -628,16 +628,16 @@ const EXERCISES = [
   {
     id: 'gripsqueeze', name: 'Grip squeeze holds', areas: ['elbow', 'wrist'], type: 'strength', pose: 'squeeze',
     secs: 30, sides: false, reps: '5 squeezes of 5 seconds each hand', where: 'course', gear: 'A ball, a towel, or nothing',
-    why: 'Isometric holds calm elbow tendon pain quickly and build grip endurance for the back nine.',
+    why: 'Squeezing and holding, with no movement at all, often takes the edge off elbow tendon pain and builds grip endurance for the back nine.',
     steps: [
-      'Squeeze a golf ball, a rolled towel or just your fist at about 70 percent effort.',
+      'Squeeze a golf ball, a rolled towel or just your fist at an effort that stays comfortable, roughly half to two thirds of your maximum.',
       'Hold five seconds. Elbow straight, wrist neutral.',
       'Relax fully for five seconds.',
       'Repeat five times each hand.'
     ],
     cue: 'Firm, not maximal. Breathe.',
     avoid: 'Sharp pain at the elbow. Ease off the effort.',
-    golf: 'A common trick before a round when the elbow is grumbling: isometrics dial the pain down for an hour or two.'
+    golf: 'Worth trying before a round when the elbow is grumbling. Many golfers find it dials the pain down for a while; not everyone does.'
   },
   {
     id: 'chest', name: 'Chest opener on the cart', areas: ['shoulder', 'upback'], type: 'stretch', pose: 'doorway',
@@ -661,20 +661,20 @@ const EX = Object.fromEntries(EXERCISES.map(e => [e.id, e]));
 const ROUTINES = [
   {
     id: 'warmup', name: 'First-tee warm-up', minutes: 7, where: 'course', tone: 'go',
-    tagline: 'Standing only. Car park to first tee in seven minutes.',
+    tagline: 'No floor work. Car park to first tee in seven minutes.',
     steps: [
-      { ex: 'legswing', secs: 30 }, { ex: 'stepback', secs: 20 }, { ex: 'wgs', secs: 40 },
-      { ex: 'clubrot', secs: 45 }, { ex: 'armcircles', secs: 30 }, { ex: 'ohsquat', secs: 40 },
-      { ex: 'hinge', secs: 30 }, { ex: 'wristrot', secs: 30 }, { ex: 'pswings', secs: 75 }
+      { ex: 'legswing', secs: 30 }, { ex: 'ohsquat', secs: 40 }, { ex: 'stepback', secs: 20 },
+      { ex: 'wgs', secs: 40 }, { ex: 'armcircles', secs: 30 }, { ex: 'wristrot', secs: 30 },
+      { ex: 'clubrot', secs: 45 }, { ex: 'hinge', secs: 30 }, { ex: 'pswings', secs: 75 }
     ]
   },
   {
     id: 'cooldown', name: 'Post-round cool-down', minutes: 6, where: 'course', tone: 'calm',
     tagline: 'Before you get in the car. Six minutes at the cart.',
     steps: [
-      { ex: 'hamstring', secs: 30 }, { ex: 'stepback', secs: 30 }, { ex: 'figure4', secs: 30 },
-      { ex: 'latstretch', secs: 30 }, { ex: 'crossbody', secs: 25 }, { ex: 'wristflex', secs: 20 },
-      { ex: 'wristext', secs: 20 }, { ex: 'clubrot', secs: 30 }
+      { ex: 'hamstring', secs: 30 }, { ex: 'figure4', secs: 30 }, { ex: 'stepback', secs: 30 },
+      { ex: 'latstretch', secs: 30 }, { ex: 'crossbody', secs: 25 }, { ex: 'neckstretch', secs: 20 },
+      { ex: 'wristflex', secs: 20 }, { ex: 'wristext', secs: 20 }
     ]
   },
   {
@@ -696,10 +696,10 @@ const ROUTINES = [
   },
   {
     id: 'elbow', name: 'Elbow and forearm rehab', minutes: 6, where: 'home', tone: 'calm',
-    tagline: 'Daily for six weeks. Golfer’s elbow, tennis elbow and sore wrists.',
+    tagline: 'Most days, for six weeks or more. Golfer’s elbow, tennis elbow and sore wrists.',
     steps: [
-      { ex: 'wristflex', secs: 30 }, { ex: 'wristext', secs: 30 }, { ex: 'eccwrist', secs: 60 },
-      { ex: 'pronation', secs: 40 }, { ex: 'gripsqueeze', secs: 30 }
+      { ex: 'wristflex', secs: 30 }, { ex: 'wristext', secs: 30 }, { ex: 'gripsqueeze', secs: 30 },
+      { ex: 'eccwrist', secs: 60 }, { ex: 'pronation', secs: 40 }
     ]
   },
   {
@@ -707,8 +707,8 @@ const ROUTINES = [
     tagline: 'Twice a week. Glutes, legs, trunk and rotator cuff.',
     steps: [
       { ex: 'bridge', secs: 60 }, { ex: 'slrdl', secs: 40 }, { ex: 'splitsquat', secs: 40 },
-      { ex: 'sideplank', secs: 30 }, { ex: 'pallof', secs: 40 }, { ex: 'bander', secs: 40 },
-      { ex: 'ytw', secs: 60 }, { ex: 'hipairplane', secs: 40 }, { ex: 'calfraise', secs: 40 }
+      { ex: 'hipairplane', secs: 40 }, { ex: 'sideplank', secs: 30 }, { ex: 'pallof', secs: 40 },
+      { ex: 'bander', secs: 40 }, { ex: 'ytw', secs: 60 }, { ex: 'calfraise', secs: 40 }
     ]
   },
   {
@@ -753,8 +753,8 @@ function assessLevel(area, timing, feel) {
 
 const PLANS = {
   lowback: {
-    intro: 'Lower back pain is the most common golf injury. Around one golfer in three deals with it in a given season. The swing puts roughly eight times your body weight of compression through the lumbar spine and asks it to bend sideways and twist at the same time.',
-    key: 'The lumbar spine is built to rotate about 13 degrees in total. A full swing needs a trunk turn of 90 degrees or more. The rest has to come from the hips and the mid back. When those are stiff, the lower back does work it was never designed for.',
+    intro: 'Lower back pain is the most common golf complaint. Somewhere between a quarter and a third of golfers report it in a given year. At speed the swing can send peak loads of up to about eight times your body weight through the lumbar spine, while asking it to bend sideways and twist at the same time.',
+    key: 'The lumbar spine only rotates about 13 degrees in total, a couple of degrees per level. A full backswing turns the shoulders around 90 degrees, so most of that has to come from the hips and the mid back. When those are stiff, the lower back does work it was never designed for.',
     timing: {
       during:  'Pain that shows up mid-swing points to the swing itself, usually the lower back rotating or side-bending too much because the hips or mid back are not moving. Have someone check your top-of-backswing position for a lean toward the target (reverse spine angle).',
       after:   'Fine on the course but sore that evening usually means the tissues coped with the round but not with the total load: four hours of posture, 60 bends to the ball, carrying a bag, then sitting in the car. The cool-down and how you handle the bag matter here.',
@@ -762,31 +762,31 @@ const PLANS = {
       constant:'Pain that is there whether or not you play needs a proper look. Golf may be aggravating something rather than causing it. Book a physio or doctor, and keep to the gentle plan in the meantime.'
     },
     feel: {
-      stiff: ['pelvictilt', 'catcow', 'kneeside', 'hip9090', 'hipflexor', 'birddog', 'bridge', 'childs'],
-      sharp: ['pelvictilt', 'curlup', 'birddog', 'sideplank', 'hipflexor', 'childs'],
+      stiff: ['pelvictilt', 'catcow', 'kneeside', 'childs', 'hipflexor', 'hip9090', 'bridge', 'birddog'],
+      sharp: ['pelvictilt', 'childs', 'hipflexor', 'curlup', 'birddog', 'sideplank'],
       nerve: ['pelvictilt', 'kneeside']
     },
     daily: 'daily',
     faults: ['reverse', 'sposture', 'earlyext', 'hangback'],
     avoid: [
-      'Long range sessions, especially on mats, until it settles. Fifty balls hit fast is 50 swings with no recovery between them.',
+      'Long range sessions, especially on mats, until it settles. Fifty balls hit fast is fifty swings with no recovery between them.',
       'Carrying the bag on one shoulder. Use both straps or a push cart.',
       'Bending from the waist to tee up or retrieve the ball. Squat or use the golfer’s pickup.',
       'Sitting in the car straight after the round without the cool-down.',
       'Driver off every tee. Take a fairway wood or iron on holes where it does not matter.'
     ],
     see: [
-      'Pain, tingling or numbness that travels below the knee.',
-      'Weakness in a leg or foot, or a foot that slaps or drags.',
-      'Any change in bladder or bowel control, or numbness around the groin. This is urgent.',
-      'Pain that wakes you at night or does not change with position.',
-      'Pain after a fall or heavy lift, or if you are over 60 and this is new.',
+      'Any change in bladder or bowel control, trouble passing urine, or numbness around the groin, back passage or inner thighs. This is an emergency: go to A&E the same day.',
+      'Weakness in a leg or foot that is spreading or getting worse, a foot that slaps or drags, or numbness that keeps growing.',
+      'Pain, tingling or numbness that travels below the knee. Do not play through this.',
+      'Pain after a fall, a heavy lift or any hard knock, especially if you are over 60, have thin bones or take steroids.',
+      'Pain that wakes you at night, does not change with position, or comes with fever, chills or unexplained weight loss.',
       'No improvement after two weeks of the plan.'
     ]
   },
   upback: {
     intro: 'Mid and upper back pain in golfers is almost always a stiffness problem rather than an injury. The thoracic spine is where a good turn should come from, and modern life locks it up.',
-    key: 'Each of the 12 thoracic vertebrae should contribute a few degrees of rotation, adding up to around 35 degrees each way. Sit at a desk for ten years and that drops by half. The swing then borrows the missing rotation from the lumbar spine and the neck.',
+    key: 'Each level of the thoracic spine contributes a few degrees of rotation, adding up to roughly 35 degrees each way. Years at a desk eat into that, and the swing then borrows the missing rotation from the lumbar spine and the neck.',
     timing: {
       during:  'A pinch between the shoulder blades on the backswing is the classic stiff-thoracic complaint. The trail-side ribs run out of room and the joints get jammed at the top.',
       after:   'Aching across the shoulders after a round is usually the postural muscles fatiguing from four hours of holding a forward-tilted trunk, plus the bag.',
@@ -794,9 +794,9 @@ const PLANS = {
       constant:'Constant mid-back pain is unusual from golf alone. Rib joints, posture and even breathing patterns can play a part. Worth a professional look.'
     },
     feel: {
-      stiff: ['openbook', 'thread', 'text', 'wallangel', 'clubrot', 'childs', 'latstretch'],
-      sharp: ['catcow', 'openbook', 'text', 'ytw', 'chest'],
-      nerve: ['openbook', 'catcow']
+      stiff: ['childs', 'openbook', 'thread', 'latstretch', 'text', 'clubrot', 'wallangel'],
+      sharp: ['catcow', 'openbook', 'chest', 'text', 'ytw'],
+      nerve: ['catcow', 'openbook']
     },
     daily: 'tspine',
     faults: ['cposture', 'flatshoulder', 'reverse'],
@@ -806,14 +806,16 @@ const PLANS = {
       'Slumping in the cart between shots.'
     ],
     see: [
+      'Chest pain, breathlessness or pain that comes on with exertion rather than with movement. Seek urgent care.',
+      'Mid-back pain that starts after a fall or a heavy knock, especially if you are over 60 or have thin bones.',
       'Pain that wraps around the ribs to the front of the chest.',
-      'Chest pain, breathlessness or pain that appears with exertion rather than movement. Seek urgent care.',
-      'Numbness or tingling into the arms.',
+      'Numbness, tingling or weakness in the arms or legs, or any unsteadiness on your feet.',
+      'Pain that wakes you at night, or that comes with fever or unexplained weight loss.',
       'Pain that does not improve after two weeks of daily mobility work.'
     ]
   },
   neck: {
-    intro: 'The neck works hard in golf. You hold the head still over the ball while the shoulders turn 90 degrees underneath it, which means the cervical spine rotates almost the whole way on every swing.',
+    intro: 'The neck works hard in golf. You hold the head fairly still over the ball while the shoulders turn 90 degrees underneath it, so the neck gives up a big chunk of its own rotation on every swing.',
     key: 'Most golf neck pain comes from three things: a jutting chin at address, a stiff mid back forcing the neck to do the turning, and a bag strap on one shoulder for four hours.',
     timing: {
       during:  'Pain at the top of the backswing or on the follow-through means the neck is being asked for rotation the mid back should provide. Work on the thoracic spine and check your chin position at address.',
@@ -822,7 +824,7 @@ const PLANS = {
       constant:'Constant neck pain, or headaches that start at the base of the skull, deserve a proper assessment.'
     },
     feel: {
-      stiff: ['chintuck', 'neckstretch', 'openbook', 'text', 'wallangel', 'chest'],
+      stiff: ['chintuck', 'neckstretch', 'openbook', 'chest', 'text', 'wallangel'],
       sharp: ['chintuck', 'openbook', 'text'],
       nerve: ['chintuck']
     },
@@ -834,15 +836,17 @@ const PLANS = {
       'Cranking the head round to watch the ball on the follow-through; let the whole body turn to face the target instead.'
     ],
     see: [
-      'Tingling, numbness or weakness in an arm or hand.',
-      'Pain after any impact or fall.',
+      'Neck pain straight after a fall or a blow to the head, especially if it is tender right over the bones at the back. Keep the neck still and get seen the same day.',
+      'Tingling, numbness or weakness in an arm or hand, particularly if it is spreading or getting worse.',
+      'Clumsy hands, unsteady walking, or numbness in both arms or legs.',
       'Dizziness, visual changes or headaches with the neck pain.',
+      'Pain that wakes you at night and does not settle in any position.',
       'No improvement after two weeks.'
     ]
   },
   shoulder: {
     intro: 'The lead shoulder (left for a right-handed golfer) is stretched across the chest at the top of the backswing, and the trail shoulder rotates hard outward. Both rely on the rotator cuff, a set of small muscles that keep the ball of the joint centred.',
-    key: 'Shoulder pain in golfers is mostly rotator cuff irritation and impingement, usually in the lead shoulder, made worse by a stiff mid back forcing the arms to make up the turn.',
+    key: 'Shoulder pain in golfers is mostly rotator cuff irritation, the tendons getting pinched and sore, usually in the lead shoulder, and made worse by a stiff mid back forcing the arms to make up the turn.',
     timing: {
       during:  'Pain at the top of the backswing in the lead shoulder, or in the follow-through in the trail shoulder, is the classic pattern. Shorten the swing a fraction and improve the trunk turn so the shoulders do less.',
       after:   'Aching after the round with no specific moment of pain is usually cuff fatigue. Strengthen it.',
@@ -850,8 +854,8 @@ const PLANS = {
       constant:'A shoulder that is constantly painful or losing range (you cannot reach up or behind) needs assessment. Frozen shoulder is common in the golfing age group.'
     },
     feel: {
-      stiff: ['armcircles', 'crossbody', 'sleeper', 'wallangel', 'openbook', 'bander', 'ytw'],
-      sharp: ['bander', 'ytw', 'wallangel', 'openbook'],
+      stiff: ['armcircles', 'crossbody', 'openbook', 'sleeper', 'wallangel', 'bander', 'ytw'],
+      sharp: ['openbook', 'wallangel', 'bander', 'ytw'],
       nerve: ['chintuck', 'openbook']
     },
     daily: 'tspine',
@@ -862,8 +866,9 @@ const PLANS = {
       'Sleeping on the sore shoulder.'
     ],
     see: [
+      'A fall onto the shoulder or a pop at the moment of injury, especially if the shoulder looks out of shape or you cannot move it. Get it x-rayed.',
       'You cannot lift the arm, or it feels weak rather than just sore.',
-      'A fall onto the shoulder, or a pop at the moment of injury.',
+      'Numbness, tingling or weakness spreading down the arm.',
       'Night pain that wakes you regularly.',
       'Steady loss of range over weeks.'
     ]
@@ -875,12 +880,12 @@ const PLANS = {
       during:  'Groin pain through impact in the lead hip, or trail-hip pain at the top of the backswing, both point to limited internal rotation. Improve it, and shorten the swing a little in the meantime.',
       after:   'Outside-hip or buttock ache after walking 18 holes is typically the glutes and their tendons. Strengthen and stretch them.',
       morning: 'Morning hip stiffness that eases in the first half hour is common in the over-50s. Keep moving. 90/90 switches most days.',
-      constant:'Constant groin pain, especially with clicking or catching, should be assessed. Early hip arthritis and labral problems are both common in lifelong golfers and both respond well to the right plan.'
+      constant:'Constant groin pain, especially with clicking or catching, should be assessed. Early hip arthritis and tears in the cartilage rim around the socket are both common in lifelong golfers and both respond well to the right plan.'
     },
     feel: {
-      stiff: ['legswing', 'hip9090', 'hipflexor', 'figure4', 'bridge', 'slrdl', 'hipairplane'],
-      sharp: ['bridge', 'sideplank', 'hipflexor', 'figure4'],
-      nerve: ['kneeside', 'hipflexor']
+      stiff: ['legswing', 'figure4', 'hipflexor', 'hip9090', 'bridge', 'slrdl', 'hipairplane'],
+      sharp: ['figure4', 'hipflexor', 'bridge', 'sideplank'],
+      nerve: ['pelvictilt', 'kneeside']
     },
     daily: 'daily',
     faults: ['sway', 'slide', 'earlyext'],
@@ -890,25 +895,26 @@ const PLANS = {
       'Deep squatting under load while the groin is sore.'
     ],
     see: [
+      'Hip pain after a fall, or pain that stops you putting weight through the leg. Get it x-rayed the same day.',
       'Groin pain with clicking, catching or locking.',
-      'Pain that wakes you at night.',
+      'Pain that wakes you at night, or that comes with fever or feeling unwell.',
       'A limp that does not settle in a day or two.',
-      'Numbness, tingling or pain that shoots down the leg (this is usually the back, not the hip).'
+      'Numbness, tingling or pain that shoots down the leg (this is usually the back, not the hip). Do not play through it.'
     ]
   },
   elbow: {
     intro: 'Golfer’s elbow (inside) and tennis elbow (outside) are both tendon overload from gripping and from the shock of the club meeting the ground. Despite the name, the outside kind is more common in golfers, and it usually hits the lead arm.',
-    key: 'Tendons adapt slowly. The fix is not rest but the right kind of loading: slow eccentric strengthening, daily, for about six weeks, plus taking the sudden shocks out of your golf.',
+    key: 'Tendons adapt slowly. The fix is not rest but the right kind of loading: slow strengthening, most days, for six to twelve weeks, working at a level where the ache stays tolerable and settles by the next day. Then take the sudden shocks out of your golf.',
     timing: {
-      during:  'Pain at impact, especially on fat shots, is the tendon being shocked. Check the grip pressure (aim for four out of ten), avoid hard mats, and use the isometric holds before the round to calm it.',
-      after:   'Elbow ache that builds after the round is classic tendon overload. Start the rehab routine tonight and keep going after it stops hurting.',
+      during:  'Pain at impact, especially on fat shots, is the tendon being shocked. Check the grip pressure (aim for four out of ten), avoid hard mats, and use the grip squeeze holds before the round to calm it.',
+      after:   'Elbow ache that builds after the round is classic tendon overload. Start the rehab routine tonight, keep the load to a tolerable ache, and keep going after it stops hurting.',
       morning: 'Morning stiffness in the elbow that eases as you use it is typical of a tendon in the irritable phase.',
       constant:'Constant elbow pain, or pain when gripping a mug or turning a key, means the tendon is well and truly irritated. Rehab works but it takes weeks; be patient with it.'
     },
     feel: {
-      stiff: ['wristflex', 'wristext', 'eccwrist', 'pronation', 'gripsqueeze', 'wristrot'],
-      sharp: ['gripsqueeze', 'eccwrist', 'wristflex', 'wristext'],
-      nerve: ['wristflex', 'chintuck']
+      stiff: ['wristrot', 'wristflex', 'wristext', 'gripsqueeze', 'pronation', 'eccwrist'],
+      sharp: ['wristflex', 'wristext', 'gripsqueeze', 'eccwrist'],
+      nerve: ['chintuck', 'wristrot']
     },
     daily: 'elbow',
     faults: ['casting', 'chickenwing'],
@@ -919,25 +925,26 @@ const PLANS = {
       'Sudden jumps in volume, like a golf trip after a quiet winter.'
     ],
     see: [
-      'Numbness or tingling in the ring and little fingers (the ulnar nerve runs behind the inside of the elbow).',
+      'Numbness, tingling or weakness in the ring and little fingers, or a weakening grip (the ulnar nerve runs behind the inside of the elbow).',
+      'A fall onto the arm, obvious swelling or deformity, or an elbow you cannot straighten. Get it x-rayed.',
       'The elbow locking or catching.',
-      'Swelling, redness or warmth over the joint.',
-      'No change after six weeks of daily rehab.'
+      'Swelling, redness or warmth over the joint, or pain that wakes you at night.',
+      'No change after six to twelve weeks of steady rehab.'
     ]
   },
   wrist: {
-    intro: 'The lead wrist takes the impact with the ball and the ground; the trail hand takes the butt of the club against the palm. Wrist and hand injuries in golf are usually either overuse of the tendons or a single bad shot out of thick rough or off a root.',
-    key: 'Most wrist pain in golfers settles with a lighter grip, a warm-up and a couple of weeks of care. Pain at the base of the trail palm that will not go away is the exception and needs an x-ray.',
+    intro: 'The lead wrist takes the impact with the ball and the ground, and the butt of the club presses into the heel of the lead palm. Wrist and hand injuries in golf are usually either overuse of the tendons or a single bad shot out of thick rough or off a root.',
+    key: 'Most wrist pain in golfers settles with a lighter grip, a warm-up and a couple of weeks of care. Pain at the base of the lead palm that will not go away is the exception and needs imaging.',
     timing: {
       during:  'Pain at impact in the lead wrist, especially out of the rough, is the tendons on the thumb side being jarred. Warm up, hold the club a little lighter, and take your medicine out of deep rough with a wedge.',
       after:   'Ache in the wrist and forearm after the round is tendon overload. The elbow rehab routine covers it.',
       morning: 'Morning wrist stiffness is common in golfers with some arthritis in the hand. Warm water and gentle circles before the round.',
-      constant:'Constant wrist pain, especially at the little-finger side of the wrist or the heel of the trail hand, needs a proper look.'
+      constant:'Constant wrist pain, especially at the little-finger side of the wrist or the heel of the lead hand, needs a proper look.'
     },
     feel: {
-      stiff: ['wristrot', 'wristflex', 'wristext', 'pronation', 'gripsqueeze'],
-      sharp: ['wristrot', 'gripsqueeze', 'wristflex'],
-      nerve: ['wristflex', 'chintuck']
+      stiff: ['wristrot', 'wristflex', 'wristext', 'gripsqueeze', 'pronation'],
+      sharp: ['wristrot', 'wristflex', 'gripsqueeze'],
+      nerve: ['chintuck', 'wristrot']
     },
     daily: 'elbow',
     faults: ['casting'],
@@ -947,9 +954,10 @@ const PLANS = {
       'Practising with a very heavy training club.'
     ],
     see: [
-      'Pain and tenderness at the base of the palm of the trail hand (below the little finger) that persists. This can be a hook of hamate fracture, a golf-specific injury that needs an x-ray or CT.',
+      'Pain and tenderness at the base of the lead palm (below the little finger) that persists after a fat shot or a hit off a root or mat. This can be a hook of hamate fracture, a golf-specific injury that plain x-rays often miss, so ask about a CT.',
+      'Tenderness in the hollow at the base of the thumb after a fall onto the hand. That can be a scaphoid fracture and it is easily missed.',
       'Clicking or a feeling of instability on the little-finger side of the wrist.',
-      'Swelling, or numbness in the fingers.',
+      'Swelling, or numbness, tingling or weakness in the fingers.',
       'A single bad shot that caused a sharp pain that is not settling after a few days.'
     ]
   },
@@ -963,9 +971,9 @@ const PLANS = {
       constant:'Constant knee pain with swelling or a feeling of the knee giving way needs assessment.'
     },
     feel: {
-      stiff: ['legswing', 'hamstring', 'splitsquat', 'wallsit', 'calfraise', 'bridge'],
-      sharp: ['wallsit', 'calfraise', 'bridge', 'hamstring'],
-      nerve: ['hamstring', 'kneeside']
+      stiff: ['legswing', 'hamstring', 'bridge', 'calfraise', 'wallsit', 'splitsquat'],
+      sharp: ['hamstring', 'bridge', 'calfraise', 'wallsit'],
+      nerve: ['pelvictilt', 'kneeside']
     },
     daily: 'strength',
     faults: ['sway', 'slide', 'hangback'],
@@ -975,10 +983,11 @@ const PLANS = {
       'Riding in a cart to save the knee but then walking on steep slopes cold.'
     ],
     see: [
-      'Swelling, especially within a few hours of an injury.',
+      'A twist or a blow that leaves the knee swollen within a few hours, or that you cannot put weight through. Get it looked at.',
       'Locking, catching or the knee giving way.',
       'Inability to fully straighten or bend the knee.',
-      'Pain that stops you sleeping.'
+      'Pain that wakes you at night, or a knee that is hot, red and swollen with fever.',
+      'Numbness, tingling or weakness in the leg or foot.'
     ]
   }
 };
@@ -990,7 +999,7 @@ const FAULTS = [
     id: 'reverse', name: 'Reverse spine angle',
     what: 'At the top of the backswing the upper body leans toward the target instead of slightly away from it.',
     body: 'Usually caused by hips that cannot turn, a stiff mid back, or a weak trunk that cannot hold posture as the club goes back.',
-    risk: 'The single swing characteristic most strongly linked to lower back pain. It loads the trail-side lumbar joints on the way back and then forces the lower back to unwind first on the way down.',
+    risk: 'The swing fault most consistently linked with lower back pain in golfers. It loads the trail-side lumbar joints on the way back and then forces the lower back to unwind first on the way down.',
     fix: ['hip9090', 'openbook', 'clubrot', 'hinge', 'sideplank'],
     drill: 'Set up with your head just behind the ball and keep it there to the top. Feel your trail hip sit back and your chest turn over the trail leg, not toward the target.'
   },
@@ -998,7 +1007,7 @@ const FAULTS = [
     id: 'sposture', name: 'S-posture',
     what: 'An exaggerated arch in the lower back at address, with the tailbone sticking out.',
     body: 'Tight hip flexors and weak glutes and abdominals tip the pelvis forward.',
-    risk: 'Jams the lumbar facet joints before the swing even begins and switches the deep core off. Every swing then starts from a compromised position.',
+    risk: 'Jams the small joints at the back of the lower back before the swing even begins and switches the deep core off. Every swing then starts from a compromised position.',
     fix: ['hipflexor', 'pelvictilt', 'deadbug', 'bridge', 'hinge'],
     drill: 'At address, tuck the tailbone gently under until the belt buckle points at the ball rather than the ground. Feel the abs switch on.'
   },
@@ -1038,7 +1047,7 @@ const FAULTS = [
     id: 'hangback', name: 'Hanging back',
     what: 'Weight stays on the trail foot through impact and the body leans away from the target.',
     body: 'Poor weight shift, stiff lead hip, or weak lead leg.',
-    risk: 'Creates an extreme reverse-C finish that compresses the lower back on every swing.',
+    risk: 'Creates an extreme leaning-back finish (a reverse C) that compresses the lower back on every swing.',
     fix: ['splitsquat', 'slrdl', 'bridge', 'hip9090'],
     drill: 'Finish every practice swing with the trail foot up on its toe and the belt buckle facing the target. Hold it for three seconds.'
   },
@@ -1074,17 +1083,17 @@ const FAULT = Object.fromEntries(FAULTS.map(f => [f.id, f]));
 
 const INJURIES = [
   {
-    id: 'lowback', name: 'Lower back', stat: 'Around 1 in 3 golfers each season',
-    why: 'The lumbar spine is asked to twist and side-bend under eight times body weight of compression, 80 to 100 times a round, then to bend forward another 60 times to the ball.',
+    id: 'lowback', name: 'Lower back', stat: 'Roughly 1 in 4 to 1 in 3 golfers a year',
+    why: 'The lumbar spine is asked to twist and side-bend under peak loads of up to about eight times body weight, 80 to 100 times a round, then to bend forward another 60 times to the ball.',
     faults: ['reverse', 'sposture', 'earlyext', 'hangback'],
-    habits: ['Warm up before the first tee', 'Both straps or a push cart', 'Golfer’s pickup, not a waist bend', 'Cool down before the drive home', 'Daily back care three times a week'],
+    habits: ['Warm up before the first tee', 'Both straps or a push cart', 'Golfer’s pickup, not a waist bend', 'Cool down before the drive home', 'Daily back care, most days'],
     routine: 'daily'
   },
   {
-    id: 'elbow', name: 'Elbow', stat: 'Second most common, especially in golfers over 45',
+    id: 'elbow', name: 'Elbow', stat: 'Second only to the back in most amateur surveys',
     why: 'Gripping hard and the shock of the club striking the ground overload the tendons that anchor the forearm muscles to the elbow. The outside (tennis elbow) is more common in golfers than the inside (golfer’s elbow).',
     faults: ['casting', 'chickenwing'],
-    habits: ['Grip pressure four out of ten', 'Grass over hard mats', 'Warm the forearms before the range', 'Eccentric wrist curls daily when it flares', 'Check grip size'],
+    habits: ['Grip pressure four out of ten', 'Grass over hard mats', 'Warm the forearms before the range', 'Eccentric wrist curls most days, to a tolerable ache', 'Check grip size'],
     routine: 'elbow'
   },
   {
@@ -1096,14 +1105,14 @@ const INJURIES = [
   },
   {
     id: 'wrist', name: 'Wrist and hand', stat: 'Common in players who hit a lot of balls',
-    why: 'The lead wrist takes impact with the ground and the rough; the trail palm takes the butt of the club. Thick rough, roots and hard mats are the usual culprits.',
+    why: 'The lead wrist takes impact with the ground and the rough, and the butt of the club presses into the heel of the lead palm. Thick rough, roots and hard mats are the usual culprits.',
     faults: ['casting'],
-    habits: ['Lighter grip', 'Wedge out of deep rough', 'Warm up the wrists before hitting', 'See someone about trail-palm pain that lingers'],
+    habits: ['Lighter grip', 'Wedge out of deep rough', 'Warm up the wrists before hitting', 'See someone about lead-palm pain that lingers'],
     routine: 'elbow'
   },
   {
-    id: 'hip', name: 'Hip', stat: 'Rising fast in golfers over 50',
-    why: 'The lead hip rotates inward violently through impact. Golfers with limited hip rotation slide and sway, and the load moves to the joint surfaces and the lower back.',
+    id: 'hip', name: 'Hip', stat: 'More common with age, and often behind back pain',
+    why: 'The lead hip rotates inward fast through impact. Golfers with limited hip rotation slide and sway, and the load moves to the joint surfaces and the lower back.',
     faults: ['sway', 'slide', 'earlyext'],
     habits: ['90/90 switches most days', 'Glute strength twice a week', 'Walk, do not sit, after the round', 'Get groin pain with clicking checked early'],
     routine: 'daily'
@@ -1127,7 +1136,7 @@ const INJURIES = [
 /* ---------- Round-day habits ---------- */
 
 const HABITS = [
-  { when: 'Before', title: 'Warm up. Every time.', text: 'Seven minutes standing in the car park cuts injury risk and adds clubhead speed on the first tee. Practice swings on the tee do not count.' },
+  { when: 'Before', title: 'Warm up. Every time.', text: 'Seven minutes in the car park adds clubhead speed on the first tee, and golfers who warm up get injured less. Practice swings on the tee do not count.' },
   { when: 'Before', title: 'Build up on the range.', text: 'Wedge first, driver last. Twenty balls at increasing speed, not fifty at full tilt.' },
   { when: 'Before', title: 'Check the setup.', text: 'Club along the spine: head, mid back and tailbone all touching. Chin up. Belt buckle at the ball, not the ground.' },
   { when: 'During', title: 'Both straps or push it.', text: 'A single-strap bag loads one side of the spine and neck for four hours. A push cart takes the load off entirely.' },
@@ -1137,7 +1146,7 @@ const HABITS = [
   { when: 'During', title: 'Drink and eat.', text: 'Dehydrated muscles cramp and tire. Tired muscles stop protecting the spine on the 15th.' },
   { when: 'After', title: 'Cool down before the car.', text: 'Six minutes at the cart. Then the drive home does not lock the round into your lower back.' },
   { when: 'After', title: 'Move that evening.', text: 'A walk, knees side to side, a hot shower. Not the sofa for three hours.' },
-  { when: 'Always', title: 'Do the daily back care.', text: 'Ten minutes, three times a week. Mobility for the hips and mid back, stability for the lumbar spine. This is the whole game.' },
+  { when: 'Always', title: 'Do the daily back care.', text: 'Ten minutes, most days. Mobility for the hips and mid back, stability for the lumbar spine. This is the whole game.' },
   { when: 'Always', title: 'Do not go from zero to 36.', text: 'A golf trip after a quiet winter is the classic injury story. Build volume over three or four weeks first.' },
-  { when: 'Always', title: 'Get the reverse spine angle looked at.', text: 'One lesson with a coach who films the swing. It is the number one swing cause of lower back pain and it is fixable.' }
+  { when: 'Always', title: 'Get the reverse spine angle looked at.', text: 'One lesson with a coach who films the swing. It is the fault most often linked with lower back pain, and it is fixable.' }
 ];

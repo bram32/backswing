@@ -6,6 +6,11 @@
 <title>Backswing</title>
 <meta name="description" content="Golf back care: a 3D swing lab, a symptom-to-exercise planner, guided warm-ups and cool-downs, and an injury prevention guide.">
 <meta name="theme-color" content="#0e261b">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Backswing">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Backswing — Golf back care">
 <meta property="og:description" content="Golf back care: a 3D swing lab, a symptom-to-exercise planner, guided warm-ups and cool-downs, and an injury prevention guide.">
@@ -81,6 +86,10 @@
             <button type="button" data-speed="real" aria-pressed="false">Real speed</button>
             <button type="button" id="loop-btn" aria-pressed="false">Loop</button>
           </div>
+          <div class="lab-speed lab-viz" role="group" aria-label="Overlays">
+            <button type="button" id="ghost-btn" aria-pressed="false">Ghosts</button>
+            <button type="button" id="trace-btn" aria-pressed="true">Swing trace</button>
+          </div>
           <div class="readouts">
             <div class="readout"><span class="num" id="ro-hip">0°</span><span class="small">Hip turn</span></div>
             <div class="readout"><span class="num" id="ro-sh">0°</span><span class="small">Shoulder turn</span></div>
@@ -103,7 +112,7 @@
       </div>
 
       <div class="quick">
-        <a class="primary" href="#routines" data-routine="warmup"><b>Warm me up</b><span>First-tee warm-up, 7 minutes, standing only</span></a>
+        <a class="primary" href="#routines" data-routine="warmup"><b>Warm me up</b><span>First-tee warm-up, 7 minutes, no floor work</span></a>
         <a href="#fix"><b>My back hurts</b><span>Three questions, then a plan for right now</span></a>
         <a href="#routines" data-routine="cooldown"><b>Cool me down</b><span>Post-round, 6 minutes at the cart</span></a>
       </div>
@@ -134,5 +143,12 @@
 <script src="js/figures.js"></script>
 <script src="js/lab3d.js"></script>
 <script src="js/app.js"></script>
+<script>
+try {
+  if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
+    addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); });
+  }
+} catch (e) {}
+</script>
 </body>
 </html>

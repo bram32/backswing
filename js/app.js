@@ -309,6 +309,8 @@
     $$('.lab-cams button').forEach(b => b.addEventListener('click', () => { $$('.lab-cams button').forEach(x => x.setAttribute('aria-pressed', 'false')); b.setAttribute('aria-pressed', 'true'); Lab.setCamera(b.dataset.cam); }));
     $$('.switch[data-fault]').forEach(b => b.addEventListener('click', () => { const on = b.getAttribute('aria-pressed') !== 'true'; b.setAttribute('aria-pressed', String(on)); Lab.setFault(b.dataset.fault, on); }));
     $('#loop-btn').addEventListener('click', (e) => { const b = e.currentTarget; const on = b.getAttribute('aria-pressed') !== 'true'; b.setAttribute('aria-pressed', String(on)); Lab.setLoop(on); });
+    $('#ghost-btn').addEventListener('click', (e) => { const b = e.currentTarget; const on = b.getAttribute('aria-pressed') !== 'true'; b.setAttribute('aria-pressed', String(on)); Lab.setGhosts(on); });
+    $('#trace-btn').addEventListener('click', (e) => { const b = e.currentTarget; const on = b.getAttribute('aria-pressed') !== 'true'; b.setAttribute('aria-pressed', String(on)); Lab.setTrace(on); });
     document.addEventListener('keydown', (e) => {
       if (route() !== 'lab' || player || $('#modal')) return;
       if (e.target.matches('input, textarea, select, button, a, [role="button"]')) return;
@@ -409,7 +411,7 @@
   /* ----- routines ----- */
   function renderRoutines() {
     view().innerHTML = `
-      <div class="view-head"><div><h1>Routines</h1><p>Guided, timed, one exercise at a time. The two course routines are standing only, so you can do them in the car park.</p></div></div>
+      <div class="view-head"><div><h1>Routines</h1><p>Guided, timed, one exercise at a time. The two course routines need no floor, so you can do them in the car park.</p></div></div>
       <div class="routines">${ROUTINES.map(r => {
         const secs = r.steps.reduce((s, st) => s + st.secs * (EX[st.ex].sides ? 2 : 1), 0);
         return `<article class="routine" data-routine="${r.id}">
