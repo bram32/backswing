@@ -1,0 +1,1933 @@
+{
+ "format": "free-relief-anatomy",
+ "version": 1,
+ "generator": "tools/build-anatomy.mjs",
+ "source": {
+  "dataset": "BodyParts3D 4.0",
+  "copyright": "The Database Center for Life Science (DBCLS)",
+  "licence": "CC BY 4.0",
+  "licenceUrl": "https://creativecommons.org/licenses/by/4.0/",
+  "via": "human-atlas (github.com/ashemag/human-atlas)",
+  "note": "Attribution must be visible in the shipped app, not just in the repo."
+ },
+ "quant": {
+  "origin": [
+   -0.151,
+   -0.118,
+   -0.0819
+  ],
+  "step": 0.0001
+ },
+ "counts": {
+  "parts": 72,
+  "partsOnScreen": 91,
+  "vertices": 15501,
+  "triangles": 32050,
+  "trianglesOnScreen": 38587,
+  "rawTriangles": 128516
+ },
+ "streams": {
+  "x": 19108,
+  "y": 18321,
+  "z": 17796,
+  "t0": 32050,
+  "t1": 35735,
+  "t2": 35694
+ },
+ "rig": {
+  "scale": 1.051,
+  "translate": [
+   0.0007,
+   -0.03192,
+   0.0305
+  ],
+  "pelvisPivot": [
+   -0.00066,
+   0.93427,
+   -0.02902
+  ],
+  "labPelvisPosition": [
+   0,
+   0.95,
+   0
+  ],
+  "midlineX": -0.000678,
+  "bones": [
+   {
+    "index": 0,
+    "label": "L5",
+    "region": "lumbar",
+    "baseXDeg": 8,
+    "accXDeg": 8,
+    "offset": [
+     0,
+     0.056,
+     0
+    ],
+    "oldOffset": [
+     0,
+     0.056,
+     0
+    ],
+    "pivotAtlas": [
+     -0.00066,
+     0.98755,
+     -0.02902
+    ],
+    "addressWorldY": 0.9975,
+    "oldAddressWorldY": 0.9975,
+    "movesMm": [
+     0,
+     0,
+     0
+    ]
+   },
+   {
+    "index": 1,
+    "label": "L4",
+    "region": "lumbar",
+    "baseXDeg": -8,
+    "accXDeg": 0,
+    "offset": [
+     -0.00008,
+     0.03624,
+     0.00791
+    ],
+    "oldOffset": [
+     0,
+     0.04,
+     0
+    ],
+    "pivotAtlas": [
+     -0.00074,
+     1.02066,
+     -0.01677
+    ],
+    "addressWorldY": 1.0202,
+    "oldAddressWorldY": 1.0281,
+    "movesMm": [
+     -0.08,
+     -7.96,
+     3.64
+    ]
+   },
+   {
+    "index": 2,
+    "label": "L3",
+    "region": "lumbar",
+    "baseXDeg": -8,
+    "accXDeg": -8,
+    "offset": [
+     0.00008,
+     0.03218,
+     0.01111
+    ],
+    "oldOffset": [
+     0,
+     0.03925,
+     0
+    ],
+    "pivotAtlas": [
+     -0.00066,
+     1.05128,
+     -0.0062
+    ],
+    "addressWorldY": 1.0416,
+    "oldAddressWorldY": 1.0614,
+    "movesMm": [
+     0,
+     -19.84,
+     9.32
+    ]
+   },
+   {
+    "index": 3,
+    "label": "L2",
+    "region": "lumbar",
+    "baseXDeg": -8,
+    "accXDeg": -16,
+    "offset": [
+     -0.00001,
+     0.03475,
+     0.00869
+    ],
+    "oldOffset": [
+     0,
+     0.0385,
+     0
+    ],
+    "pivotAtlas": [
+     -0.00067,
+     1.08517,
+     -0.00261
+    ],
+    "addressWorldY": 1.0698,
+    "oldAddressWorldY": 1.0966,
+    "movesMm": [
+     -0.01,
+     -26.8,
+     15.73
+    ]
+   },
+   {
+    "index": 4,
+    "label": "L1",
+    "region": "lumbar",
+    "baseXDeg": -8,
+    "accXDeg": -24,
+    "offset": [
+     0.00003,
+     0.03406,
+     0.00506
+    ],
+    "oldOffset": [
+     0,
+     0.03775,
+     0
+    ],
+    "pivotAtlas": [
+     -0.00064,
+     1.11765,
+     -0.00691
+    ],
+    "addressWorldY": 1.1011,
+    "oldAddressWorldY": 1.1329,
+    "movesMm": [
+     0.02,
+     -31.75,
+     19.58
+    ]
+   },
+   {
+    "index": 5,
+    "label": "T12",
+    "region": "thoracic",
+    "baseXDeg": 4,
+    "accXDeg": -20,
+    "offset": [
+     0.00001,
+     0.03273,
+     0.00465
+    ],
+    "oldOffset": [
+     0,
+     0.032,
+     0
+    ],
+    "pivotAtlas": [
+     -0.00064,
+     1.14789,
+     -0.01553
+    ],
+    "addressWorldY": 1.1329,
+    "oldAddressWorldY": 1.1646,
+    "movesMm": [
+     0.03,
+     -31.67,
+     24.29
+    ]
+   },
+   {
+    "index": 6,
+    "label": "T11",
+    "region": "thoracic",
+    "baseXDeg": 4,
+    "accXDeg": -16,
+    "offset": [
+     -0.00004,
+     0.03187,
+     0.00203
+    ],
+    "oldOffset": [
+     0,
+     0.029,
+     0
+    ],
+    "pivotAtlas": [
+     -0.00067,
+     1.17705,
+     -0.02409
+    ],
+    "addressWorldY": 1.1636,
+    "oldAddressWorldY": 1.1929,
+    "movesMm": [
+     -0.01,
+     -29.29,
+     26.87
+    ]
+   },
+   {
+    "index": 7,
+    "label": "T10",
+    "region": "thoracic",
+    "baseXDeg": 4,
+    "accXDeg": -12,
+    "offset": [
+     0.00002,
+     0.03088,
+     -0.00005
+    ],
+    "oldOffset": [
+     0,
+     0.028455,
+     0
+    ],
+    "pivotAtlas": [
+     -0.00066,
+     1.20527,
+     -0.03223
+    ],
+    "addressWorldY": 1.1933,
+    "oldAddressWorldY": 1.2203,
+    "movesMm": [
+     0,
+     -26.95,
+     27.49
+    ]
+   },
+   {
+    "index": 8,
+    "label": "T9",
+    "region": "thoracic",
+    "baseXDeg": 4,
+    "accXDeg": -8,
+    "offset": [
+     -0.00001,
+     0.02977,
+     -0.00072
+    ],
+    "oldOffset": [
+     0,
+     0.027909,
+     0
+    ],
+    "pivotAtlas": [
+     -0.00067,
+     1.23284,
+     -0.03879
+    ],
+    "addressWorldY": 1.2216,
+    "oldAddressWorldY": 1.2465,
+    "movesMm": [
+     -0.01,
+     -24.95,
+     27.45
+    ]
+   },
+   {
+    "index": 9,
+    "label": "T8",
+    "region": "thoracic",
+    "baseXDeg": 4,
+    "accXDeg": -4,
+    "offset": [
+     0.00003,
+     0.02846,
+     -0.00228
+    ],
+    "oldOffset": [
+     0,
+     0.027364,
+     0
+    ],
+    "pivotAtlas": [
+     -0.00064,
+     1.25935,
+     -0.04471
+    ],
+    "addressWorldY": 1.2485,
+    "oldAddressWorldY": 1.2715,
+    "movesMm": [
+     0.02,
+     -23.02,
+     25.81
+    ]
+   },
+   {
+    "index": 10,
+    "label": "T7",
+    "region": "thoracic",
+    "baseXDeg": 4,
+    "accXDeg": 0,
+    "offset": [
+     -0.00002,
+     0.02725,
+     -0.00362
+    ],
+    "oldOffset": [
+     0,
+     0.026818,
+     0
+    ],
+    "pivotAtlas": [
+     -0.00066,
+     1.28497,
+     -0.04996
+    ],
+    "addressWorldY": 1.2742,
+    "oldAddressWorldY": 1.2952,
+    "movesMm": [
+     0,
+     -20.94,
+     22.81
+    ]
+   },
+   {
+    "index": 11,
+    "label": "T6",
+    "region": "thoracic",
+    "baseXDeg": 4,
+    "accXDeg": 4,
+    "offset": [
+     0,
+     0.02825,
+     -0.00335
+    ],
+    "oldOffset": [
+     0,
+     0.026273,
+     0
+    ],
+    "pivotAtlas": [
+     -0.00065,
+     1.31185,
+     -0.05315
+    ],
+    "addressWorldY": 1.3,
+    "oldAddressWorldY": 1.3175,
+    "movesMm": [
+     0.01,
+     -17.49,
+     21.02
+    ]
+   },
+   {
+    "index": 12,
+    "label": "T5",
+    "region": "thoracic",
+    "baseXDeg": 4,
+    "accXDeg": 8,
+    "offset": [
+     -0.00002,
+     0.02705,
+     -0.0002
+    ],
+    "oldOffset": [
+     0,
+     0.025727,
+     0
+    ],
+    "pivotAtlas": [
+     -0.00067,
+     1.33753,
+     -0.05154
+    ],
+    "addressWorldY": 1.322,
+    "oldAddressWorldY": 1.3383,
+    "movesMm": [
+     -0.01,
+     -16.31,
+     21.64
+    ]
+   },
+   {
+    "index": 13,
+    "label": "T4",
+    "region": "thoracic",
+    "baseXDeg": 4,
+    "accXDeg": 12,
+    "offset": [
+     0.00004,
+     0.02635,
+     -0.00088
+    ],
+    "oldOffset": [
+     0,
+     0.025182,
+     0
+    ],
+    "pivotAtlas": [
+     -0.00064,
+     1.36248,
+     -0.04888
+    ],
+    "addressWorldY": 1.3427,
+    "oldAddressWorldY": 1.3576,
+    "movesMm": [
+     0.03,
+     -14.84,
+     21.71
+    ]
+   },
+   {
+    "index": 14,
+    "label": "T3",
+    "region": "thoracic",
+    "baseXDeg": 4,
+    "accXDeg": 16,
+    "offset": [
+     -0.00003,
+     0.02478,
+     0.00191
+    ],
+    "oldOffset": [
+     0,
+     0.024636,
+     0
+    ],
+    "pivotAtlas": [
+     -0.00067,
+     1.38516,
+     -0.0422
+    ],
+    "addressWorldY": 1.3592,
+    "oldAddressWorldY": 1.3753,
+    "movesMm": [
+     -0.01,
+     -16.07,
+     23.19
+    ]
+   },
+   {
+    "index": 15,
+    "label": "T2",
+    "region": "thoracic",
+    "baseXDeg": 4,
+    "accXDeg": 20,
+    "offset": [
+     0.00001,
+     0.02377,
+     0.00178
+    ],
+    "oldOffset": [
+     0,
+     0.024091,
+     0
+    ],
+    "pivotAtlas": [
+     -0.00066,
+     1.40644,
+     -0.03433
+    ],
+    "addressWorldY": 1.3738,
+    "oldAddressWorldY": 1.3914,
+    "movesMm": [
+     0,
+     -17.61,
+     24.14
+    ]
+   },
+   {
+    "index": 16,
+    "label": "T1",
+    "region": "thoracic",
+    "baseXDeg": 4,
+    "accXDeg": 24,
+    "offset": [
+     -0.00007,
+     0.02261,
+     -0.00014
+    ],
+    "oldOffset": [
+     0,
+     0.023545,
+     0
+    ],
+    "pivotAtlas": [
+     -0.00072,
+     1.4267,
+     -0.0271
+    ],
+    "addressWorldY": 1.3878,
+    "oldAddressWorldY": 1.4059,
+    "movesMm": [
+     -0.06,
+     -18.07,
+     23.32
+    ]
+   },
+   {
+    "index": 17,
+    "label": "C7",
+    "region": "cervical",
+    "baseXDeg": -3.6,
+    "accXDeg": 20.4,
+    "offset": [
+     0.00002,
+     0.01909,
+     -0.0024
+    ],
+    "oldOffset": [
+     0,
+     0.021,
+     0
+    ],
+    "pivotAtlas": [
+     -0.00071,
+     1.44422,
+     -0.02179
+    ],
+    "addressWorldY": 1.4005,
+    "oldAddressWorldY": 1.4177,
+    "movesMm": [
+     -0.05,
+     -17.15,
+     20.4
+    ]
+   },
+   {
+    "index": 18,
+    "label": "C6",
+    "region": "cervical",
+    "baseXDeg": -3.6,
+    "accXDeg": 16.8,
+    "offset": [
+     -0.00006,
+     0.01751,
+     -0.00227
+    ],
+    "oldOffset": [
+     0,
+     0.019,
+     0
+    ],
+    "pivotAtlas": [
+     -0.00076,
+     1.46059,
+     -0.01801
+    ],
+    "addressWorldY": 1.413,
+    "oldAddressWorldY": 1.4292,
+    "movesMm": [
+     -0.1,
+     -16.26,
+     17.84
+    ]
+   },
+   {
+    "index": 19,
+    "label": "C5",
+    "region": "cervical",
+    "baseXDeg": -3.6,
+    "accXDeg": 13.2,
+    "offset": [
+     0.00012,
+     0.01615,
+     -0.00261
+    ],
+    "oldOffset": [
+     0,
+     0.0185,
+     0
+    ],
+    "pivotAtlas": [
+     -0.00065,
+     1.47602,
+     -0.01595
+    ],
+    "addressWorldY": 1.4256,
+    "oldAddressWorldY": 1.4414,
+    "movesMm": [
+     0.01,
+     -15.85,
+     14.35
+    ]
+   },
+   {
+    "index": 20,
+    "label": "C4",
+    "region": "cervical",
+    "baseXDeg": -3.6,
+    "accXDeg": 9.6,
+    "offset": [
+     -0.00001,
+     0.01654,
+     -0.00473
+    ],
+    "oldOffset": [
+     0,
+     0.018,
+     0
+    ],
+    "pivotAtlas": [
+     -0.00065,
+     1.49237,
+     -0.01673
+    ],
+    "addressWorldY": 1.4406,
+    "oldAddressWorldY": 1.4541,
+    "movesMm": [
+     0.01,
+     -13.52,
+     9.98
+    ]
+   },
+   {
+    "index": 21,
+    "label": "C3",
+    "region": "cervical",
+    "baseXDeg": -3.6,
+    "accXDeg": 6,
+    "offset": [
+     0,
+     0.01556,
+     -0.00571
+    ],
+    "oldOffset": [
+     0,
+     0.0175,
+     0
+    ],
+    "pivotAtlas": [
+     -0.00065,
+     1.50788,
+     -0.01962
+    ],
+    "addressWorldY": 1.456,
+    "oldAddressWorldY": 1.4672,
+    "movesMm": [
+     0.01,
+     -11.18,
+     4.42
+    ]
+   },
+   {
+    "index": 22,
+    "label": "C2",
+    "region": "cervical",
+    "baseXDeg": -3.6,
+    "accXDeg": 2.4,
+    "offset": [
+     -0.00022,
+     0.01672,
+     -0.00523
+    ],
+    "oldOffset": [
+     0,
+     0.017,
+     0
+    ],
+    "pivotAtlas": [
+     -0.00086,
+     1.52422,
+     -0.02291
+    ],
+    "addressWorldY": 1.4724,
+    "oldAddressWorldY": 1.4806,
+    "movesMm": [
+     -0.2,
+     -8.18,
+     0.13
+    ]
+   },
+   {
+    "index": 23,
+    "label": "C1",
+    "region": "cervical",
+    "baseXDeg": -3.6,
+    "accXDeg": -1.2,
+    "offset": [
+     0.00019,
+     0.0198,
+     -0.01243
+    ],
+    "oldOffset": [
+     0,
+     0.0165,
+     0
+    ],
+    "pivotAtlas": [
+     -0.00068,
+     1.54354,
+     -0.03393
+    ],
+    "addressWorldY": 1.4958,
+    "oldAddressWorldY": 1.4942,
+    "movesMm": [
+     -0.02,
+     1.57,
+     -8.26
+    ]
+   }
+  ],
+  "shoulderAnchor": {
+   "old": [
+    0.2,
+    -0.01,
+    0
+   ],
+   "new": [
+    0.2,
+    -0.01819,
+    -0.02874
+   ],
+   "bone": "T2"
+  },
+  "hipAnchorHint": [
+   0.0917,
+   -0.0471,
+   0.0082
+  ]
+ },
+ "parts": [
+  {
+   "key": "sacrum",
+   "name": "Sacrum",
+   "bone": "pelvis",
+   "group": "pelvis",
+   "stage": 1,
+   "mirror": null,
+   "tier": "hero",
+   "cellMm": 4,
+   "rawTriangles": 5058,
+   "triangleCount": 3107,
+   "vertexCount": 1526,
+   "areaRetentionPct": 99.2,
+   "errMeanMm": 0.82,
+   "errMaxMm": 3.22
+  },
+  {
+   "key": "hip_L",
+   "name": "Left hip bone",
+   "bone": "pelvis",
+   "group": "pelvis",
+   "stage": 1,
+   "mirror": null,
+   "tier": "mid",
+   "cellMm": 6.5,
+   "rawTriangles": 1808,
+   "triangleCount": 1306,
+   "vertexCount": 649,
+   "areaRetentionPct": 99.3,
+   "errMeanMm": 1.07,
+   "errMaxMm": 4.84
+  },
+  {
+   "key": "hip_R",
+   "name": "Right hip bone",
+   "bone": "pelvis",
+   "group": "pelvis",
+   "stage": 1,
+   "mirror": null,
+   "tier": "mid",
+   "cellMm": 6.5,
+   "rawTriangles": 1898,
+   "triangleCount": 1308,
+   "vertexCount": 653,
+   "areaRetentionPct": 99,
+   "errMeanMm": 1.17,
+   "errMaxMm": 5.49
+  },
+  {
+   "key": "vert_L5",
+   "name": "Fifth lumbar vertebra",
+   "bone": "L5",
+   "group": "vertebra",
+   "stage": 1,
+   "mirror": null,
+   "tier": "hero",
+   "cellMm": 4,
+   "rawTriangles": 2640,
+   "triangleCount": 1310,
+   "vertexCount": 651,
+   "areaRetentionPct": 98,
+   "errMeanMm": 1.02,
+   "errMaxMm": 3.95
+  },
+  {
+   "key": "disc_L5",
+   "name": "Intervertebral disk of fifth lumbar vertebra",
+   "bone": "L5",
+   "group": "disc",
+   "stage": 1,
+   "mirror": null,
+   "tier": "hero",
+   "cellMm": 4,
+   "rawTriangles": 2048,
+   "triangleCount": 557,
+   "vertexCount": 271,
+   "areaRetentionPct": 98.6,
+   "errMeanMm": 1.01,
+   "errMaxMm": 4.04
+  },
+  {
+   "key": "vert_L4",
+   "name": "Fourth lumbar vertebra",
+   "bone": "L4",
+   "group": "vertebra",
+   "stage": 1,
+   "mirror": null,
+   "tier": "hero",
+   "cellMm": 4,
+   "rawTriangles": 2630,
+   "triangleCount": 1152,
+   "vertexCount": 570,
+   "areaRetentionPct": 97.9,
+   "errMeanMm": 1.03,
+   "errMaxMm": 3.37
+  },
+  {
+   "key": "disc_L4",
+   "name": "Intervertebral disk of fourth lumbar vertebra",
+   "bone": "L4",
+   "group": "disc",
+   "stage": 1,
+   "mirror": null,
+   "tier": "hero",
+   "cellMm": 4,
+   "rawTriangles": 2710,
+   "triangleCount": 543,
+   "vertexCount": 265,
+   "areaRetentionPct": 97.7,
+   "errMeanMm": 0.99,
+   "errMaxMm": 3.96
+  },
+  {
+   "key": "vert_L3",
+   "name": "Third lumbar vertebra",
+   "bone": "L3",
+   "group": "vertebra",
+   "stage": 1,
+   "mirror": null,
+   "tier": "hero",
+   "cellMm": 4,
+   "rawTriangles": 2454,
+   "triangleCount": 1086,
+   "vertexCount": 537,
+   "areaRetentionPct": 97.8,
+   "errMeanMm": 1.03,
+   "errMaxMm": 3.33
+  },
+  {
+   "key": "disc_L3",
+   "name": "Intervertebral disk of third lumbar vertebra",
+   "bone": "L3",
+   "group": "disc",
+   "stage": 1,
+   "mirror": null,
+   "tier": "hero",
+   "cellMm": 4,
+   "rawTriangles": 2922,
+   "triangleCount": 461,
+   "vertexCount": 220,
+   "areaRetentionPct": 99.4,
+   "errMeanMm": 0.98,
+   "errMaxMm": 4.74
+  },
+  {
+   "key": "vert_L2",
+   "name": "Second lumbar vertebra",
+   "bone": "L2",
+   "group": "vertebra",
+   "stage": 1,
+   "mirror": null,
+   "tier": "hero",
+   "cellMm": 4,
+   "rawTriangles": 2492,
+   "triangleCount": 1078,
+   "vertexCount": 536,
+   "areaRetentionPct": 97.1,
+   "errMeanMm": 1.05,
+   "errMaxMm": 3.37
+  },
+  {
+   "key": "disc_L2",
+   "name": "Intervertebral disk of second lumbar vertebra",
+   "bone": "L2",
+   "group": "disc",
+   "stage": 1,
+   "mirror": null,
+   "tier": "hero",
+   "cellMm": 3.82,
+   "rawTriangles": 2604,
+   "triangleCount": 465,
+   "vertexCount": 225,
+   "areaRetentionPct": 96.6,
+   "errMeanMm": 0.99,
+   "errMaxMm": 4.9
+  },
+  {
+   "key": "vert_L1",
+   "name": "First lumbar vertebra",
+   "bone": "L1",
+   "group": "vertebra",
+   "stage": 1,
+   "mirror": null,
+   "tier": "hero",
+   "cellMm": 4,
+   "rawTriangles": 2404,
+   "triangleCount": 1038,
+   "vertexCount": 514,
+   "areaRetentionPct": 97.7,
+   "errMeanMm": 1.07,
+   "errMaxMm": 3.42
+  },
+  {
+   "key": "disc_L1",
+   "name": "Intervertebral disk of first lumbar vertebra",
+   "bone": "L1",
+   "group": "disc",
+   "stage": 1,
+   "mirror": null,
+   "tier": "hero",
+   "cellMm": 4,
+   "rawTriangles": 2882,
+   "triangleCount": 432,
+   "vertexCount": 210,
+   "areaRetentionPct": 95.7,
+   "errMeanMm": 0.97,
+   "errMaxMm": 3.82
+  },
+  {
+   "key": "vert_T12",
+   "name": "Twelfth thoracic vertebra",
+   "bone": "T12",
+   "group": "vertebra",
+   "stage": 1,
+   "mirror": null,
+   "tier": "hero",
+   "cellMm": 4,
+   "rawTriangles": 2062,
+   "triangleCount": 893,
+   "vertexCount": 443,
+   "areaRetentionPct": 97.9,
+   "errMeanMm": 1,
+   "errMaxMm": 3.65
+  },
+  {
+   "key": "disc_T12",
+   "name": "Intervertebral disk",
+   "bone": "T12",
+   "group": "disc",
+   "stage": 1,
+   "mirror": null,
+   "tier": "hero",
+   "cellMm": 4,
+   "rawTriangles": 2852,
+   "triangleCount": 394,
+   "vertexCount": 194,
+   "areaRetentionPct": 95,
+   "errMeanMm": 0.95,
+   "errMaxMm": 4.53
+  },
+  {
+   "key": "vert_T11",
+   "name": "Eleventh thoracic vertebra",
+   "bone": "T11",
+   "group": "vertebra",
+   "stage": 1,
+   "mirror": null,
+   "tier": "hero",
+   "cellMm": 4,
+   "rawTriangles": 2006,
+   "triangleCount": 829,
+   "vertexCount": 413,
+   "areaRetentionPct": 97.6,
+   "errMeanMm": 1.03,
+   "errMaxMm": 3.57
+  },
+  {
+   "key": "disc_T11",
+   "name": "Intervertebral disk of eleventh thoracic vertebra",
+   "bone": "T11",
+   "group": "disc",
+   "stage": 1,
+   "mirror": null,
+   "tier": "hero",
+   "cellMm": 4,
+   "rawTriangles": 2648,
+   "triangleCount": 415,
+   "vertexCount": 202,
+   "areaRetentionPct": 96.3,
+   "errMeanMm": 1.03,
+   "errMaxMm": 4.32
+  },
+  {
+   "key": "vert_T10",
+   "name": "Tenth thoracic vertebra",
+   "bone": "T10",
+   "group": "vertebra",
+   "stage": 1,
+   "mirror": null,
+   "tier": "hero",
+   "cellMm": 4,
+   "rawTriangles": 2160,
+   "triangleCount": 947,
+   "vertexCount": 469,
+   "areaRetentionPct": 97.4,
+   "errMeanMm": 0.99,
+   "errMaxMm": 3.26
+  },
+  {
+   "key": "disc_T10",
+   "name": "Intervertebral disk of tenth thoracic vertebra",
+   "bone": "T10",
+   "group": "disc",
+   "stage": 1,
+   "mirror": null,
+   "tier": "hero",
+   "cellMm": 4,
+   "rawTriangles": 2456,
+   "triangleCount": 408,
+   "vertexCount": 196,
+   "areaRetentionPct": 96.8,
+   "errMeanMm": 1.04,
+   "errMaxMm": 3.86
+  },
+  {
+   "key": "vert_T9",
+   "name": "Ninth thoracic vertebra",
+   "bone": "T9",
+   "group": "vertebra",
+   "stage": 1,
+   "mirror": null,
+   "tier": "mid",
+   "cellMm": 6.5,
+   "rawTriangles": 2040,
+   "triangleCount": 462,
+   "vertexCount": 225,
+   "areaRetentionPct": 95,
+   "errMeanMm": 2,
+   "errMaxMm": 6.04
+  },
+  {
+   "key": "disc_T9",
+   "name": "Intervertebral disk of ninth thoracic vertebra",
+   "bone": "T9",
+   "group": "disc",
+   "stage": 1,
+   "mirror": null,
+   "tier": "mid",
+   "cellMm": 5.14,
+   "rawTriangles": 2420,
+   "triangleCount": 234,
+   "vertexCount": 113,
+   "areaRetentionPct": 95.7,
+   "errMeanMm": 1.4,
+   "errMaxMm": 5.1
+  },
+  {
+   "key": "vert_T8",
+   "name": "Eighth thoracic vertebra",
+   "bone": "T8",
+   "group": "vertebra",
+   "stage": 1,
+   "mirror": null,
+   "tier": "mid",
+   "cellMm": 6.5,
+   "rawTriangles": 2048,
+   "triangleCount": 440,
+   "vertexCount": 212,
+   "areaRetentionPct": 96.4,
+   "errMeanMm": 2.04,
+   "errMaxMm": 6.79
+  },
+  {
+   "key": "disc_T8",
+   "name": "Intervertebral disk of eighth thoracic vertebra",
+   "bone": "T8",
+   "group": "disc",
+   "stage": 1,
+   "mirror": null,
+   "tier": "mid",
+   "cellMm": 4.88,
+   "rawTriangles": 2548,
+   "triangleCount": 249,
+   "vertexCount": 120,
+   "areaRetentionPct": 90.6,
+   "errMeanMm": 1.4,
+   "errMaxMm": 5.22
+  },
+  {
+   "key": "vert_T7",
+   "name": "Seventh thoracic vertebra",
+   "bone": "T7",
+   "group": "vertebra",
+   "stage": 2,
+   "mirror": null,
+   "tier": "far",
+   "cellMm": 9,
+   "rawTriangles": 2094,
+   "triangleCount": 239,
+   "vertexCount": 121,
+   "areaRetentionPct": 88.5,
+   "errMeanMm": 2.97,
+   "errMaxMm": 8.09
+  },
+  {
+   "key": "disc_T7",
+   "name": "Intervertebral disk of seventh thoracic vertebra",
+   "bone": "T7",
+   "group": "disc",
+   "stage": 2,
+   "mirror": null,
+   "tier": "far",
+   "cellMm": 4.08,
+   "rawTriangles": 2146,
+   "triangleCount": 369,
+   "vertexCount": 178,
+   "areaRetentionPct": 94.9,
+   "errMeanMm": 1.18,
+   "errMaxMm": 3.92
+  },
+  {
+   "key": "vert_T6",
+   "name": "Sixth thoracic vertebra",
+   "bone": "T6",
+   "group": "vertebra",
+   "stage": 2,
+   "mirror": null,
+   "tier": "far",
+   "cellMm": 9,
+   "rawTriangles": 1830,
+   "triangleCount": 229,
+   "vertexCount": 110,
+   "areaRetentionPct": 90.4,
+   "errMeanMm": 2.87,
+   "errMaxMm": 6.94
+  },
+  {
+   "key": "disc_T6",
+   "name": "Intervertebral disk of sixth thoracic vertebra",
+   "bone": "T6",
+   "group": "disc",
+   "stage": 2,
+   "mirror": null,
+   "tier": "far",
+   "cellMm": 4.02,
+   "rawTriangles": 2104,
+   "triangleCount": 329,
+   "vertexCount": 162,
+   "areaRetentionPct": 92.3,
+   "errMeanMm": 1.16,
+   "errMaxMm": 4.13
+  },
+  {
+   "key": "vert_T5",
+   "name": "Fifth thoracic vertebra",
+   "bone": "T5",
+   "group": "vertebra",
+   "stage": 2,
+   "mirror": null,
+   "tier": "far",
+   "cellMm": 9,
+   "rawTriangles": 1832,
+   "triangleCount": 213,
+   "vertexCount": 104,
+   "areaRetentionPct": 92,
+   "errMeanMm": 2.85,
+   "errMaxMm": 8.83
+  },
+  {
+   "key": "disc_T5",
+   "name": "Intervertebral disk of fifth thoracic vertebra",
+   "bone": "T5",
+   "group": "disc",
+   "stage": 2,
+   "mirror": null,
+   "tier": "far",
+   "cellMm": 3.5,
+   "rawTriangles": 1530,
+   "triangleCount": 316,
+   "vertexCount": 155,
+   "areaRetentionPct": 94.6,
+   "errMeanMm": 1,
+   "errMaxMm": 3.07
+  },
+  {
+   "key": "vert_T4",
+   "name": "Fourth thoracic vertebra",
+   "bone": "T4",
+   "group": "vertebra",
+   "stage": 2,
+   "mirror": null,
+   "tier": "far",
+   "cellMm": 9,
+   "rawTriangles": 1684,
+   "triangleCount": 189,
+   "vertexCount": 96,
+   "areaRetentionPct": 86.6,
+   "errMeanMm": 2.85,
+   "errMaxMm": 7.3
+  },
+  {
+   "key": "disc_T4",
+   "name": "Intervertebral disk of fourth thoracic vertebra",
+   "bone": "T4",
+   "group": "disc",
+   "stage": 2,
+   "mirror": null,
+   "tier": "far",
+   "cellMm": 4.43,
+   "rawTriangles": 1310,
+   "triangleCount": 198,
+   "vertexCount": 95,
+   "areaRetentionPct": 94.1,
+   "errMeanMm": 1.32,
+   "errMaxMm": 4.13
+  },
+  {
+   "key": "vert_T3",
+   "name": "Third thoracic vertebra",
+   "bone": "T3",
+   "group": "vertebra",
+   "stage": 2,
+   "mirror": null,
+   "tier": "far",
+   "cellMm": 9,
+   "rawTriangles": 1696,
+   "triangleCount": 200,
+   "vertexCount": 94,
+   "areaRetentionPct": 91.7,
+   "errMeanMm": 2.95,
+   "errMaxMm": 8.7
+  },
+  {
+   "key": "disc_T3",
+   "name": "Intervertebral disk of third thoracic vertebra",
+   "bone": "T3",
+   "group": "disc",
+   "stage": 2,
+   "mirror": null,
+   "tier": "far",
+   "cellMm": 4.89,
+   "rawTriangles": 1388,
+   "triangleCount": 146,
+   "vertexCount": 74,
+   "areaRetentionPct": 87.9,
+   "errMeanMm": 1.38,
+   "errMaxMm": 5.24
+  },
+  {
+   "key": "vert_T2",
+   "name": "Second thoracic vertebra",
+   "bone": "T2",
+   "group": "vertebra",
+   "stage": 2,
+   "mirror": null,
+   "tier": "far",
+   "cellMm": 9,
+   "rawTriangles": 1570,
+   "triangleCount": 174,
+   "vertexCount": 82,
+   "areaRetentionPct": 90.6,
+   "errMeanMm": 3.12,
+   "errMaxMm": 9.01
+  },
+  {
+   "key": "disc_T2",
+   "name": "Intervertebral disk of second thoracic vertebra",
+   "bone": "T2",
+   "group": "disc",
+   "stage": 2,
+   "mirror": null,
+   "tier": "far",
+   "cellMm": 4.96,
+   "rawTriangles": 1230,
+   "triangleCount": 144,
+   "vertexCount": 70,
+   "areaRetentionPct": 92.5,
+   "errMeanMm": 1.38,
+   "errMaxMm": 4.33
+  },
+  {
+   "key": "vert_T1",
+   "name": "First thoracic vertebra",
+   "bone": "T1",
+   "group": "vertebra",
+   "stage": 2,
+   "mirror": null,
+   "tier": "far",
+   "cellMm": 9,
+   "rawTriangles": 1398,
+   "triangleCount": 174,
+   "vertexCount": 87,
+   "areaRetentionPct": 89.4,
+   "errMeanMm": 2.85,
+   "errMaxMm": 8.17
+  },
+  {
+   "key": "disc_T1",
+   "name": "Intervertebral disk of first thoracic vertebra",
+   "bone": "T1",
+   "group": "disc",
+   "stage": 2,
+   "mirror": null,
+   "tier": "far",
+   "cellMm": 4.28,
+   "rawTriangles": 1062,
+   "triangleCount": 153,
+   "vertexCount": 74,
+   "areaRetentionPct": 89.3,
+   "errMeanMm": 1.31,
+   "errMaxMm": 3.63
+  },
+  {
+   "key": "vert_C7",
+   "name": "Seventh cervical vertebra",
+   "bone": "C7",
+   "group": "vertebra",
+   "stage": 2,
+   "mirror": null,
+   "tier": "far",
+   "cellMm": 9,
+   "rawTriangles": 1520,
+   "triangleCount": 157,
+   "vertexCount": 76,
+   "areaRetentionPct": 86.6,
+   "errMeanMm": 3.03,
+   "errMaxMm": 7.86
+  },
+  {
+   "key": "disc_C7",
+   "name": "Intervertebral disk of seventh cervical vertebra",
+   "bone": "C7",
+   "group": "disc",
+   "stage": 2,
+   "mirror": null,
+   "tier": "far",
+   "cellMm": 3.85,
+   "rawTriangles": 956,
+   "triangleCount": 165,
+   "vertexCount": 81,
+   "areaRetentionPct": 91.8,
+   "errMeanMm": 1.22,
+   "errMaxMm": 3.62
+  },
+  {
+   "key": "vert_C6",
+   "name": "Sixth cervical vertebra",
+   "bone": "C6",
+   "group": "vertebra",
+   "stage": 2,
+   "mirror": null,
+   "tier": "far",
+   "cellMm": 7.7,
+   "rawTriangles": 1928,
+   "triangleCount": 221,
+   "vertexCount": 97,
+   "areaRetentionPct": 93.9,
+   "errMeanMm": 2.61,
+   "errMaxMm": 7.11
+  },
+  {
+   "key": "disc_C6",
+   "name": "Intervertebral disk of sixth cervical vertebra",
+   "bone": "C6",
+   "group": "disc",
+   "stage": 2,
+   "mirror": null,
+   "tier": "far",
+   "cellMm": 3.19,
+   "rawTriangles": 834,
+   "triangleCount": 160,
+   "vertexCount": 81,
+   "areaRetentionPct": 89.6,
+   "errMeanMm": 0.99,
+   "errMaxMm": 3.03
+  },
+  {
+   "key": "vert_C5",
+   "name": "Fifth cervical vertebra",
+   "bone": "C5",
+   "group": "vertebra",
+   "stage": 2,
+   "mirror": null,
+   "tier": "far",
+   "cellMm": 8.07,
+   "rawTriangles": 1934,
+   "triangleCount": 177,
+   "vertexCount": 85,
+   "areaRetentionPct": 85.3,
+   "errMeanMm": 2.77,
+   "errMaxMm": 7.22
+  },
+  {
+   "key": "disc_C5",
+   "name": "Intervertebral disk of fifth cervical vertebra",
+   "bone": "C5",
+   "group": "disc",
+   "stage": 2,
+   "mirror": null,
+   "tier": "far",
+   "cellMm": 3.59,
+   "rawTriangles": 864,
+   "triangleCount": 153,
+   "vertexCount": 73,
+   "areaRetentionPct": 88.5,
+   "errMeanMm": 1.2,
+   "errMaxMm": 3.11
+  },
+  {
+   "key": "vert_C4",
+   "name": "Fourth cervical vertebra",
+   "bone": "C4",
+   "group": "vertebra",
+   "stage": 2,
+   "mirror": null,
+   "tier": "far",
+   "cellMm": 9,
+   "rawTriangles": 2062,
+   "triangleCount": 110,
+   "vertexCount": 52,
+   "areaRetentionPct": 78,
+   "errMeanMm": 3.07,
+   "errMaxMm": 9.66
+  },
+  {
+   "key": "disc_C4",
+   "name": "Intervertebral disk of fourth cervical vertebra",
+   "bone": "C4",
+   "group": "disc",
+   "stage": 2,
+   "mirror": null,
+   "tier": "far",
+   "cellMm": 3.54,
+   "rawTriangles": 840,
+   "triangleCount": 143,
+   "vertexCount": 72,
+   "areaRetentionPct": 90.8,
+   "errMeanMm": 1.16,
+   "errMaxMm": 3.5
+  },
+  {
+   "key": "vert_C3",
+   "name": "Third cervical vertebra",
+   "bone": "C3",
+   "group": "vertebra",
+   "stage": 2,
+   "mirror": null,
+   "tier": "far",
+   "cellMm": 9,
+   "rawTriangles": 1766,
+   "triangleCount": 135,
+   "vertexCount": 67,
+   "areaRetentionPct": 83,
+   "errMeanMm": 3.19,
+   "errMaxMm": 8.19
+  },
+  {
+   "key": "disc_C3",
+   "name": "Intervertebral disk of third cervical vertebra",
+   "bone": "C3",
+   "group": "disc",
+   "stage": 2,
+   "mirror": null,
+   "tier": "far",
+   "cellMm": 2.06,
+   "rawTriangles": 728,
+   "triangleCount": 275,
+   "vertexCount": 135,
+   "areaRetentionPct": 95.6,
+   "errMeanMm": 0.53,
+   "errMaxMm": 1.97
+  },
+  {
+   "key": "vert_C2",
+   "name": "Axis",
+   "bone": "C2",
+   "group": "vertebra",
+   "stage": 2,
+   "mirror": null,
+   "tier": "far",
+   "cellMm": 9,
+   "rawTriangles": 2028,
+   "triangleCount": 179,
+   "vertexCount": 81,
+   "areaRetentionPct": 90.6,
+   "errMeanMm": 2.96,
+   "errMaxMm": 8.32
+  },
+  {
+   "key": "disc_C2",
+   "name": "Intervertebral disk of axis",
+   "bone": "C2",
+   "group": "disc",
+   "stage": 2,
+   "mirror": null,
+   "tier": "far",
+   "cellMm": 3.16,
+   "rawTriangles": 1872,
+   "triangleCount": 222,
+   "vertexCount": 109,
+   "areaRetentionPct": 91.6,
+   "errMeanMm": 1.09,
+   "errMaxMm": 2.74
+  },
+  {
+   "key": "vert_C1",
+   "name": "Atlas",
+   "bone": "C1",
+   "group": "vertebra",
+   "stage": 2,
+   "mirror": null,
+   "tier": "far",
+   "cellMm": 6.41,
+   "rawTriangles": 1514,
+   "triangleCount": 264,
+   "vertexCount": 122,
+   "areaRetentionPct": 90.9,
+   "errMeanMm": 2.13,
+   "errMaxMm": 6.59
+  },
+  {
+   "key": "rib_R_1",
+   "name": "Right first rib",
+   "bone": "T1",
+   "group": "rib",
+   "stage": 2,
+   "mirror": "rib_L_1",
+   "tier": "mid",
+   "cellMm": 6.5,
+   "rawTriangles": 1032,
+   "triangleCount": 195,
+   "vertexCount": 89,
+   "areaRetentionPct": 90.5,
+   "errMeanMm": 2.16,
+   "errMaxMm": 4.89
+  },
+  {
+   "key": "rib_R_2",
+   "name": "Right second rib",
+   "bone": "T2",
+   "group": "rib",
+   "stage": 2,
+   "mirror": "rib_L_2",
+   "tier": "mid",
+   "cellMm": 6.5,
+   "rawTriangles": 1230,
+   "triangleCount": 357,
+   "vertexCount": 161,
+   "areaRetentionPct": 96.3,
+   "errMeanMm": 2.01,
+   "errMaxMm": 5.5
+  },
+  {
+   "key": "rib_R_3",
+   "name": "Right third rib",
+   "bone": "T3",
+   "group": "rib",
+   "stage": 2,
+   "mirror": "rib_L_3",
+   "tier": "mid",
+   "cellMm": 6.5,
+   "rawTriangles": 1594,
+   "triangleCount": 460,
+   "vertexCount": 204,
+   "areaRetentionPct": 98.8,
+   "errMeanMm": 2.06,
+   "errMaxMm": 4.95
+  },
+  {
+   "key": "rib_R_4",
+   "name": "Right fourth rib",
+   "bone": "T4",
+   "group": "rib",
+   "stage": 2,
+   "mirror": "rib_L_4",
+   "tier": "mid",
+   "cellMm": 6.5,
+   "rawTriangles": 1942,
+   "triangleCount": 558,
+   "vertexCount": 248,
+   "areaRetentionPct": 99.8,
+   "errMeanMm": 2.18,
+   "errMaxMm": 5.4
+  },
+  {
+   "key": "rib_R_5",
+   "name": "Right fifth rib",
+   "bone": "T5",
+   "group": "rib",
+   "stage": 2,
+   "mirror": "rib_L_5",
+   "tier": "mid",
+   "cellMm": 6.5,
+   "rawTriangles": 2136,
+   "triangleCount": 643,
+   "vertexCount": 292,
+   "areaRetentionPct": 101.5,
+   "errMeanMm": 2,
+   "errMaxMm": 5.35
+  },
+  {
+   "key": "rib_R_6",
+   "name": "Right sixth rib",
+   "bone": "T6",
+   "group": "rib",
+   "stage": 2,
+   "mirror": "rib_L_6",
+   "tier": "mid",
+   "cellMm": 6.5,
+   "rawTriangles": 2254,
+   "triangleCount": 687,
+   "vertexCount": 308,
+   "areaRetentionPct": 102.6,
+   "errMeanMm": 1.99,
+   "errMaxMm": 5.64
+  },
+  {
+   "key": "rib_R_7",
+   "name": "Right seventh rib",
+   "bone": "T7",
+   "group": "rib",
+   "stage": 2,
+   "mirror": "rib_L_7",
+   "tier": "mid",
+   "cellMm": 6.5,
+   "rawTriangles": 2206,
+   "triangleCount": 649,
+   "vertexCount": 296,
+   "areaRetentionPct": 99.8,
+   "errMeanMm": 2.05,
+   "errMaxMm": 5.3
+  },
+  {
+   "key": "rib_R_8",
+   "name": "Right eighth rib",
+   "bone": "T8",
+   "group": "rib",
+   "stage": 2,
+   "mirror": "rib_L_8",
+   "tier": "mid",
+   "cellMm": 6.5,
+   "rawTriangles": 1832,
+   "triangleCount": 541,
+   "vertexCount": 248,
+   "areaRetentionPct": 99.2,
+   "errMeanMm": 2.03,
+   "errMaxMm": 6.16
+  },
+  {
+   "key": "rib_R_9",
+   "name": "Right ninth rib",
+   "bone": "T9",
+   "group": "rib",
+   "stage": 2,
+   "mirror": "rib_L_9",
+   "tier": "mid",
+   "cellMm": 6.5,
+   "rawTriangles": 1666,
+   "triangleCount": 483,
+   "vertexCount": 221,
+   "areaRetentionPct": 97.3,
+   "errMeanMm": 2.1,
+   "errMaxMm": 5.37
+  },
+  {
+   "key": "rib_R_10",
+   "name": "Right tenth rib",
+   "bone": "T10",
+   "group": "rib",
+   "stage": 2,
+   "mirror": "rib_L_10",
+   "tier": "mid",
+   "cellMm": 6.5,
+   "rawTriangles": 1500,
+   "triangleCount": 454,
+   "vertexCount": 201,
+   "areaRetentionPct": 101.2,
+   "errMeanMm": 2,
+   "errMaxMm": 6.1
+  },
+  {
+   "key": "rib_R_11",
+   "name": "Right eleventh rib",
+   "bone": "T11",
+   "group": "rib",
+   "stage": 2,
+   "mirror": "rib_L_11",
+   "tier": "mid",
+   "cellMm": 6.5,
+   "rawTriangles": 1070,
+   "triangleCount": 293,
+   "vertexCount": 136,
+   "areaRetentionPct": 93.2,
+   "errMeanMm": 2.14,
+   "errMaxMm": 5.9
+  },
+  {
+   "key": "rib_R_12",
+   "name": "Right twelfth rib",
+   "bone": "T12",
+   "group": "rib",
+   "stage": 2,
+   "mirror": "rib_L_12",
+   "tier": "mid",
+   "cellMm": 6.5,
+   "rawTriangles": 740,
+   "triangleCount": 182,
+   "vertexCount": 83,
+   "areaRetentionPct": 93.6,
+   "errMeanMm": 2.15,
+   "errMaxMm": 5.82
+  },
+  {
+   "key": "cart_R_1",
+   "name": "Right first costal cartilage",
+   "bone": "T1",
+   "group": "cartilage",
+   "stage": 2,
+   "mirror": "cart_L_1",
+   "tier": "mid",
+   "cellMm": 6.5,
+   "rawTriangles": 616,
+   "triangleCount": 88,
+   "vertexCount": 43,
+   "areaRetentionPct": 90.8,
+   "errMeanMm": 1.89,
+   "errMaxMm": 5.73
+  },
+  {
+   "key": "cart_R_2",
+   "name": "Right second costal cartilage",
+   "bone": "T2",
+   "group": "cartilage",
+   "stage": 2,
+   "mirror": "cart_L_2",
+   "tier": "mid",
+   "cellMm": 5.97,
+   "rawTriangles": 596,
+   "triangleCount": 100,
+   "vertexCount": 50,
+   "areaRetentionPct": 91.7,
+   "errMeanMm": 1.73,
+   "errMaxMm": 5.13
+  },
+  {
+   "key": "cart_R_3",
+   "name": "Right third costal cartilage",
+   "bone": "T3",
+   "group": "cartilage",
+   "stage": 2,
+   "mirror": "cart_L_3",
+   "tier": "mid",
+   "cellMm": 5.87,
+   "rawTriangles": 590,
+   "triangleCount": 87,
+   "vertexCount": 43,
+   "areaRetentionPct": 89.9,
+   "errMeanMm": 2.06,
+   "errMaxMm": 5.62
+  },
+  {
+   "key": "cart_R_4",
+   "name": "Right fourth costal cartilage",
+   "bone": "T4",
+   "group": "cartilage",
+   "stage": 2,
+   "mirror": "cart_L_4",
+   "tier": "mid",
+   "cellMm": 4.79,
+   "rawTriangles": 580,
+   "triangleCount": 165,
+   "vertexCount": 79,
+   "areaRetentionPct": 95.1,
+   "errMeanMm": 1.49,
+   "errMaxMm": 4.78
+  },
+  {
+   "key": "cart_R_5",
+   "name": "Right fifth costal cartilage",
+   "bone": "T5",
+   "group": "cartilage",
+   "stage": 2,
+   "mirror": "cart_L_5",
+   "tier": "mid",
+   "cellMm": 6.5,
+   "rawTriangles": 596,
+   "triangleCount": 149,
+   "vertexCount": 69,
+   "areaRetentionPct": 97.1,
+   "errMeanMm": 2.14,
+   "errMaxMm": 6.51
+  },
+  {
+   "key": "cart_R_6",
+   "name": "Right sixth costal cartilage",
+   "bone": "T6",
+   "group": "cartilage",
+   "stage": 2,
+   "mirror": "cart_L_6",
+   "tier": "mid",
+   "cellMm": 6.5,
+   "rawTriangles": 642,
+   "triangleCount": 198,
+   "vertexCount": 94,
+   "areaRetentionPct": 99.6,
+   "errMeanMm": 1.77,
+   "errMaxMm": 8.02
+  },
+  {
+   "key": "cart_R_7",
+   "name": "Right seventh costal cartilage",
+   "bone": "T7",
+   "group": "cartilage",
+   "stage": 2,
+   "mirror": "cart_L_7",
+   "tier": "mid",
+   "cellMm": 6.5,
+   "rawTriangles": 618,
+   "triangleCount": 248,
+   "vertexCount": 117,
+   "areaRetentionPct": 99.1,
+   "errMeanMm": 1.51,
+   "errMaxMm": 6.04
+  },
+  {
+   "key": "sternum_manubrium",
+   "name": "Manubrium",
+   "bone": "T3",
+   "group": "sternum",
+   "stage": 2,
+   "mirror": null,
+   "tier": "mid",
+   "cellMm": 6.5,
+   "rawTriangles": 1892,
+   "triangleCount": 326,
+   "vertexCount": 161,
+   "areaRetentionPct": 96,
+   "errMeanMm": 2.07,
+   "errMaxMm": 6.05
+  },
+  {
+   "key": "sternum_body",
+   "name": "Body of sternum",
+   "bone": "T6",
+   "group": "sternum",
+   "stage": 2,
+   "mirror": null,
+   "tier": "mid",
+   "cellMm": 6.5,
+   "rawTriangles": 2810,
+   "triangleCount": 565,
+   "vertexCount": 271,
+   "areaRetentionPct": 93.5,
+   "errMeanMm": 1.74,
+   "errMaxMm": 6.41
+  },
+  {
+   "key": "sternum_xiphoid",
+   "name": "Xiphoid process",
+   "bone": "T8",
+   "group": "sternum",
+   "stage": 2,
+   "mirror": null,
+   "tier": "mid",
+   "cellMm": 4.95,
+   "rawTriangles": 864,
+   "triangleCount": 74,
+   "vertexCount": 40,
+   "areaRetentionPct": 86.4,
+   "errMeanMm": 1.66,
+   "errMaxMm": 5.1
+  }
+ ],
+ "asset": {
+  "file": "spine.bin",
+  "bytes": 171940,
+  "gzipBytes": 108109,
+  "brotliBytes": 99734,
+  "headerBytes": 13224
+ }
+}

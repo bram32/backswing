@@ -1,5 +1,5 @@
 /* Free Relief service worker: offline-capable static app shell. */
-const VERSION = 'freerelief-v1';
+const VERSION = 'freerelief-v2';
 const SHELL = `${VERSION}-shell`;
 const VENDOR = `${VERSION}-vendor`;
 const KEEP = [SHELL, VENDOR];
@@ -9,6 +9,7 @@ const PRECACHE = [
   'css/styles.css',
   'js/data.js',
   'js/figures.js',
+  'js/anatomy.js',
   'js/lab3d.js',
   'js/app.js',
   'manifest.webmanifest',
@@ -17,6 +18,10 @@ const PRECACHE = [
   'assets/icon-maskable-512.png',
   'assets/apple-touch-icon-180.png',
 ];
+/* assets/anatomy/spine.bin is deliberately NOT precached: it is ~172 KB and the lab renders a
+   full procedural skeleton without it. The same-origin stale-while-revalidate handler below
+   caches it opportunistically the first time it is actually fetched, so it is offline from the
+   second visit on without ever holding up an install. */
 const VENDOR_HOSTS = ['cdn.jsdelivr.net', 'fonts.googleapis.com', 'fonts.gstatic.com'];
 
 self.addEventListener('install', (event) => {

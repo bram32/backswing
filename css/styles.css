@@ -453,6 +453,11 @@ main { min-width: 0; }
 
 /* ---------- disclaimer ---------- */
 .disclaimer { margin-top: 40px; padding-top: 16px; border-top: 1px solid var(--line); font-size: 0.82rem; color: var(--ink-3); max-width: 70ch; }
+/* Attribution for the BodyParts3D anatomy. A CC BY 4.0 licence condition, kept as a sibling of
+   the medical disclaimer rather than merged into it — the disclaimer is a safety message people
+   need to read, and burying a credit in it weakens both. */
+.credit { margin-top: 12px; font-size: 0.82rem; line-height: 1.55; color: var(--ink-2); max-width: 70ch; }
+.credit a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
 
 /* ---------- motion ---------- */
 @media (prefers-reduced-motion: reduce) {

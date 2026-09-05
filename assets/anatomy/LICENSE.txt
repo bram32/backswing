@@ -1,0 +1,14 @@
+Free Relief — anatomical spine asset (assets/anatomy/spine.bin)
+
+Geometry derived from BodyParts3D 4.0.
+Copyright (c) The Database Center for Life Science (DBCLS), Japan.
+Licensed under Creative Commons Attribution 4.0 International (CC BY 4.0).
+https://creativecommons.org/licenses/by/4.0/
+
+Obtained via human-atlas (https://github.com/ashemag/human-atlas), application code MIT (c) ashemag.
+
+The meshes here are modified: a subset of skeletal parts, decimated by grid vertex clustering,
+rescaled by 1.051, re-origined onto the Free Relief joint chain and re-encoded.
+
+CC BY 4.0 permits commercial use WITH attribution. The attribution must be visible in the
+running app (credits/about panel), not only in this repository.

@@ -1,9 +1,17 @@
 /* Free Relief — 3D swing lab
    A holographic golfer with a fully articulated spine. Built procedurally with three.js r147:
-   no model files, everything is geometry. The spine is a chain of 24 bones; the swing's
-   rotation is distributed across hips, thoracic spine, lumbar spine and shoulder girdle
-   according to how compliant each region is. Stiff regions push the work elsewhere, and the
-   lumbar vertebrae glow when they take more rotation than they are built for. */
+   the spine is a chain of 24 bones; the swing's rotation is distributed across hips, thoracic
+   spine, lumbar spine and shoulder girdle according to how compliant each region is. Stiff
+   regions push the work elsewhere, and the lumbar vertebrae glow when they take more rotation
+   than they are built for.
+
+   The procedural skeleton renders immediately and is also the fallback. After first paint the
+   lab fetches assets/anatomy/spine.bin and, if it arrives intact, swaps real BodyParts3D bones
+   onto the same 24 joints — see applyAnatomy(). The rotation model is untouched by that swap.
+
+   Anatomy: BodyParts3D, © The Database Center for Life Science, licensed under CC Attribution
+   4.0 International. https://creativecommons.org/licenses/by/4.0/ — the running app carries the
+   credit on screen; see ATTRIBUTION.md for the full notice. */
 
 const Lab = (() => {
   const DEG = Math.PI / 180;
@@ -12,6 +20,14 @@ const Lab = (() => {
   const LEG = { thigh: 0.43, shin: 0.42 };
   const CAP = { girdle: 15, thoracic: 40, lumbar: 13, cervical: 80 };
   const COMPLIANCE = { girdle: 0.35, thoracic: 1.0, thoracicStiff: 0.4, lumbar: 0.30 };
+
+  /* Where the arms and the legs hang off the skeleton, in the parent bone's local frame:
+     shoulders on T2, hips on the pelvis. These are variables rather than literals because the
+     real BodyParts3D bones sit a couple of centimetres from where the procedural ones do. When
+     the anatomy asset lands they shift by exactly that much, which puts the shoulder joint back
+     in the world position it occupies today and keeps the arm IK, the club and all nine
+     keyframes valid. Read by pose(), ghostSegments() and the shoulder/hip hit regions. */
+  const ANCHOR = { shX: 0.20, shY: -0.010, shZ: 0.0, hipX: 0.09, hipY: -0.03, hipZ: 0.02 };
 
   const COLORS = {
     bg: 0x061a11, bone: 0xe9dfc6, disc: 0x7fb9c9, skin: 0x8fd9b6, rim: 0xbff5dc,
@@ -220,6 +236,42 @@ const Lab = (() => {
     return tube;
   }
 
+  /* Bind the holographic torso to the bone chain by world height.
+     Called once at build time, and again if the real vertebrae arrive, because they change the
+     chain's offsets. Both halves have to be redone: the weights are a linear scan that assumes
+     strictly ascending bone Ys, and torso.bind() snapshots the bone inverses — so both are
+     computed against the *rest* chain (pelvis at its build position, every rotation zero), which
+     is the pose the lathe profile below was authored against. The caller re-poses afterwards. */
+  function skinTorso(root, bones, torso) {
+    const savedPelvis = bones[0].position.clone();
+    const savedRot = bones.map(b => b.rotation.clone());
+    bones[0].position.set(0, 0.95, 0);
+    bones.forEach(b => b.rotation.set(0, 0, 0));
+    root.updateMatrixWorld(true);
+
+    const geo = torso.geometry, pos = geo.attributes.position;
+    const boneYs = bones.map(b => b.getWorldPosition(V3()).y);
+    const idx = new Uint16Array(pos.count * 4), wgt = new Float32Array(pos.count * 4);
+    for (let i = 0; i < pos.count; i++) {
+      const y = pos.getY(i);
+      let j = 0;
+      while (j < bones.length - 2 && boneYs[j + 1] < y) j++;
+      const y0 = boneYs[j], y1 = boneYs[j + 1];
+      let w = clamp((y - y0) / Math.max(y1 - y0, 1e-4), 0, 1);
+      if (y < boneYs[0]) w = 0;
+      idx[i * 4] = j; idx[i * 4 + 1] = j + 1;
+      wgt[i * 4] = 1 - w; wgt[i * 4 + 1] = w;
+    }
+    geo.setAttribute('skinIndex', new THREE.BufferAttribute(idx, 4));
+    geo.setAttribute('skinWeight', new THREE.BufferAttribute(wgt, 4));
+    /* Re-binding reuses the skeleton so a rebind does not orphan its bone texture. */
+    torso.bind(torso.skeleton || new THREE.Skeleton(bones));
+
+    bones.forEach((b, i) => b.rotation.copy(savedRot[i]));
+    bones[0].position.copy(savedPelvis);
+    root.updateMatrixWorld(true);
+  }
+
   /* ---------- figure ---------- */
   function buildFigure() {
     const root = new THREE.Group();
@@ -253,6 +305,7 @@ const Lab = (() => {
     pubis.castShadow = true;
     pelvisGroup.add(pubis);
     pelvis.add(pelvisGroup);
+    pelvis.userData.proc = [pelvisGroup];   // handed to applyAnatomy() when the real pelvis lands
 
     // spine chain
     let parent = pelvis;
@@ -268,9 +321,15 @@ const Lab = (() => {
       b.userData.mat = mat;
       const mesh = buildVertebra(spec, mat);
       b.add(mesh);
+      /* Everything procedural about this vertebra is remembered here so the real BodyParts3D
+         mesh can take its place later without disturbing the bone, its hit regions or its ribs'
+         siblings. See applyAnatomy(). */
+      b.userData.proc = [mesh];
       if (spec.region === 'thoracic') {
         const k = (12 - parseInt(spec.label.slice(1))) / 11;
-        b.add(buildRib(1, k)); b.add(buildRib(-1, k));
+        const ribL = buildRib(1, k), ribR = buildRib(-1, k);
+        b.add(ribL); b.add(ribR);
+        b.userData.proc.push(ribL, ribR);
       }
       parent.add(b);
       bones.push(b);
@@ -311,6 +370,9 @@ const Lab = (() => {
       cup.position.set(s * 0.20, -0.01, 0.0);
       girdle.add(cup);
     });
+    /* The girdle is authored around T2's procedural origin. If the real vertebrae land, T2's
+       origin moves, and applyAnatomy() translates the whole group by that delta rather than
+       re-authoring the clavicles, scapulae and sockets. */
     t2.add(girdle);
 
     // torso skin as a skinned lathe
@@ -327,25 +389,10 @@ const Lab = (() => {
       pos.setZ(i, pos.getZ(i) * 0.62 + 0.055);
     }
     torsoGeo.computeVertexNormals();
-    root.updateMatrixWorld(true);
-    const boneYs = bones.map(b => b.getWorldPosition(V3()).y);
-    const idx = new Uint16Array(pos.count * 4), wgt = new Float32Array(pos.count * 4);
-    for (let i = 0; i < pos.count; i++) {
-      const y = pos.getY(i);
-      let j = 0;
-      while (j < bones.length - 2 && boneYs[j + 1] < y) j++;
-      const y0 = boneYs[j], y1 = boneYs[j + 1];
-      let w = clamp((y - y0) / Math.max(y1 - y0, 1e-4), 0, 1);
-      if (y < boneYs[0]) w = 0;
-      idx[i * 4] = j; idx[i * 4 + 1] = j + 1;
-      wgt[i * 4] = 1 - w; wgt[i * 4 + 1] = w;
-    }
-    torsoGeo.setAttribute('skinIndex', new THREE.BufferAttribute(idx, 4));
-    torsoGeo.setAttribute('skinWeight', new THREE.BufferAttribute(wgt, 4));
     const torso = new THREE.SkinnedMesh(torsoGeo, skinMat);
     torso.renderOrder = 10; torso.castShadow = true; torso.frustumCulled = false;
     root.add(torso);
-    torso.bind(new THREE.Skeleton(bones));
+    skinTorso(root, bones, torso);
 
     // limbs (posed by IK every frame)
     const limb = (rSkin, rBone, len) => {
@@ -390,20 +437,23 @@ const Lab = (() => {
       mesh.visible = false; mesh.userData.region = key; mesh.material = glowMat;
       (parentObj || root).add(mesh); regions.push(mesh); return mesh;
     };
-    region('neck', sphere(0.075, glowMat, 16), vertebrae.find(b => b.name === 'C4'));
-    const ub = region('upback', new THREE.Mesh(new THREE.BoxGeometry(0.30, 0.30, 0.16), glowMat), vertebrae.find(b => b.name === 'T7')); ub.position.set(0, 0.01, -0.03);
-    const lb = region('lowback', new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.21, 0.15), glowMat), vertebrae.find(b => b.name === 'L3')); lb.position.set(0, 0.0, -0.02);
+    /* Proxy volumes are sized to the REAL spine: the BodyParts3D lumbar segment is ~32 mm
+       shorter than the procedural one it replaced, so the pre-swap box heights reached past
+       their own region and a click on T12 answered "Lower back" (and T1 answered "Neck"). */
+    region('neck', sphere(0.064, glowMat, 16), vertebrae.find(b => b.name === 'C4'));
+    const ub = region('upback', new THREE.Mesh(new THREE.BoxGeometry(0.30, 0.31, 0.16), glowMat), vertebrae.find(b => b.name === 'T7')); ub.position.set(0, 0.0025, -0.03);
+    const lb = region('lowback', new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.17, 0.15), glowMat), vertebrae.find(b => b.name === 'L3')); lb.position.set(0, 0.0, -0.02);
     const dyn = {};
     [-1, 1].forEach(s => {
       const side = s > 0 ? 'L' : 'R';
-      const sh = region('shoulder:' + side, sphere(0.08, glowMat, 16), t2); sh.position.set(s * 0.20, -0.01, 0.0);
-      const hp = region('hip:' + side, sphere(0.085, glowMat, 16), pelvis); hp.position.set(s * 0.09, -0.03, 0.02);
+      const sh = region('shoulder:' + side, sphere(0.08, glowMat, 16), t2); sh.position.set(s * ANCHOR.shX, ANCHOR.shY, ANCHOR.shZ);
+      const hp = region('hip:' + side, sphere(0.085, glowMat, 16), pelvis); hp.position.set(s * ANCHOR.hipX, ANCHOR.hipY, ANCHOR.hipZ);
       dyn['elbow:' + side] = region('elbow:' + side, sphere(0.065, glowMat, 16));
       dyn['wrist:' + side] = region('wrist:' + side, sphere(0.055, glowMat, 16));
       dyn['knee:' + side] = region('knee:' + side, sphere(0.075, glowMat, 16));
     });
 
-    return { root, bones, vertebrae, pelvis, t2, skull, arms, legs, club, clubHead: head, regions, dyn };
+    return { root, bones, vertebrae, pelvis, t2, skull, girdle, torso, arms, legs, club, clubHead: head, regions, dyn };
   }
 
   /* ---------- posing ---------- */
@@ -531,8 +581,8 @@ const Lab = (() => {
     f.root.updateMatrixWorld(true);
 
     // arms: shoulders from T2, hands from keyframes
-    const shL = f.t2.localToWorld(V3(0.20, -0.01, 0.0));
-    const shR = f.t2.localToWorld(V3(-0.20, -0.01, 0.0));
+    const shL = f.t2.localToWorld(V3(ANCHOR.shX, ANCHOR.shY, ANCHOR.shZ));
+    const shR = f.t2.localToWorld(V3(-ANCHOR.shX, ANCHOR.shY, ANCHOR.shZ));
     const chestFwd = f.t2.localToWorld(V3(0, 0, 1)).sub(f.t2.getWorldPosition(V3())).normalize();
     const clubDir = p.club.clone();
     const grip = p.hands.clone();
@@ -565,8 +615,8 @@ const Lab = (() => {
     });
 
     // legs: hips from pelvis, feet fixed (trail heel lifts through impact)
-    const hipL = f.pelvis.localToWorld(V3(0.09, -0.03, 0.02));
-    const hipR = f.pelvis.localToWorld(V3(-0.09, -0.03, 0.02));
+    const hipL = f.pelvis.localToWorld(V3(ANCHOR.hipX, ANCHOR.hipY, ANCHOR.hipZ));
+    const hipR = f.pelvis.localToWorld(V3(-ANCHOR.hipX, ANCHOR.hipY, ANCHOR.hipZ));
     const ankle = (s, heel) => {
       const toe = feet[s].clone().add(V3(0, -0.015, 0.16));
       const phi = heel * 62 * DEG;
@@ -595,6 +645,142 @@ const Lab = (() => {
     f.skull.rotation.set(lerp(0.15, -0.1, smooth(clamp((t - 0.75) / 0.25, 0, 1))), 0, 0);
 
     return { p, L };
+  }
+
+  /* ================= real anatomy =================
+     The skeleton above is procedural and is what you see the instant the lab opens. If
+     assets/anatomy/spine.bin arrives — BodyParts3D 4.0 vertebrae, discs, sacrum, hip bones,
+     ribs, costal cartilage and sternum, decimated and re-origined onto this joint chain at
+     build time — the boxes and cylinders are swapped out for it in place.
+
+     What deliberately does NOT change: every bone object, its name, its userData.base rest
+     angle, its per-bone material, its region, and the order of vertebrae[]. pose() still writes
+     the same Euler on the same bone, computeLoad() never sees geometry at all, and CAP.lumbar
+     is untouched. So the hip / shoulder / X-factor readouts, the lumbar degrees and the overload
+     meter are numerically identical with the asset and without it — the asset is pure skin.
+
+     What does change: b.position, the chain offset, which becomes a full 3-vector measured
+     between real disc centres instead of a bare +Y. That is the one thing that must move, or
+     the real vertebrae interpenetrate. Everything downstream of a moved bone origin is fixed up
+     here: the shoulder and hip anchors, the girdle group, and the torso's skin bind. */
+  const ANATOMY_URL = 'assets/anatomy/spine.bin';
+  let anatomyState = 'idle';   // idle | loading | ready | failed | skipped
+
+  function warn(msg, err) { if (window.console && console.warn) console.warn(msg, err && err.message ? err.message : err); }
+
+  function disposeSubtree(obj) {
+    /* Geometries are per-instance here; materials are shared (boneMat, discMat, the per-bone
+       clone) and are still in use, so they are never disposed. */
+    obj.traverse(o => { if (o.geometry && o.geometry.dispose) o.geometry.dispose(); });
+  }
+
+  function realMesh(geo, mat, shadow) {
+    const m = new THREE.Mesh(geo, mat);
+    m.castShadow = !!shadow; m.receiveShadow = false;
+    return m;
+  }
+
+  /* Swap the loaded geometry onto the live figure. Throws if the payload does not match the rig;
+     everything is validated before a single object is removed, so a bad asset leaves the
+     procedural skeleton exactly as it was rather than half-dismantled. */
+  function applyAnatomy(a) {
+    if (!F || !a || !a.parts || !a.rig || !a.rig.bones) throw new Error('anatomy payload is unusable');
+    const rig = a.rig, rb = rig.bones, parts = a.parts;
+    if (rb.length !== F.vertebrae.length) throw new Error('anatomy rig has ' + rb.length + ' bones, the lab has ' + F.vertebrae.length);
+    for (let i = 0; i < rb.length; i++) {
+      const name = F.vertebrae[i].name;
+      if (rb[i].label !== name) throw new Error('anatomy rig bone ' + i + ' is "' + rb[i].label + '", the lab has "' + name + '"');
+      if (!rb[i].offset || rb[i].offset.length !== 3) throw new Error('anatomy rig bone ' + name + ' has no offset');
+      if (!parts['vert_' + name]) throw new Error('anatomy is missing vert_' + name);
+    }
+    if (!parts.sacrum || !parts.hip_L || !parts.hip_R) throw new Error('anatomy is missing the pelvis');
+
+    // 1. the chain. Offsets are now full 3-vectors: the Z terms are the real lordosis/kyphosis.
+    const hosts = { pelvis: F.pelvis };
+    F.vertebrae.forEach((b, i) => { b.position.fromArray(rb[i].offset); hosts[b.name] = b; });
+
+    // 2. retire the procedural meshes. Only the objects buildFigure() tagged, so the hit-region
+    //    proxies, the ribs' bones and the girdle all survive untouched.
+    F.bones.forEach(b => {
+      const proc = b.userData.proc;
+      if (!proc) return;
+      proc.forEach(o => { b.remove(o); disposeSubtree(o); });
+      b.userData.proc = null;
+    });
+
+    // 3. attach the real parts. Geometry is already in its target bone's local frame, so every
+    //    child transform is identity. Vertebrae take the bone's own material — that is the hook
+    //    applyStress() lights up. Discs keep the shared discMat, so discs still never glow.
+    let attached = 0;
+    for (let i = 0; i < a.order.length; i++) {
+      const geo = parts[a.order[i]], md = (geo && geo.userData) || {};
+      const host = hosts[md.bone];
+      if (!geo || !host) continue;
+      let mat = boneMat, shadow = true;
+      if (md.group === 'disc') { mat = discMat; shadow = false; }          // interior, never casts
+      else if (md.group === 'cartilage') { shadow = false; }               // interior, never casts
+      else if (md.group === 'vertebra') { mat = host.userData.mat || boneMat; }
+      host.add(realMesh(geo, mat, shadow));
+      attached++;
+    }
+    if (!attached) throw new Error('anatomy contained no attachable parts');
+
+    // 4. anchors. T2's origin has moved down and forward; shifting the shoulder anchor by the
+    //    same amount puts the joint back at the identical world point, so the arm IK, reachOut,
+    //    the club and the keyframes are unaffected. The girdle meshes ride along.
+    const sa = rig.shoulderAnchor && rig.shoulderAnchor.new;
+    if (sa && sa.length === 3) {
+      const dy = sa[1] - ANCHOR.shY, dz = sa[2] - ANCHOR.shZ;
+      ANCHOR.shX = Math.abs(sa[0]); ANCHOR.shY = sa[1]; ANCHOR.shZ = sa[2];
+      if (F.girdle) F.girdle.position.set(0, dy, dz);
+    }
+    const ha = rig.hipAnchorHint;   // the real femoral head centres, pelvis-local
+    if (ha && ha.length === 3) { ANCHOR.hipX = Math.abs(ha[0]); ANCHOR.hipY = ha[1]; ANCHOR.hipZ = ha[2]; }
+    F.regions.forEach(r => {
+      switch (r.userData.region) {
+        case 'shoulder:L': r.position.set(ANCHOR.shX, ANCHOR.shY, ANCHOR.shZ); break;
+        case 'shoulder:R': r.position.set(-ANCHOR.shX, ANCHOR.shY, ANCHOR.shZ); break;
+        case 'hip:L': r.position.set(ANCHOR.hipX, ANCHOR.hipY, ANCHOR.hipZ); break;
+        case 'hip:R': r.position.set(-ANCHOR.hipX, ANCHOR.hipY, ANCHOR.hipZ); break;
+      }
+    });
+
+    // 5. the skinned torso was bound to the old chain; rebind it to the new one.
+    if (F.torso) skinTorso(F.root, F.bones, F.torso);
+
+    // 6. the ghosts are polylines through the bone origins, which have just moved.
+    ghostDirty = true;
+    if (state.ghosts && ghostGroup) { try { buildGhosts(); } catch (e) { warn('lab3d: ghost rebuild failed', e); } }
+
+    pose(state.t);
+    return attached;
+  }
+
+  /* Fetch and decode off the critical path. Never blocks first paint, never blocks the swing:
+     init() has already built, posed and started the scene before this runs, and every failure
+     path just leaves the procedural skeleton on screen. */
+  function loadAnatomy() {
+    if (anatomyState !== 'idle' || !inited || !F) return;
+    if (!window.Anatomy || !window.Anatomy.load || !window.Promise) { anatomyState = 'skipped'; return; }
+    anatomyState = 'loading';
+    let p;
+    try { p = window.Anatomy.load(ANATOMY_URL, { sliceMs: 6, timeoutMs: 12000 }); }
+    catch (e) { anatomyState = 'failed'; warn('lab3d: anatomy loader refused the request', e); return; }
+    p.then(a => {
+      try {
+        const n = applyAnatomy(a);
+        anatomyState = 'ready';
+        emit('anatomy', { ok: true, parts: n, triangles: a.counts ? a.counts.trianglesOnScreen : 0, licence: a.licence });
+      } catch (err) {
+        anatomyState = 'failed';
+        warn('lab3d: real anatomy could not be applied, keeping the procedural spine', err);
+        emit('anatomy', { ok: false, error: String(err && err.message || err) });
+      }
+    }, err => {
+      anatomyState = 'failed';
+      warn('lab3d: anatomy asset unavailable, keeping the procedural spine', err);
+      emit('anatomy', { ok: false, error: String(err && err.message || err) });
+    });
   }
 
   /* ---------- scene ---------- */
@@ -1148,8 +1334,8 @@ const Lab = (() => {
     let prev = F.pelvis.getWorldPosition(V3());
     F.vertebrae.forEach(b => { const q = b.getWorldPosition(V3()); segs.push([prev, q]); prev = q; });
     segs.push([prev, F.skull.localToWorld(V3(0, 0.11, 0.015))]);
-    const shL = F.t2.localToWorld(V3(0.20, -0.01, 0)), shR = F.t2.localToWorld(V3(-0.20, -0.01, 0));
-    const hipL = F.pelvis.localToWorld(V3(0.09, -0.03, 0.02)), hipR = F.pelvis.localToWorld(V3(-0.09, -0.03, 0.02));
+    const shL = F.t2.localToWorld(V3(ANCHOR.shX, ANCHOR.shY, ANCHOR.shZ)), shR = F.t2.localToWorld(V3(-ANCHOR.shX, ANCHOR.shY, ANCHOR.shZ));
+    const hipL = F.pelvis.localToWorld(V3(ANCHOR.hipX, ANCHOR.hipY, ANCHOR.hipZ)), hipR = F.pelvis.localToWorld(V3(-ANCHOR.hipX, ANCHOR.hipY, ANCHOR.hipZ));
     segs.push([shL.clone(), shR.clone()]);
     segs.push([hipL.clone(), hipR.clone()]);
     ['L', 'R'].forEach(s => {
@@ -1457,6 +1643,10 @@ const Lab = (() => {
     lastInteract = performance.now();
     pose(0);
     if (!reduced && !opts.noAuto) { setTimeout(() => play(), 900); }
+    /* The real spine is an upgrade, never a dependency: the lab is already built, posed and
+       about to render by this point, and if the asset is slow, missing or broken nothing here
+       changes. Deliberately after first paint. */
+    if (!opts.noAnatomy) setTimeout(loadAnatomy, 400);
     return true;
   }
 

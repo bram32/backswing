@@ -11,7 +11,7 @@ python3 -m http.server 8765
 
 ## What is in it
 
-- **Swing lab** (`js/lab3d.js`). A procedurally built golfer in three.js r147: 24 articulated vertebrae with discs, ribcage, pelvis, shoulder girdle and skull inside a holographic body, with IK-driven arms, legs and club. The swing is keyframed; trunk rotation is distributed across hips, thoracic spine, lumbar spine and shoulder girdle according to how compliant each is. Toggling stiff hips, a stiff mid back or a reverse spine angle pushes rotation into the lumbar spine, which lights up as it goes past its roughly 13 degrees of capacity. Click any body part to start a plan for it.
+- **Swing lab** (`js/lab3d.js`). A golfer in three.js r147: 24 articulated vertebrae with discs, ribcage, pelvis, shoulder girdle and skull inside a holographic body, with IK-driven arms, legs and club. The skeleton is built procedurally so it renders instantly; after first paint the lab fetches `assets/anatomy/spine.bin` and swaps real BodyParts3D bones onto the same 24 joints. If that asset is slow, missing or corrupt the procedural skeleton simply stays, and nothing else changes. The swing is keyframed; trunk rotation is distributed across hips, thoracic spine, lumbar spine and shoulder girdle according to how compliant each is. Toggling stiff hips, a stiff mid back or a reverse spine angle pushes rotation into the lumbar spine, which lights up as it goes past its roughly 13 degrees of capacity. Click any body part to start a plan for it.
 - **Fix it**. Pick a spot, when it hurts and what it feels like. You get a Play on / Take a drop / Pick up verdict, what is probably going on, a timed set of exercises to start now, a daily routine, the swing faults that usually cause it, what to avoid, and when to see someone.
 - **Routines**. Seven guided routines with a timer: first-tee warm-up, post-round cool-down, daily back care, mid-back unlock, elbow rehab, strength basics, and a 90-second between-holes reset.
 - **Exercises**. 45 exercises with line-drawn figures, steps, cues, mistakes and the golf reason for each.
@@ -27,10 +27,17 @@ index.html        shell and 3D lab markup
 css/styles.css    design tokens (dark and light), layout, components
 js/data.js        exercises, routines, planner content, faults, injuries, habits
 js/figures.js     2D pose drawings for the exercise cards
+js/anatomy.js     loader/decoder for the BodyParts3D spine asset
 js/lab3d.js       the three.js swing lab
 js/app.js         router, views, planner, player, log
 build.js          bundles everything into dist/index.html (single file)
+tools/build-anatomy.mjs   build-time extractor for assets/anatomy/spine.bin
+assets/anatomy/   the real anatomy: spine.bin plus its licence
 ```
+
+`assets/anatomy/spine.bin` is a separate 168 KB binary, fetched lazily rather than inlined: base64
+would add a third to its size and put it on the critical path, and the lab does not need it to
+work. Regenerate it with `node tools/build-anatomy.mjs` against a local human-atlas checkout.
 
 Run `node build.js` to produce `dist/index.html`, a single self-contained file (fonts and three.js still load from their CDNs).
 
@@ -47,3 +54,12 @@ There is also a GitHub Actions workflow in `.github/workflows/deploy.yml` that d
 ## A note on the content
 
 The exercises and guidance are general, physio-informed advice for recreational golfers. They are not a diagnosis. The app is explicit about red-flag symptoms that need a doctor or physiotherapist, and it says so on every plan.
+
+## Licences and attribution
+
+The anatomical geometry is BodyParts3D, © The Database Center for Life Science, licensed under
+[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) — commercial use is permitted with
+attribution, which the app carries on screen beneath the swing lab. The pipeline it came through
+is Human Atlas (MIT). The full notice, including what was modified and the third-party licence
+texts, is in [ATTRIBUTION.md](ATTRIBUTION.md), which `build.js` copies into `dist/site/` so it has
+a public URL. `build.js` also fails the build if that credit ever disappears from the shipped HTML.
