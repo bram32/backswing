@@ -238,7 +238,12 @@ platform :ios do
       changelog: "First TestFlight build: 3D swing lab, symptom planner, guided routines, exercise library, injury prevention guide and round log."
     )
 
-    testers
+    testers_api
     UI.success("Build #{build_number} uploaded. It appears in TestFlight once Apple finishes processing (usually 5 to 15 minutes).")
+  end
+  desc "Add the TestFlight tester through the public App Store Connect API"
+  lane :testers_api do
+    asc_api_key
+    sh("ruby #{File.expand_path('asc_testers.rb', __dir__)}")
   end
 end
