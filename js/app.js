@@ -6,7 +6,8 @@
   const $ = (s, el = document) => el.querySelector(s);
   const $$ = (s, el = document) => Array.from(el.querySelectorAll(s));
   const esc = (s) => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-  const todayISO = () => new Date().toISOString().slice(0, 10);
+  const localISO = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  const todayISO = () => localISO(new Date());
   const fmtDate = (iso) => { const d = new Date(iso + 'T12:00:00'); return d.toLocaleDateString(undefined, { day: 'numeric', month: 'short' }); };
   const fmtMin = (secs) => { const m = Math.round(secs / 60); return m < 1 ? '1 min' : m + ' min'; };
 
@@ -24,7 +25,7 @@
     ];
     rows.forEach(([ago, pain, warm, move, holes, note]) => {
       const d = new Date(base); d.setDate(d.getDate() - ago);
-      out.push({ id: 's' + ago, date: d.toISOString().slice(0, 10), area: 'lowback', pain, warm, move, holes, note, sample: true });
+      out.push({ id: 's' + ago, date: localISO(d), area: 'lowback', pain, warm, move, holes, note, sample: true });
     });
     return out;
   })();
@@ -35,8 +36,8 @@
   function streak() {
     const days = new Set(store.done.map(d => d.date));
     let n = 0; const d = new Date();
-    if (!days.has(d.toISOString().slice(0, 10))) d.setDate(d.getDate() - 1);
-    while (days.has(d.toISOString().slice(0, 10))) { n++; d.setDate(d.getDate() - 1); }
+    if (!days.has(localISO(d))) d.setDate(d.getDate() - 1);
+    while (days.has(localISO(d))) { n++; d.setDate(d.getDate() - 1); }
     return n;
   }
 
@@ -146,7 +147,7 @@
     const blocks = expandBlocks(opts.blocks);
     if (!blocks.length) return;
     const total = blocks.reduce((s, b) => s + b.secs, 0);
-    player = { opts, blocks, i: 0, left: blocks[0].secs, running: true, tick: null, total, elapsed: 0 };
+    player = { opts, blocks, i: 0, left: blocks[0].secs, running: true, tick: null, total, elapsed: 0, active: 0 };
     const el = document.createElement('div');
     el.className = 'player'; el.id = 'player'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-modal', 'true'); el.setAttribute('aria-label', opts.title);
     document.body.appendChild(el);
@@ -154,7 +155,7 @@
     renderPlayer();
     player.tick = setInterval(() => {
       if (!player || !player.running) return;
-      player.left -= 1; player.elapsed += 1;
+      player.left -= 1; player.elapsed += 1; player.active += 1;
       if (player.left <= 0) {
         if (player.i >= player.blocks.length - 1) { finishPlayer(); return; }
         player.i++; player.left = player.blocks[player.i].secs; beep('next'); renderPlayer();
@@ -212,14 +213,14 @@
     clearInterval(player.tick); player.tick = null; player.running = false;
     beep('done');
     const id = player.opts.routineId || null;
-    store.done.push({ date: todayISO(), routine: id, title: player.opts.title, secs: player.total });
+    store.done.push({ date: todayISO(), routine: id, title: player.opts.title, secs: player.active });
     save();
     const el = $('#player');
     el.innerHTML = `<div class="player-top"><b>${esc(player.opts.title)}</b><span></span><button class="btn btn-ghost btn-sm" data-close type="button">${icon('x')} Close</button></div>
       <div class="player-done">
         <span class="num">${streak()}</span>
         <h1>Done. ${streak() > 1 ? streak() + ' days in a row.' : 'Day one.'}</h1>
-        <p class="muted">${fmtMin(player.total)} logged. Your back will not thank you today, but it will in three weeks.</p>
+        <p class="muted">${fmtMin(player.active)} logged. Your back will not thank you today, but it will in three weeks.</p>
         <div class="plan-actions">
           <button class="btn btn-primary" data-close type="button">${icon('check')} Finish</button>
           <a class="btn" href="#log" data-close>Log a round</a>
@@ -247,6 +248,7 @@
   function render() {
     const r = route();
     closeModal();
+    if (player) closePlayer();
     $$('.nav a').forEach(a => { if (a.dataset.route === r) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); });
     const lab = $('#lab-view');
     if (r === 'lab') { lab.hidden = false; view().hidden = true; view().innerHTML = ''; bootLab(); return; }
@@ -299,17 +301,17 @@
       const plan = PLANS[s.area];
       box.className = 'selection on';
       box.innerHTML = `<h4>${esc(s.label)}</h4><p>${esc(plan ? plan.key : '')}</p><a class="btn btn-primary btn-sm" href="#fix">Build a plan for the ${esc(AREAS[s.area].label.toLowerCase())}</a>`;
-      store.plan.area = s.area; store.plan.timing = null; store.plan.feel = null; save();
+      if (store.plan.area !== s.area) { store.plan.timing = null; store.plan.feel = null; } store.plan.area = s.area; save();
     });
     playBtn.addEventListener('click', () => Lab.toggle());
     scrub.addEventListener('input', () => { Lab.seek(scrub.value / 1000); scrub.style.setProperty('--pct', (scrub.value / 10) + '%'); });
-    $$('.lab-speed button').forEach(b => b.addEventListener('click', () => { $$('.lab-speed button').forEach(x => x.setAttribute('aria-pressed', 'false')); b.setAttribute('aria-pressed', 'true'); Lab.setSpeed(b.dataset.speed); }));
+    $$('.lab-speed button[data-speed]').forEach(b => b.addEventListener('click', () => { $$('.lab-speed button[data-speed]').forEach(x => x.setAttribute('aria-pressed', 'false')); b.setAttribute('aria-pressed', 'true'); Lab.setSpeed(b.dataset.speed); }));
     $$('.lab-cams button').forEach(b => b.addEventListener('click', () => { $$('.lab-cams button').forEach(x => x.setAttribute('aria-pressed', 'false')); b.setAttribute('aria-pressed', 'true'); Lab.setCamera(b.dataset.cam); }));
     $$('.switch[data-fault]').forEach(b => b.addEventListener('click', () => { const on = b.getAttribute('aria-pressed') !== 'true'; b.setAttribute('aria-pressed', String(on)); Lab.setFault(b.dataset.fault, on); }));
     $('#loop-btn').addEventListener('click', (e) => { const b = e.currentTarget; const on = b.getAttribute('aria-pressed') !== 'true'; b.setAttribute('aria-pressed', String(on)); Lab.setLoop(on); });
     document.addEventListener('keydown', (e) => {
       if (route() !== 'lab' || player || $('#modal')) return;
-      if (e.target.matches('input, textarea, select')) return;
+      if (e.target.matches('input, textarea, select, button, a, [role="button"]')) return;
       if (e.code === 'Space') { e.preventDefault(); Lab.toggle(); }
       if (e.key === 'ArrowRight') { Lab.seek(Lab.getState().t + 0.02); }
       if (e.key === 'ArrowLeft') { Lab.seek(Lab.getState().t - 0.02); }
@@ -518,7 +520,7 @@
       </div>`;
     const seg = (id, key, parse) => $$('#' + id + ' button').forEach(b => b.addEventListener('click', () => { form[key] = parse(b.dataset.v); $$('#' + id + ' button').forEach(x => x.setAttribute('aria-pressed', x === b)); }));
     seg('pain', 'pain', Number); seg('warm', 'warm', v => v === '1'); seg('move', 'move', String); seg('holes', 'holes', Number);
-    $('#f-date').addEventListener('change', e => form.date = e.target.value);
+    $('#f-date').addEventListener('change', e => { if (e.target.value) form.date = e.target.value; else e.target.value = form.date; });
     $('#f-area').addEventListener('change', e => form.area = e.target.value);
     $('#f-note').addEventListener('input', e => form.note = e.target.value);
     $('#logform').addEventListener('submit', (e) => {

@@ -58,7 +58,7 @@ function figureSVG(poseKey, opts = {}) {
   const sh = p.shoulder || [p.neck[0], p.neck[1] + 4];
   const cls = (k) => hi.has(k) ? 'fig-hi' : 'fig';
   const out = [];
-  out.push(`<svg class="figure" viewBox="0 0 120 120" width="${size}" height="${size}" role="img" aria-label="${opts.label || poseKey}">`);
+  out.push(`<svg class="figure" viewBox="0 0 120 120" width="${size}" height="${size}" role="img" aria-label="${String(opts.label || poseKey).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]))}">`);
   if (p.floor) out.push(`<line class="fig-floor" x1="0" y1="${p.floor}" x2="120" y2="${p.floor}"/>`);
   (p.props || []).forEach(pr => {
     if (pr.l) out.push(`<line class="fig-prop${pr.d ? ' fig-dash' : ''}" x1="${pr.l[0][0]}" y1="${pr.l[0][1]}" x2="${pr.l[1][0]}" y2="${pr.l[1][1]}"/>`);
