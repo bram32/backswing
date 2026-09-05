@@ -2,7 +2,7 @@
 node_modules/
 .wrangler/
 dist/
-ios/Backswing/web/
+ios/FreeRelief/web/
 ios/build/
 ios/*.xcodeproj/xcuserdata/
 ios/fastlane/report.xml

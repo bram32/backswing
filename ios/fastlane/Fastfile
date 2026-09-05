@@ -1,4 +1,4 @@
-# Backswing – fastlane
+# Free Relief – fastlane
 #
 # Authenticates to App Store Connect with an API key read from the environment:
 #   ASC_KEY_ID      the Key ID
@@ -16,16 +16,16 @@ require "tmpdir"
 
 default_platform(:ios)
 
-PROJECT  = "Backswing.xcodeproj"
-SCHEME   = "Backswing"
-BUNDLE   = "com.brampek.backswing"
+PROJECT  = "FreeRelief.xcodeproj"
+SCHEME   = "FreeRelief"
+BUNDLE   = "com.brampek.freerelief"
 TEAM_ID  = "JYMA2YQJV9"
 TESTER   = { email: "brampek@gmail.com", first_name: "Bram", last_name: "Pek" }
-INTERNAL_GROUP = "Backswing internal"
-EXTERNAL_GROUP = "Backswing testers"
+INTERNAL_GROUP = "Free Relief internal"
+EXTERNAL_GROUP = "Free Relief testers"
 
 # Certificates and profiles land outside the repo so no signing material is ever committed.
-SIGNING_DIR = File.join(Dir.tmpdir, "backswing-signing")
+SIGNING_DIR = File.join(Dir.tmpdir, "freerelief-signing")
 
 # Loads the API key and, as a side effect, authorises every Spaceship::ConnectAPI call in
 # this process (app_store_connect_api_key sets Spaceship::ConnectAPI.token by default).
@@ -49,7 +49,7 @@ def ensure_bundle_id!
   end
 
   created = Spaceship::ConnectAPI::BundleId.create(
-    name: "Backswing",
+    name: "Free Relief",
     identifier: BUNDLE,
     platform: Spaceship::ConnectAPI::BundleIdPlatform::IOS,
     seed_id: TEAM_ID
@@ -68,10 +68,10 @@ MISSING_APP_RECORD = <<~MSG.freeze
   Create the record once by hand, then every lane here works unattended:
     App Store Connect -> Apps -> "+" -> New App
       Platform  : iOS
-      Name      : Backswing        (or "Backswing Golf" / "Backswing Back Care" if taken)
+      Name      : Free Relief      (or "Free Relief Golf" / "Free Relief Back Care" if taken)
       Language  : English (U.S.)
       Bundle ID : #{BUNDLE}  (already registered, it is in the dropdown)
-      SKU       : backswing-ios
+      SKU       : freerelief-ios
       Access    : Full Access
 MSG
 
@@ -168,7 +168,7 @@ platform :ios do
       configuration: "Release",
       export_method: "app-store",
       output_directory: "build",
-      output_name: "Backswing.ipa",
+      output_name: "FreeRelief.ipa",
       clean: true,
       xcargs: xcargs,
       export_options: {
@@ -233,7 +233,7 @@ platform :ios do
     upload_to_testflight(
       api_key: api_key,
       app_identifier: BUNDLE,
-      ipa: "build/Backswing.ipa",
+      ipa: "build/FreeRelief.ipa",
       skip_waiting_for_build_processing: true,
       changelog: "First TestFlight build: 3D swing lab, symptom planner, guided routines, exercise library, injury prevention guide and round log."
     )

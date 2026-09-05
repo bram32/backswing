@@ -1,7 +1,7 @@
 import SwiftUI
 
 @main
-struct BackswingApp: App {
+struct FreeReliefApp: App {
     var body: some Scene {
         WindowGroup {
             WebScreen()

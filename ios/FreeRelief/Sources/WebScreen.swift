@@ -4,7 +4,7 @@ import WebKit
 /// Serves the bundled web app from a custom scheme so the page has a stable origin
 /// (localStorage persists between launches, unlike file:// pages).
 final class LocalSchemeHandler: NSObject, WKURLSchemeHandler {
-    static let scheme = "backswing"
+    static let scheme = "freerelief"
     private let root: URL = Bundle.main.url(forResource: "web", withExtension: nil)!
 
     func webView(_ webView: WKWebView, start task: WKURLSchemeTask) {

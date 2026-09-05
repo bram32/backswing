@@ -1,4 +1,4 @@
-name: Backswing
+name: FreeRelief
 options:
   bundleIdPrefix: com.brampek
   deploymentTarget:
@@ -14,20 +14,20 @@ settings:
     SWIFT_VERSION: "5.9"
     IPHONEOS_DEPLOYMENT_TARGET: "16.0"
 targets:
-  Backswing:
+  FreeRelief:
     type: application
     platform: iOS
     sources:
-      - path: Backswing/Sources
-      - path: Backswing/Assets.xcassets
-      - path: Backswing/web
+      - path: FreeRelief/Sources
+      - path: FreeRelief/Assets.xcassets
+      - path: FreeRelief/web
         type: folder
         buildPhase: resources
     info:
-      path: Backswing/Info.plist
+      path: FreeRelief/Info.plist
       properties:
-        CFBundleDisplayName: Backswing
-        CFBundleName: Backswing
+        CFBundleDisplayName: Free Relief
+        CFBundleName: Free Relief
         CFBundleShortVersionString: $(MARKETING_VERSION)
         CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         LSRequiresIPhoneOS: true
@@ -48,8 +48,8 @@ targets:
         UIRequiresFullScreen: false
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.brampek.backswing
-        PRODUCT_NAME: Backswing
+        PRODUCT_BUNDLE_IDENTIFIER: com.brampek.freerelief
+        PRODUCT_NAME: FreeRelief
         TARGETED_DEVICE_FAMILY: "1,2"
         CODE_SIGN_STYLE: Automatic
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon

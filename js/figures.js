@@ -1,4 +1,4 @@
-/* Backswing — exercise figures
+/* Free Relief — exercise figures
    Volumetric human figures built from an anatomical joint rig on a 120 x 120 grid.
 
    Proportions (head height H = 13.5 units, body ≈ 7.6 H):

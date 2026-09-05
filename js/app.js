@@ -1,8 +1,9 @@
-/* Backswing — app
+/* Free Relief — app
    Router, views, symptom planner, guided player, pain log, storage. No framework. */
 
 (() => {
-  const STORE_KEY = 'backswing.v1';
+  const STORE_KEY = 'freerelief.v1';
+  const LEGACY_STORE_KEYS = ['backswing.v1'];
   const $ = (s, el = document) => el.querySelector(s);
   const $$ = (s, el = document) => Array.from(el.querySelectorAll(s));
   const esc = (s) => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -14,7 +15,17 @@
   /* ---------- storage ---------- */
   let store = { log: [], done: [], plan: { area: null, timing: null, feel: null }, theme: null, sound: true };
   function load() {
-    try { const raw = localStorage.getItem(STORE_KEY); if (raw) store = Object.assign(store, JSON.parse(raw)); } catch (e) { /* storage unavailable: run in memory */ }
+    try {
+      let raw = localStorage.getItem(STORE_KEY);
+      if (!raw) {
+        /* carry over data saved under the app's previous name */
+        for (const k of LEGACY_STORE_KEYS) {
+          const legacy = localStorage.getItem(k);
+          if (legacy) { raw = legacy; localStorage.setItem(STORE_KEY, legacy); break; }
+        }
+      }
+      if (raw) store = Object.assign(store, JSON.parse(raw));
+    } catch (e) { /* storage unavailable: run in memory */ }
   }
   function save() { try { localStorage.setItem(STORE_KEY, JSON.stringify(store)); } catch (e) { /* ignore */ } }
 
@@ -362,7 +373,7 @@
           <div id="plan">${ready ? renderPlan(p.area, p.timing, p.feel) : `<div class="empty">${p.area ? 'Answer the two questions above to get your plan.' : 'Tap the body or pick a spot to begin.'}</div>`}</div>
         </div>
       </div>
-      <p class="disclaimer">Backswing gives general exercise and injury-prevention guidance for golfers. It is not medical advice and cannot examine you. If you are unsure, in a lot of pain, or any of the "see someone" signs apply, get assessed by a doctor or physiotherapist.</p>`;
+      <p class="disclaimer">Free Relief gives general exercise and injury-prevention guidance for golfers. It is not medical advice and cannot examine you. If you are unsure, in a lot of pain, or any of the "see someone" signs apply, get assessed by a doctor or physiotherapist.</p>`;
     const setArea = (a) => { p.area = a; save(); renderFix(); };
     $$('#bodymap .bm-hot').forEach(g => { g.addEventListener('click', () => setArea(g.dataset.area)); g.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setArea(g.dataset.area); } }); });
     $$('#area-chips .chip').forEach(b => b.addEventListener('click', () => setArea(b.dataset.area)));

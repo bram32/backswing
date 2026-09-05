@@ -1,4 +1,4 @@
-# Backswing
+# Free Relief
 
 Golf back care in the browser. A 3D swing lab, a symptom-to-exercise planner, guided warm-up and cool-down routines, an exercise library, an injury prevention guide, and a round-by-round pain log.
 

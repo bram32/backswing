@@ -1,5 +1,5 @@
-/* Backswing service worker: offline-capable static app shell. */
-const VERSION = 'backswing-v1';
+/* Free Relief service worker: offline-capable static app shell. */
+const VERSION = 'freerelief-v1';
 const SHELL = `${VERSION}-shell`;
 const VENDOR = `${VERSION}-vendor`;
 const KEEP = [SHELL, VENDOR];

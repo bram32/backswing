@@ -7,137 +7,137 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		27ED4CE773B6F756D94C577B /* web in Resources */ = {isa = PBXBuildFile; fileRef = F4D891952FA2C93B889364C7 /* web */; };
-		5E7131B6AB2E93A166498876 /* WebScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FED652FC8A3574E87A0A4D9 /* WebScreen.swift */; };
-		7451D53F4F840B95DD262201 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B74B52F2B06E0EBAE5C02A9B /* Assets.xcassets */; };
-		D77E79B20E90CA6EC57FD05E /* BackswingApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69C7B67B18D10BE75C034148 /* BackswingApp.swift */; };
+		62106C0857D40308A1CC9852 /* FreeReliefApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D716A6B9993E311431F41E1 /* FreeReliefApp.swift */; };
+		965E80B6E03BD7E9DF4CEA1B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B1403967928B8A1974865908 /* Assets.xcassets */; };
+		9A298D73C511F0A9973BC13F /* WebScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7F7BC02B39542DF56278496 /* WebScreen.swift */; };
+		BDCFAF74E01A6B4340BCBA5C /* web in Resources */ = {isa = PBXBuildFile; fileRef = D6301399AC81224AF24838FE /* web */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		4AFBD24B92FF7DA7DBDEB1C2 /* Backswing.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Backswing.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		69C7B67B18D10BE75C034148 /* BackswingApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackswingApp.swift; sourceTree = "<group>"; };
-		9FED652FC8A3574E87A0A4D9 /* WebScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebScreen.swift; sourceTree = "<group>"; };
-		B74B52F2B06E0EBAE5C02A9B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		F4D891952FA2C93B889364C7 /* web */ = {isa = PBXFileReference; lastKnownFileType = folder; name = web; path = Backswing/web; sourceTree = SOURCE_ROOT; };
+		5D716A6B9993E311431F41E1 /* FreeReliefApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FreeReliefApp.swift; sourceTree = "<group>"; };
+		B1403967928B8A1974865908 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		C7F7BC02B39542DF56278496 /* WebScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebScreen.swift; sourceTree = "<group>"; };
+		D6301399AC81224AF24838FE /* web */ = {isa = PBXFileReference; lastKnownFileType = folder; name = web; path = FreeRelief/web; sourceTree = SOURCE_ROOT; };
+		EE53C9076CCC4FBE18F15CAA /* FreeRelief.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = FreeRelief.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
-		57A71F754C92BA76B5855786 = {
+		2D03B3406748D9631FE1A211 /* FreeRelief */ = {
 			isa = PBXGroup;
 			children = (
-				B8C57E955DBAE025005EE66C /* Backswing */,
-				B6419F2E2F6655982CB9AADD /* Products */,
+				B1403967928B8A1974865908 /* Assets.xcassets */,
+				D6301399AC81224AF24838FE /* web */,
+				3A581E6E73B196226B572E64 /* Sources */,
 			);
+			path = FreeRelief;
 			sourceTree = "<group>";
 		};
-		B6419F2E2F6655982CB9AADD /* Products */ = {
+		3A581E6E73B196226B572E64 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
-				4AFBD24B92FF7DA7DBDEB1C2 /* Backswing.app */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
-		B8C57E955DBAE025005EE66C /* Backswing */ = {
-			isa = PBXGroup;
-			children = (
-				B74B52F2B06E0EBAE5C02A9B /* Assets.xcassets */,
-				F4D891952FA2C93B889364C7 /* web */,
-				F2799868E8C1E955A9094AA2 /* Sources */,
-			);
-			path = Backswing;
-			sourceTree = "<group>";
-		};
-		F2799868E8C1E955A9094AA2 /* Sources */ = {
-			isa = PBXGroup;
-			children = (
-				69C7B67B18D10BE75C034148 /* BackswingApp.swift */,
-				9FED652FC8A3574E87A0A4D9 /* WebScreen.swift */,
+				5D716A6B9993E311431F41E1 /* FreeReliefApp.swift */,
+				C7F7BC02B39542DF56278496 /* WebScreen.swift */,
 			);
 			path = Sources;
+			sourceTree = "<group>";
+		};
+		997655DFE7E093BD9ED44223 = {
+			isa = PBXGroup;
+			children = (
+				2D03B3406748D9631FE1A211 /* FreeRelief */,
+				BC0F36F4B2A44579C1B9B4A6 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		BC0F36F4B2A44579C1B9B4A6 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				EE53C9076CCC4FBE18F15CAA /* FreeRelief.app */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		3197E5A2B9DFA2A55AAB6F4A /* Backswing */ = {
+		0B33364F72DD011D47A7AFAD /* FreeRelief */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = A0789AABBDA91EC73EB05CF1 /* Build configuration list for PBXNativeTarget "Backswing" */;
+			buildConfigurationList = 8BFC86DF0E12980BFCAF0A42 /* Build configuration list for PBXNativeTarget "FreeRelief" */;
 			buildPhases = (
-				1DEFB77AE547E9F2E5B2E9E5 /* Sources */,
-				09E97C112A900A5E9DDFEC1C /* Resources */,
+				4FC21BDD90CC329CDB27B958 /* Sources */,
+				50D2D5E4D1F7FD35DFFF1965 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			name = Backswing;
+			name = FreeRelief;
 			packageProductDependencies = (
 			);
-			productName = Backswing;
-			productReference = 4AFBD24B92FF7DA7DBDEB1C2 /* Backswing.app */;
+			productName = FreeRelief;
+			productReference = EE53C9076CCC4FBE18F15CAA /* FreeRelief.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		0D65FC1F1A2AF765A1EE1923 /* Project object */ = {
+		A64958934E386511CD86B1EF /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1430;
 				TargetAttributes = {
-					3197E5A2B9DFA2A55AAB6F4A = {
+					0B33364F72DD011D47A7AFAD = {
 						DevelopmentTeam = JYMA2YQJV9;
 						ProvisioningStyle = Automatic;
 					};
 				};
 			};
-			buildConfigurationList = CBCA381C00E7A8242813EB38 /* Build configuration list for PBXProject "Backswing" */;
+			buildConfigurationList = DEEED6CF984F73C9BF1CBBD2 /* Build configuration list for PBXProject "FreeRelief" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				Base,
 				en,
 			);
-			mainGroup = 57A71F754C92BA76B5855786;
+			mainGroup = 997655DFE7E093BD9ED44223;
 			minimizedProjectReferenceProxies = 1;
 			preferredProjectObjectVersion = 77;
-			productRefGroup = B6419F2E2F6655982CB9AADD /* Products */;
+			productRefGroup = BC0F36F4B2A44579C1B9B4A6 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				3197E5A2B9DFA2A55AAB6F4A /* Backswing */,
+				0B33364F72DD011D47A7AFAD /* FreeRelief */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		09E97C112A900A5E9DDFEC1C /* Resources */ = {
+		50D2D5E4D1F7FD35DFFF1965 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7451D53F4F840B95DD262201 /* Assets.xcassets in Resources */,
-				27ED4CE773B6F756D94C577B /* web in Resources */,
+				965E80B6E03BD7E9DF4CEA1B /* Assets.xcassets in Resources */,
+				BDCFAF74E01A6B4340BCBA5C /* web in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		1DEFB77AE547E9F2E5B2E9E5 /* Sources */ = {
+		4FC21BDD90CC329CDB27B958 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D77E79B20E90CA6EC57FD05E /* BackswingApp.swift in Sources */,
-				5E7131B6AB2E93A166498876 /* WebScreen.swift in Sources */,
+				62106C0857D40308A1CC9852 /* FreeReliefApp.swift in Sources */,
+				9A298D73C511F0A9973BC13F /* WebScreen.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-		04BB3251F27C5F3DDBCDC7D3 /* Release */ = {
+		38ADFFE2FB16F7AAF6EBD030 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -197,47 +197,7 @@
 			};
 			name = Release;
 		};
-		450138C2594A5AB226C41F73 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CODE_SIGN_STYLE = Automatic;
-				ENABLE_USER_SCRIPT_SANDBOXING = NO;
-				INFOPLIST_FILE = Backswing/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.brampek.backswing;
-				PRODUCT_NAME = Backswing;
-				SDKROOT = iphoneos;
-				SUPPORTS_MACCATALYST = NO;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Release;
-		};
-		67B92F3F9444D1CD8B8ABE00 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CODE_SIGN_STYLE = Automatic;
-				ENABLE_USER_SCRIPT_SANDBOXING = NO;
-				INFOPLIST_FILE = Backswing/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.brampek.backswing;
-				PRODUCT_NAME = Backswing;
-				SDKROOT = iphoneos;
-				SUPPORTS_MACCATALYST = NO;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
-		DA3112C58E522C208178B42B /* Debug */ = {
+		5EB9069B967589FE623C2969 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -304,28 +264,68 @@
 			};
 			name = Debug;
 		};
+		9D0213E47AFB30E5162DF47B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				INFOPLIST_FILE = FreeRelief/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.brampek.freerelief;
+				PRODUCT_NAME = FreeRelief;
+				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = NO;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		BCBE91663A3AF720583161CE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				INFOPLIST_FILE = FreeRelief/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.brampek.freerelief;
+				PRODUCT_NAME = FreeRelief;
+				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = NO;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		A0789AABBDA91EC73EB05CF1 /* Build configuration list for PBXNativeTarget "Backswing" */ = {
+		8BFC86DF0E12980BFCAF0A42 /* Build configuration list for PBXNativeTarget "FreeRelief" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				67B92F3F9444D1CD8B8ABE00 /* Debug */,
-				450138C2594A5AB226C41F73 /* Release */,
+				9D0213E47AFB30E5162DF47B /* Debug */,
+				BCBE91663A3AF720583161CE /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
-		CBCA381C00E7A8242813EB38 /* Build configuration list for PBXProject "Backswing" */ = {
+		DEEED6CF984F73C9BF1CBBD2 /* Build configuration list for PBXProject "FreeRelief" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				DA3112C58E522C208178B42B /* Debug */,
-				04BB3251F27C5F3DDBCDC7D3 /* Release */,
+				5EB9069B967589FE623C2969 /* Debug */,
+				38ADFFE2FB16F7AAF6EBD030 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
 	};
-	rootObject = 0D65FC1F1A2AF765A1EE1923 /* Project object */;
+	rootObject = A64958934E386511CD86B1EF /* Project object */;
 }
