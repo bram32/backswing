@@ -1,0 +1,13 @@
+.DS_Store
+node_modules/
+.wrangler/
+dist/
+ios/Backswing/web/
+ios/build/
+ios/*.xcodeproj/xcuserdata/
+ios/fastlane/report.xml
+ios/fastlane/*.mobileprovision
+ios/fastlane/*.cer
+ios/fastlane/*.p12
+ios/fastlane/.env
+ios/fastlane/asc_api_key.json

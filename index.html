@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Backswing</title>
+<meta name="description" content="Golf back care: a 3D swing lab, a symptom-to-exercise planner, guided warm-ups and cool-downs, and an injury prevention guide.">
+<meta name="theme-color" content="#0e261b">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230e261b'/%3E%3Cpath d='M16 5c-3 3-5 7-5 11s2 8 5 11c3-3 5-7 5-11s-2-8-5-11z' fill='none' stroke='%23f6c544' stroke-width='2.4'/%3E%3Ccircle cx='16' cy='16' r='2.2' fill='%23f6c544'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<div class="app">
+  <nav class="rail" aria-label="Main">
+    <a class="brand" href="#lab">
+      <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8" fill="#0e261b"/><path d="M16 5c-3 3-5 7-5 11s2 8 5 11c3-3 5-7 5-11s-2-8-5-11z" fill="none" stroke="#f6c544" stroke-width="2.4"/><circle cx="16" cy="16" r="2.2" fill="#f6c544"/></svg>
+      <span class="brand-name">Backswing</span>
+    </a>
+    <div class="nav">
+      <a href="#lab" data-route="lab"><svg viewBox="0 0 24 24"><path d="M12 3v18M8 7c0-2 8-2 8 0M7 12c0-2 10-2 10 0M8 17c0-2 8-2 8 0"/></svg>Swing lab</a>
+      <a href="#fix" data-route="fix"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v5l3 2"/></svg>Fix it</a>
+      <a href="#routines" data-route="routines"><svg viewBox="0 0 24 24"><path d="M5 5v14l11-7z"/><path d="M19 5v14"/></svg>Routines</a>
+      <a href="#exercises" data-route="exercises"><svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="2"/><path d="M12 7v6l-4 6M12 13l4 6M8 10l4-2 4 2"/></svg>Exercises</a>
+      <a href="#prevent" data-route="prevent"><svg viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg>Prevent</a>
+      <a href="#log" data-route="log"><svg viewBox="0 0 24 24"><path d="M4 19h16M6 16v-5M10 16V8M14 16v-3M18 16V6"/></svg>Log</a>
+    </div>
+    <div class="rail-foot">
+      <div class="streak-pill"><span class="num" id="streak-num">0</span><span class="small muted" id="streak-txt">day streak</span></div>
+      <button class="icon-btn" id="theme-btn" type="button"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M5 19l1.5-1.5M17.5 6.5L19 5"/></svg><span>Auto theme</span></button>
+    </div>
+  </nav>
+
+  <main>
+    <section class="view" id="lab-view">
+      <div class="view-head">
+        <div>
+          <h1>Rotate from the ribs, not the lower back.</h1>
+          <p>Most golf back pain is the lumbar spine doing the thoracic spine's job. Play the swing, then switch on stiff hips or a stiff mid back and watch where the load goes.</p>
+        </div>
+        <p class="small muted" id="lab-today"></p>
+      </div>
+
+      <div class="lab">
+        <div class="lab-stage">
+          <div class="lab-canvas" id="lab-canvas"></div>
+          <div class="lab-loading" id="lab-loading">Loading the 3D lab…</div>
+          <div class="lab-hud-top">
+            <div class="lab-phase" id="lab-phase">Address<small>Right-handed golfer, 7-iron</small></div>
+            <div class="lab-reticle" id="lab-hover" hidden></div>
+          </div>
+          <div class="lab-hint">Drag to orbit · scroll to zoom · click a body part · space plays</div>
+          <div class="lab-cams" role="group" aria-label="Camera">
+            <button type="button" data-cam="free" aria-pressed="true">Free</button>
+            <button type="button" data-cam="face" aria-pressed="false">Face on</button>
+            <button type="button" data-cam="line" aria-pressed="false">Down the line</button>
+            <button type="button" data-cam="behind" aria-pressed="false">Spine</button>
+            <button type="button" data-cam="above" aria-pressed="false">Above</button>
+          </div>
+        </div>
+
+        <aside class="lab-panel">
+          <div class="lab-transport">
+            <button class="play-btn" id="play-btn" type="button" aria-label="Play swing"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></button>
+            <input class="scrub" id="scrub" type="range" min="0" max="1000" value="0" aria-label="Swing position">
+          </div>
+          <div class="lab-speed" role="group" aria-label="Playback speed">
+            <button type="button" data-speed="study" aria-pressed="true">Study speed</button>
+            <button type="button" data-speed="real" aria-pressed="false">Real speed</button>
+            <button type="button" id="loop-btn" aria-pressed="false">Loop</button>
+          </div>
+          <div class="readouts">
+            <div class="readout"><span class="num" id="ro-hip">0°</span><span class="small">Hip turn</span></div>
+            <div class="readout"><span class="num" id="ro-sh">0°</span><span class="small">Shoulder turn</span></div>
+            <div class="readout"><span class="num" id="ro-x">0°</span><span class="small">X-factor</span></div>
+          </div>
+          <div class="load">
+            <div class="load-head"><h4>Lumbar rotation</h4><span class="num" id="load-deg">0° of 13°</span></div>
+            <div class="load-bar" aria-hidden="true"><i id="load-fill"></i></div>
+            <div class="load-scale"><span>Comfortable</span><span>Working</span><span>Over capacity</span></div>
+            <p id="load-msg">The lumbar spine is built for about 13 degrees of rotation in total.</p>
+          </div>
+          <div class="whatif">
+            <h4>What if…</h4>
+            <button class="switch" type="button" data-fault="hips" aria-pressed="false"><i></i><div><b>Stiff hips</b><span>Hip turn halves. The trunk makes up the rest.</span></div></button>
+            <button class="switch" type="button" data-fault="tspine" aria-pressed="false"><i></i><div><b>Stiff mid back</b><span>Thoracic rotation drops. Lumbar picks it up.</span></div></button>
+            <button class="switch" type="button" data-fault="reverse" aria-pressed="false"><i></i><div><b>Reverse spine angle</b><span>Upper body leans at the target at the top.</span></div></button>
+          </div>
+          <div class="selection" id="lab-selection"><h4>Tap a body part</h4><p>Pick where it hurts on the 3D body and we will build a plan for it.</p></div>
+        </aside>
+      </div>
+
+      <div class="quick">
+        <a class="primary" href="#routines" data-routine="warmup"><b>Warm me up</b><span>First-tee warm-up, 7 minutes, standing only</span></a>
+        <a href="#fix"><b>My back hurts</b><span>Three questions, then a plan for right now</span></a>
+        <a href="#routines" data-routine="cooldown"><b>Cool me down</b><span>Post-round, 6 minutes at the cart</span></a>
+      </div>
+
+      <div class="lab-intro">
+        <article><span class="num">13°</span><h3>Lumbar spine</h3><p>Five big vertebrae built for bending and bracing, not turning. About 13 degrees of rotation in total, and every degree past that is borrowed from the joints and discs.</p></article>
+        <article><span class="num">35°</span><h3>Thoracic spine</h3><p>Twelve vertebrae with ribs attached. This is where the turn should come from. Desk life cuts it in half, and the swing has to find the rest somewhere.</p></article>
+        <article><span class="num">45°</span><h3>Hips</h3><p>Each hip should rotate inward about 45 degrees. That is the trail hip on the way back and the lead hip through impact. Stiff hips sway and slide, and the back pays.</p></article>
+      </div>
+      <p class="disclaimer">Backswing gives general exercise and injury-prevention guidance for golfers. It is not medical advice and cannot examine you. If you are unsure, in a lot of pain, or any of the "see someone" signs apply, get assessed by a doctor or physiotherapist.</p>
+    </section>
+
+    <div class="view" id="view" hidden></div>
+  </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/shaders/CopyShader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/shaders/GammaCorrectionShader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/postprocessing/EffectComposer.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/postprocessing/RenderPass.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/postprocessing/ShaderPass.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/environments/RoomEnvironment.js"></script>
+<script src="js/data.js"></script>
+<script src="js/figures.js"></script>
+<script src="js/lab3d.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
