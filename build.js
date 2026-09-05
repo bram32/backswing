@@ -24,4 +24,14 @@ fs.mkdirSync(path.join(site, 'js'), { recursive: true });
 fs.copyFileSync(path.join(root, 'index.html'), path.join(site, 'index.html'));
 fs.copyFileSync(path.join(root, 'css/styles.css'), path.join(site, 'css/styles.css'));
 for (const f of ['data.js', 'figures.js', 'lab3d.js', 'app.js']) fs.copyFileSync(path.join(root, 'js', f), path.join(site, 'js', f));
+// assets: png files only (app icons, Open Graph image)
+const assetsSrc = path.join(root, 'assets');
+if (fs.existsSync(assetsSrc)) {
+  const pngs = fs.readdirSync(assetsSrc).filter((f) => f.toLowerCase().endsWith('.png'));
+  if (pngs.length) {
+    fs.mkdirSync(path.join(site, 'assets'), { recursive: true });
+    for (const f of pngs) fs.copyFileSync(path.join(assetsSrc, f), path.join(site, 'assets', f));
+  }
+  console.log('dist/site/assets', pngs.length, 'png');
+}
 console.log('dist/site staged');

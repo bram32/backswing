@@ -112,7 +112,7 @@ button, [role="button"] { cursor: pointer; }
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
 
 /* ---------- shell ---------- */
-.app { display: grid; grid-template-columns: var(--rail) 1fr; min-height: 100vh; }
+.app { display: grid; grid-template-columns: var(--rail) 1fr; min-height: 100vh; min-height: 100dvh; }
 .rail {
   position: sticky; top: 0; height: 100vh; display: flex; flex-direction: column; gap: 4px;
   padding: 22px 14px; border-right: 1px solid var(--line); background: var(--ground);
@@ -292,7 +292,7 @@ main { min-width: 0; }
 .excard .figure { width: 72px; height: 72px; }
 .excard b { display: block; font-size: 0.98rem; line-height: 1.25; }
 .excard span { display: block; margin-top: 4px; color: var(--ink-2); font-size: 0.82rem; }
-.excard .tag { margin-top: 6px; }
+.excard .tag { display: inline-flex; margin-top: 6px; }
 .faults { display: flex; flex-direction: column; gap: 10px; }
 .fault { padding: 14px 16px; border-radius: 12px; border: 1px solid var(--line); }
 .fault h4 { margin-bottom: 4px; }
@@ -331,7 +331,7 @@ main { min-width: 0; }
 .empty { padding: 40px; text-align: center; color: var(--ink-2); border: 1px dashed var(--line-strong); border-radius: var(--radius); }
 
 /* ---------- modal ---------- */
-.modal { position: fixed; inset: 0; z-index: 50; display: grid; place-items: center; padding: 20px; background: rgba(4, 16, 10, 0.72); backdrop-filter: blur(6px); }
+.modal { position: fixed; inset: 0; z-index: 50; display: grid; place-items: center; padding: max(20px, env(safe-area-inset-top)) 20px max(20px, env(safe-area-inset-bottom)); background: rgba(4, 16, 10, 0.72); backdrop-filter: blur(6px); }
 .modal-card { width: min(720px, 100%); max-height: min(88vh, 900px); overflow: auto; border-radius: 18px; background: var(--raised); border: 1px solid var(--line); box-shadow: var(--shadow); }
 .modal-head { position: sticky; top: 0; display: flex; justify-content: flex-end; padding: 10px 10px 0; background: var(--raised); z-index: 1; }
 .modal-body { padding: 0 28px 28px; display: grid; grid-template-columns: 160px 1fr; gap: 24px; }
@@ -417,14 +417,14 @@ main { min-width: 0; }
 .datatable th { color: var(--ink-2); font-weight: 700; }
 
 /* ---------- player ---------- */
-.player { position: fixed; inset: 0; z-index: 60; background: var(--ground); display: grid; grid-template-rows: auto 1fr auto; }
-.player-top { display: flex; justify-content: space-between; align-items: center; padding: 16px 22px; }
+.player { position: fixed; inset: 0; z-index: 60; background: var(--ground); display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto 1fr auto; }
+.player-top { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: calc(16px + env(safe-area-inset-top)) 22px 16px; }
 .player-top b { font-family: var(--display); font-variation-settings: 'wdth' 112; font-weight: 800; }
 .player-progress { display: flex; gap: 4px; flex: 1; margin: 0 22px; }
 .player-progress i { flex: 1; height: 4px; border-radius: 2px; background: var(--inset); }
 .player-progress i.done { background: var(--accent); }
 .player-progress i.now { background: var(--ink); }
-.player-main { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: center; gap: 30px; padding: 10px 6vw; max-width: 1200px; width: 100%; margin: 0 auto; }
+.player-main { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: center; gap: 30px; padding: 10px 6vw; max-width: 1200px; width: 100%; min-width: 0; min-height: 0; margin: 0 auto; }
 .player-fig { position: relative; display: grid; place-items: center; }
 .player-fig .figure { width: min(46vh, 380px); height: min(46vh, 380px); }
 .player-info { display: flex; flex-direction: column; gap: 14px; }
@@ -442,7 +442,7 @@ main { min-width: 0; }
 .timer-num .num { position: absolute; inset: 0; display: grid; place-items: center; font-size: 2rem; }
 .timer-side { font-weight: 700; }
 .timer-side small { display: block; color: var(--ink-2); font-weight: 400; }
-.player-controls { display: flex; justify-content: center; align-items: center; gap: 12px; padding: 20px 22px 28px; }
+.player-controls { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 12px; padding: 20px 22px calc(28px + env(safe-area-inset-bottom)); }
 .player-done { text-align: center; display: flex; flex-direction: column; gap: 14px; align-items: center; padding: 40px 20px; }
 .player-done .num { font-size: 4rem; color: var(--accent-text); line-height: 1; }
 
@@ -469,21 +469,67 @@ main { min-width: 0; }
   .bodymap { position: static; max-width: 320px; }
   .logform { position: static; }
   .quick { grid-template-columns: 1fr; }
-  .player-main { grid-template-columns: 1fr; padding: 10px 24px; align-content: start; gap: 12px; }
+  .player-main { grid-template-columns: 1fr; padding: 10px 24px; align-content: start; gap: 12px; overflow-y: auto; }
   .player-fig .figure { width: min(34vh, 260px); height: min(34vh, 260px); }
   .player-info ol { display: none; }
   .modal-body { grid-template-columns: 1fr; }
+  .modal-body .figure { margin: 0 auto; }
 }
 @media (max-width: 760px) {
   .app { grid-template-columns: 1fr; }
   .rail { position: fixed; top: auto; bottom: 0; left: 0; right: 0; height: auto; flex-direction: row; align-items: center; padding: 8px 10px calc(8px + env(safe-area-inset-bottom)); border-right: 0; border-top: 1px solid var(--line); z-index: 40; }
   .brand, .rail-foot { display: none; }
   .nav { flex-direction: row; width: 100%; justify-content: space-around; }
-  .nav a { flex-direction: column; gap: 4px; padding: 6px 4px; font-size: 0.68rem; }
+  .nav a { flex: 1 1 0; min-width: 0; flex-direction: column; gap: 4px; padding: 8px 2px; font-size: 0.68rem; text-align: center; }
   .view { padding: calc(20px + env(safe-area-inset-top)) 18px 110px; }
+  .lab-stage { aspect-ratio: 1 / 1; }
   .lab-panel { grid-template-columns: 1fr; }
   .readouts { grid-template-columns: repeat(3, 1fr); }
   .stats { grid-template-columns: 1fr; }
   .entry { grid-template-columns: 90px 50px 1fr auto; gap: 8px; }
   .lab-hint { display: none; }
+
+  /* camera pills: one nowrap row across the stage instead of a wrapped two-line block */
+  .lab-cams { left: 12px; right: 12px; gap: 3px; justify-content: space-between; overflow-x: auto; scrollbar-width: none; }
+  .lab-cams::-webkit-scrollbar { display: none; }
+  .lab-cams button { flex: none; height: 38px; padding: 0 6px; font-size: 0.72rem; white-space: nowrap; }
+
+  /* tap targets */
+  .lab-speed button { height: 40px; padding: 0 14px; }
+  .scrub { height: 40px; }
+  .chip { height: 42px; }
+  .btn-sm { height: 40px; padding: 0 14px; }
+  .linkchip { height: 40px; padding: 0 12px; }
+  .seg button { height: 44px; }
+  .painscale { gap: 2px; }
+  .painscale button { height: 44px; }
+  .entry .btn-ghost { height: 38px; padding: 0 10px; }
+
+  /* body map: keep the whole figure above the tab bar */
+  .bodymap { max-width: 280px; margin: 0 auto; }
+
+  /* filter chips: one scrollable line each, so the exercise grid is not pushed off screen */
+  .filters-row.chips { flex-wrap: nowrap; overflow-x: auto; overflow-y: hidden; scrollbar-width: none; padding-bottom: 2px; }
+  .filters-row.chips::-webkit-scrollbar { display: none; }
+  .filters-row.chips .chip { flex: none; }
+
+  /* injury card head: title and stat stack instead of fighting for the same line */
+  .injury-head { flex-direction: column; align-items: flex-start; gap: 2px; }
+  .injury-head .small { text-align: left; }
+
+  /* player */
+  .player-top { flex-wrap: wrap; padding: calc(12px + env(safe-area-inset-top)) 16px 12px; }
+  .player-progress { order: 3; flex-basis: 100%; margin: 10px 0 0; }
+  .player-main { padding: 6px 18px; }
+  .player-controls { gap: 10px; padding: 14px 16px calc(20px + env(safe-area-inset-bottom)); }
+  .player-controls .btn { padding: 0 14px; }
+  .player-controls .btn-lg { padding: 0 18px; }
+
+  /* modal */
+  .modal { padding-left: 14px; padding-right: 14px; }
+  .modal-card { max-height: 100%; }
+  .modal-body { padding: 0 18px 22px; }
+
+  /* toast clears the tab bar */
+  .toast { left: 16px; right: 16px; bottom: calc(88px + env(safe-area-inset-bottom)); transform: none; text-align: center; }
 }

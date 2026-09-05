@@ -508,9 +508,9 @@
           </div>
           <div class="chart-card">
             <div class="chart-head"><h3>Pain after each round</h3><div class="legend"><span><i style="background:var(--chart-a)"></i>Warmed up</span><span><i style="background:var(--chart-b)"></i>No warm-up</span></div></div>
-            <div class="chart" id="chart">${chartSVG(list.slice(-14))}</div>
+            <div class="chart" id="chart"></div>
             <button class="btn btn-ghost btn-sm table-toggle" type="button" id="tbl-toggle">Show as table</button>
-            <div id="tbl" hidden><table class="datatable"><thead><tr><th>Date</th><th>Pain</th><th>Warm-up</th><th>Got around</th><th>Holes</th></tr></thead><tbody>${list.slice(-14).map(e => `<tr><td>${fmtDate(e.date)}</td><td>${e.pain}</td><td>${e.warm ? 'Yes' : 'No'}</td><td>${MOVES[e.move]}</td><td>${e.holes}</td></tr>`).join('')}</tbody></table></div>
+            <div id="tbl" hidden><table class="datatable"><thead><tr><th>Date</th><th>Pain</th><th>Warm-up</th><th>Got around</th><th>Holes</th></tr></thead><tbody id="tbl-body"></tbody></table></div>
             ${usingSamples() ? '<p class="sample-note">These are sample rounds so you can see how the log works. Save your first round to replace them.</p>' : ''}
           </div>
           <div class="entries">${list.slice().reverse().map(e => `<div class="entry"><span>${fmtDate(e.date)}<br><span class="small">${AREAS[e.area].short}</span></span><span class="num ${e.pain >= 6 ? 'hi' : e.pain >= 4 ? 'mid' : 'lo'}">${e.pain}</span><span><span class="small">${e.warm ? 'Warmed up' : 'No warm-up'} · ${MOVES[e.move]} · ${e.holes} holes</span>${e.note ? `<br>${esc(e.note)}` : ''}</span>${e.sample ? '<span class="small muted">sample</span>' : `<button class="btn btn-ghost" type="button" data-del="${e.id}">Delete</button>`}</div>`).join('')}</div>
@@ -528,11 +528,17 @@
     });
     $$('[data-del]').forEach(b => b.addEventListener('click', () => { store.log = store.log.filter(e => e.id !== b.dataset.del); save(); renderLog(); }));
     $('#tbl-toggle').addEventListener('click', (e) => { const t = $('#tbl'); t.hidden = !t.hidden; e.currentTarget.textContent = t.hidden ? 'Show as table' : 'Hide table'; });
-    wireChart(list.slice(-14));
+    const chartEl = $('#chart');
+    const cw = Math.max(260, Math.round(chartEl.getBoundingClientRect().width) || 640);
+    const shown = list.slice(cw < 430 ? -7 : -14);
+    chartEl.innerHTML = chartSVG(shown, cw);
+    $('#tbl-body').innerHTML = shown.map(e => `<tr><td>${fmtDate(e.date)}</td><td>${e.pain}</td><td>${e.warm ? 'Yes' : 'No'}</td><td>${MOVES[e.move]}</td><td>${e.holes}</td></tr>`).join('');
+    wireChart(shown);
   }
 
-  function chartSVG(list) {
-    const W = 640, H = 220, padL = 28, padB = 26, padT = 14;
+  function chartSVG(list, width) {
+    /* the viewBox matches the rendered width, so 11px SVG text stays 11px on a phone */
+    const W = Math.round(width || 640), H = Math.round(Math.max(210, Math.min(340, W * 0.34))), padL = 28, padB = 26, padT = 14;
     const iw = W - padL - 8, ih = H - padB - padT;
     const n = Math.max(list.length, 1); const slot = iw / n; const bw = Math.min(34, slot - 4);
     const y = (v) => padT + ih - (v / 10) * ih;
@@ -543,7 +549,9 @@
       const r = Math.min(4, h);
       const path = h > 0 ? `M${x} ${y(0)} V${top + r} q0 -${r} ${r} -${r} h${bw - 2 * r} q${r} 0 ${r} ${r} V${y(0)} Z` : `M${x} ${y(0) - 2} h${bw} v2 h-${bw} Z`;
       const label = (e.pain === maxPain || i === list.length - 1) ? `<text class="lbl" x="${x + bw / 2}" y="${top - 5}" text-anchor="middle">${e.pain}</text>` : '';
-      return `<g class="bar" data-i="${i}"><rect x="${x - 2}" y="${padT}" width="${bw + 4}" height="${ih}" fill="transparent"/><path d="${path}" fill="${e.warm ? 'var(--chart-a)' : 'var(--chart-b)'}"/>${label}<text class="axis" x="${x + bw / 2}" y="${H - 8}" text-anchor="middle">${fmtDate(e.date)}</text></g>`;
+      const showDate = slot >= 42 || (list.length - 1 - i) % 2 === 0;
+      const date = showDate ? `<text class="axis" x="${x + bw / 2}" y="${H - 8}" text-anchor="middle">${fmtDate(e.date)}</text>` : '';
+      return `<g class="bar" data-i="${i}"><rect x="${x - 2}" y="${padT}" width="${bw + 4}" height="${ih}" fill="transparent"/><path d="${path}" fill="${e.warm ? 'var(--chart-a)' : 'var(--chart-b)'}"/>${label}${date}</g>`;
     }).join('');
     return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Pain after each round, 0 to 10">${grid}${bars}</svg>`;
   }
@@ -570,9 +578,25 @@
     updateLabToday();
   }
 
+  /* ---------- debug params ----------
+     ?plan=lowback,after,stiff pre-fills the planner, ?routine=warmup opens the player,
+     ?ex=openbook opens the exercise modal. All no-ops when absent. */
+  function debugPrefill(qs) {
+    const p = (qs.get('plan') || '').split(',').map(s => s.trim());
+    if (PLANS[p[0]]) store.plan.area = p[0];
+    if (TIMINGS[p[1]]) store.plan.timing = p[1];
+    if (FEELS[p[2]]) store.plan.feel = p[2];
+  }
+  function debugOpen(qs) {
+    const r = qs.get('routine'); if (r && ROUTINE[r]) startRoutine(r);
+    const e = qs.get('ex'); if (e && EX[e]) openExercise(e);
+  }
+
   /* ---------- boot ---------- */
   function boot() {
     load(); applyTheme();
+    const qs = new URLSearchParams(location.search);
+    debugPrefill(qs);
     document.body.insertAdjacentHTML('afterbegin', figureDefs());
     $('#theme-btn').addEventListener('click', cycleTheme);
     $$('.quick a[data-routine]').forEach(a => a.addEventListener('click', (e) => { e.preventDefault(); startRoutine(a.dataset.routine); }));
@@ -580,6 +604,7 @@
     window.addEventListener('hashchange', render);
     updateRail();
     render();
+    debugOpen(qs);
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
 })();

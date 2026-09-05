@@ -1,0 +1,244 @@
+# Backswing – fastlane
+#
+# Authenticates to App Store Connect with an API key read from the environment:
+#   ASC_KEY_ID      the Key ID
+#   ASC_ISSUER_ID   the Issuer ID
+#   ASC_KEY_PATH    path to AuthKey_XXXXXXXX.p8
+#
+#   fastlane generate       sync the web app and regenerate the Xcode project
+#   fastlane register       make sure the App ID and the App Store Connect record exist
+#   fastlane archive        generate, sign and export a distribution-signed .ipa
+#   fastlane beta           archive, upload to TestFlight and add the tester
+#   fastlane testers        only make sure the TestFlight tester is set up
+
+require "shellwords"
+require "tmpdir"
+
+default_platform(:ios)
+
+PROJECT  = "Backswing.xcodeproj"
+SCHEME   = "Backswing"
+BUNDLE   = "com.brampek.backswing"
+TEAM_ID  = "JYMA2YQJV9"
+TESTER   = { email: "brampek@gmail.com", first_name: "Bram", last_name: "Pek" }
+INTERNAL_GROUP = "Backswing internal"
+EXTERNAL_GROUP = "Backswing testers"
+
+# Certificates and profiles land outside the repo so no signing material is ever committed.
+SIGNING_DIR = File.join(Dir.tmpdir, "backswing-signing")
+
+# Loads the API key and, as a side effect, authorises every Spaceship::ConnectAPI call in
+# this process (app_store_connect_api_key sets Spaceship::ConnectAPI.token by default).
+def asc_api_key
+  app_store_connect_api_key(
+    key_id: ENV.fetch("ASC_KEY_ID"),
+    issuer_id: ENV.fetch("ASC_ISSUER_ID"),
+    key_filepath: ENV.fetch("ASC_KEY_PATH"),
+    duration: 1200,
+    in_house: false
+  )
+end
+
+# `produce` / `create_app_online` has no :api_key option (fastlane 2.237), so the App ID is
+# created straight through Spaceship::ConnectAPI, which the API key already authorises.
+def ensure_bundle_id!
+  existing = Spaceship::ConnectAPI::BundleId.find(BUNDLE)
+  if existing
+    UI.success("App ID #{BUNDLE} already registered (#{existing.id})")
+    return existing
+  end
+
+  created = Spaceship::ConnectAPI::BundleId.create(
+    name: "Backswing",
+    identifier: BUNDLE,
+    platform: Spaceship::ConnectAPI::BundleIdPlatform::IOS,
+    seed_id: TEAM_ID
+  )
+  UI.success("Registered App ID #{BUNDLE}")
+  created
+end
+
+MISSING_APP_RECORD = <<~MSG.freeze
+  There is no App Store Connect record for #{BUNDLE} yet, and the App Store Connect API
+  cannot create one: POST /v1/apps is not part of the public API (the server replies
+  "The resource 'apps' does not allow 'CREATE'. Allowed operations are: GET_COLLECTION,
+  GET_INSTANCE, UPDATE"). This is an Apple API limitation, not a permission problem –
+  the key already has the Admin role.
+
+  Create the record once by hand, then every lane here works unattended:
+    App Store Connect -> Apps -> "+" -> New App
+      Platform  : iOS
+      Name      : Backswing        (or "Backswing Golf" / "Backswing Back Care" if taken)
+      Language  : English (U.S.)
+      Bundle ID : #{BUNDLE}  (already registered, it is in the dropdown)
+      SKU       : backswing-ios
+      Access    : Full Access
+MSG
+
+def find_app_record
+  Spaceship::ConnectAPI::App.find(BUNDLE)
+end
+
+def find_app!
+  find_app_record || UI.user_error!(MISSING_APP_RECORD)
+end
+
+# Assigns the tester to a group. The bulk endpoint creates the beta tester when needed, so
+# the outcome is verified afterwards by reading the tester back from the API.
+def assign_tester(group)
+  group.post_bulk_beta_tester_assignments(beta_testers: [{
+    email: TESTER[:email],
+    firstName: TESTER[:first_name],
+    lastName: TESTER[:last_name]
+  }])
+  true
+rescue => e
+  UI.important("Could not add #{TESTER[:email]} to '#{group.name}': #{e.message}")
+  false
+end
+
+def tester_in_group?(app, group)
+  tester = app.get_beta_testers(filter: { email: TESTER[:email] }, includes: "betaGroups").first
+  return false if tester.nil?
+  (tester.beta_groups || []).any? do |g|
+    (g.respond_to?(:id) ? g.id : g["id"]).to_s == group.id.to_s
+  end
+end
+
+platform :ios do
+  desc "Copy the web app into the bundle and regenerate the Xcode project"
+  lane :generate do
+    sh("../sync-web.sh")
+    sh("cd .. && xcodegen generate --quiet")
+  end
+
+  desc "Make sure the App ID and the App Store Connect app record exist"
+  lane :register do
+    asc_api_key
+    require "spaceship"
+    ensure_bundle_id!
+
+    app = find_app_record
+    if app
+      UI.success("App Store Connect record: '#{app.name}' (#{app.id})")
+    else
+      UI.important(MISSING_APP_RECORD)
+    end
+    app
+  end
+
+  desc "Generate, sign and export a distribution-signed .ipa"
+  lane :archive do
+    api_key = asc_api_key
+    generate
+    register
+
+    FileUtils.mkdir_p(SIGNING_DIR)
+    get_certificates(api_key: api_key, development: false, output_path: SIGNING_DIR)
+    get_provisioning_profile(
+      api_key: api_key,
+      app_identifier: BUNDLE,
+      force: true,
+      output_path: SIGNING_DIR
+    )
+    profile = lane_context[SharedValues::SIGH_NAME]
+    UI.message("Signing with provisioning profile: #{profile}")
+
+    # No App Store Connect record yet means no TestFlight history to read either.
+    next_build =
+      if find_app_record
+        latest_testflight_build_number(api_key: api_key, app_identifier: BUNDLE, initial_build_number: 0) + 1
+      else
+        1
+      end
+
+    increment_build_number(build_number: next_build, xcodeproj: PROJECT)
+
+    xcargs = [
+      "CODE_SIGN_STYLE=Manual",
+      "CODE_SIGN_IDENTITY=#{Shellwords.escape('Apple Distribution')}",
+      "PROVISIONING_PROFILE_SPECIFIER=#{Shellwords.escape(profile)}",
+      "DEVELOPMENT_TEAM=#{TEAM_ID}",
+      "CURRENT_PROJECT_VERSION=#{next_build}"
+    ].join(" ")
+
+    build_app(
+      project: PROJECT,
+      scheme: SCHEME,
+      configuration: "Release",
+      export_method: "app-store",
+      output_directory: "build",
+      output_name: "Backswing.ipa",
+      clean: true,
+      xcargs: xcargs,
+      export_options: {
+        method: "app-store",
+        signingStyle: "manual",
+        teamID: TEAM_ID,
+        provisioningProfiles: { BUNDLE => profile },
+        uploadSymbols: true
+      }
+    )
+
+    next_build
+  end
+
+  desc "Add the TestFlight tester to a group (internal first, external as fallback)"
+  lane :testers do
+    asc_api_key
+    require "spaceship"
+    app = find_app!
+
+    groups = app.get_beta_groups
+    internal = groups.find { |g| g.is_internal_group && g.name == INTERNAL_GROUP } ||
+               groups.find(&:is_internal_group)
+
+    if internal.nil?
+      begin
+        internal = app.create_beta_group(group_name: INTERNAL_GROUP, is_internal_group: true)
+        UI.message("Created internal group '#{internal.name}'")
+      rescue => e
+        UI.important("Could not create an internal TestFlight group: #{e.message}")
+        internal = nil
+      end
+    end
+
+    if internal && assign_tester(internal) && tester_in_group?(app, internal)
+      UI.success("#{TESTER[:email]} is an INTERNAL TestFlight tester in '#{internal.name}' – no beta review needed.")
+      next
+    end
+
+    UI.important("Internal route unavailable, falling back to an external group.") if internal
+
+    external = groups.find { |g| g.name == EXTERNAL_GROUP && !g.is_internal_group }
+    external ||= app.create_beta_group(group_name: EXTERNAL_GROUP, is_internal_group: false)
+    UI.message("External beta group: #{external.name} (#{external.id})")
+
+    assign_tester(external)
+    if tester_in_group?(app, external)
+      UI.success("#{TESTER[:email]} is an EXTERNAL TestFlight tester in '#{external.name}'.")
+      UI.important("The first build for an external group needs Beta App Review and a contact phone number in App Store Connect.")
+    else
+      UI.user_error!("Could not add #{TESTER[:email]} to any TestFlight group – check the API key's permissions.")
+    end
+  end
+
+  desc "Build and upload a TestFlight build"
+  lane :beta do
+    api_key = asc_api_key
+    build_number = archive
+
+    find_app!  # fails with actionable instructions if the record is still missing
+
+    upload_to_testflight(
+      api_key: api_key,
+      app_identifier: BUNDLE,
+      ipa: "build/Backswing.ipa",
+      skip_waiting_for_build_processing: true,
+      changelog: "First TestFlight build: 3D swing lab, symptom planner, guided routines, exercise library, injury prevention guide and round log."
+    )
+
+    testers
+    UI.success("Build #{build_number} uploaded. It appears in TestFlight once Apple finishes processing (usually 5 to 15 minutes).")
+  end
+end
