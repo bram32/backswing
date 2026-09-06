@@ -8,12 +8,50 @@ const CSS_FILES = ['css/styles.css', 'css/screen.css', 'css/programs.css', 'css/
 const css = CSS_FILES.map(read).join('\n');
 const JS_FILES = ['js/data.js', 'js/figures.js', 'js/anatomy.js', 'js/lab3d.js', 'js/app.js', 'js/screen.js', 'js/programs.js', 'js/growth.js'];
 const js = JS_FILES.map(read).join('\n;\n');
+// three.js r147 is vendored under js/vendor/three so the app runs with no network at all: the iOS
+// bundle and the offline PWA both need it, and App Review must never hang on a CDN. The paths under
+// js/vendor/three mirror the package layout exactly, so a single prefix swap turns them back into
+// jsDelivr URLs for dist/artifact.html, whose host CSP allows the CDN but has no siblings to serve.
+const VENDOR_DIR = 'js/vendor';
+const VENDOR_CDN = 'https://cdn.jsdelivr.net/npm/three@0.147.0/';
+const VENDOR_LOCAL = 'js/vendor/three/';
+const VENDOR_FILES = [
+  'build/three.min.js',
+  'examples/js/controls/OrbitControls.js',
+  'examples/js/shaders/CopyShader.js',
+  'examples/js/shaders/LuminosityHighPassShader.js',
+  'examples/js/shaders/GammaCorrectionShader.js',
+  'examples/js/postprocessing/EffectComposer.js',
+  'examples/js/postprocessing/RenderPass.js',
+  'examples/js/postprocessing/ShaderPass.js',
+  'examples/js/postprocessing/UnrealBloomPass.js',
+  'examples/js/environments/RoomEnvironment.js',
+].map((f) => VENDOR_LOCAL + f);
+{
+  const missing = VENDOR_FILES.filter((f) => !fs.existsSync(path.join(root, f)));
+  if (missing.length) throw new Error('build: vendored three.js is missing: ' + missing.join(', ') + '\n  re-download with: curl -sSfL ' + VENDOR_CDN + '<path> -o js/vendor/three/<path>');
+  const referenced = VENDOR_FILES.filter((f) => !html.includes(`<script src="${f}"></script>`));
+  if (referenced.length) throw new Error('build: index.html no longer loads the vendored three.js files: ' + referenced.join(', '));
+}
+// Fonts are vendored for the same reason and swapped back the same way: a hosted fragment cannot
+// serve sibling .woff2 files, but its CSP does allow fonts.googleapis.com.
+const FONTS_LOCAL = '<link rel="stylesheet" href="js/vendor/fonts/fonts.css">';
+const FONTS_CDN = '<link rel="preconnect" href="https://fonts.googleapis.com">\n'
+  + '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n'
+  + '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Atkinson+Hyperlegible:wght@400;700&display=swap">';
+if (!html.includes(FONTS_LOCAL)) throw new Error('build: index.html no longer links the vendored fonts (' + FONTS_LOCAL + ')');
+if (!fs.existsSync(path.join(root, 'js/vendor/fonts/fonts.css'))) throw new Error('build: js/vendor/fonts/fonts.css is missing');
+// Static pages that ship beside the app (linked from the disclaimer, and required by App Review).
+const PAGES = ['privacy.html', 'terms.html'];
 html = html.replace('<link rel="stylesheet" href="css/styles.css">', `<style>\n${css}\n</style>`);
 for (const f of CSS_FILES.slice(1)) html = html.replace(`<link rel="stylesheet" href="${f}">\n`, '');
 const scriptTags = new RegExp(JS_FILES.map((f) => `<script src="${f.replace(/[./]/g, (c) => '\\' + c)}"><\\/script>`).join('\\s*'));
 if (!scriptTags.test(html)) throw new Error('build: the <script> block in index.html does not match ' + JS_FILES.join(', '));
 html = html.replace(scriptTags, `<script>\n${js}\n</script>`);
-if (/<script src="js\//.test(html)) throw new Error('build: a js/ <script> tag survived inlining');
+// js/vendor is exempt: three.js stays an external <script> in every artifact (inlining 600 KB of
+// minified library into the single-file build would double it for no gain), so only app sources
+// are expected to have been folded in above.
+if (/<script src="js\/(?!vendor\/)/.test(html)) throw new Error('build: a js/ <script> tag survived inlining');
 // Licence gate, BEFORE anything is written. The BodyParts3D geometry is CC BY 4.0, so the rendered
 // credit is a condition of shipping, not a nicety. Checking the markup (not just the phrase) matters:
 // 'The Database Center for Life Science' also appears in the inlined js/anatomy.js banner, so a
@@ -29,6 +67,17 @@ fs.writeFileSync(path.join(root, 'dist/index.html'), html);
 // fragment: strip document wrapper, keep title/style/links/body content/scripts
 let frag = html.replace(/^[\s\S]*?<head>/, '').replace(/<\/head>\s*<body>/, '').replace(/<\/body>\s*<\/html>\s*$/, '');
 frag = frag.replace(/<meta [^>]*>\s*/g, '').replace(/<!doctype html>/i, '');
+// artifact.html is a single fragment pasted into a host page: it has no siblings to serve
+// js/vendor from, and that host's CSP allows exactly these CDNs. So the vendored three.js tags go
+// back to their jsDelivr originals here, and only here.
+frag = frag.split(`<script src="${VENDOR_LOCAL}`).join(`<script src="${VENDOR_CDN}`);
+if (/src="js\/vendor\//.test(frag)) throw new Error('build: a js/vendor <script> tag survived the artifact CDN rewrite');
+if ((frag.match(new RegExp(VENDOR_CDN.replace(/[.*+?^${}()|[\]\\/]/g, '\\$&'), 'g')) || []).length !== VENDOR_FILES.length) {
+  throw new Error(`build: dist/artifact.html should reference ${VENDOR_FILES.length} jsDelivr three.js files`);
+}
+frag = frag.replace(FONTS_LOCAL, FONTS_CDN);
+// Same reason: relative links to the legal pages cannot resolve inside a hosted fragment.
+frag = frag.replace(/href="(privacy|terms)\.html"/g, 'href="https://backswing-dkg.pages.dev/$1.html"');
 fs.writeFileSync(path.join(root, 'dist/artifact.html'), frag.trim() + '\n');
 console.log('dist/index.html', (html.length / 1024).toFixed(0) + ' KB');
 console.log('dist/artifact.html', (frag.length / 1024).toFixed(0) + ' KB');
@@ -40,6 +89,33 @@ fs.mkdirSync(path.join(site, 'js'), { recursive: true });
 fs.copyFileSync(path.join(root, 'index.html'), path.join(site, 'index.html'));
 for (const f of CSS_FILES) fs.copyFileSync(path.join(root, f), path.join(site, f));
 for (const f of JS_FILES) fs.copyFileSync(path.join(root, f), path.join(site, f));
+// Vendored three.js: needed by dist/site (the deployed site and, via sync-web.sh, the iOS bundle)
+// and by dist/index.html, which loads it as a sibling. Only dist/artifact.html goes back to the CDN.
+const copyTree = (from, to) => {
+  fs.mkdirSync(to, { recursive: true });
+  for (const entry of fs.readdirSync(from, { withFileTypes: true })) {
+    const src = path.join(from, entry.name);
+    const dst = path.join(to, entry.name);
+    if (entry.isDirectory()) copyTree(src, dst);
+    else if (entry.isFile()) fs.copyFileSync(src, dst);
+  }
+};
+for (const dest of [site, path.join(root, 'dist')]) {
+  fs.rmSync(path.join(dest, VENDOR_DIR), { recursive: true, force: true });
+  copyTree(path.join(root, VENDOR_DIR), path.join(dest, VENDOR_DIR));
+}
+{
+  const bytes = VENDOR_FILES.reduce((n, f) => n + fs.statSync(path.join(site, f)).size, 0);
+  console.log('dist/site/js/vendor', VENDOR_FILES.length, 'three.js files,', (bytes / 1024).toFixed(0) + ' KB');
+}
+// Privacy policy and terms: App Store Connect needs a reachable privacy URL, and the in-app
+// disclaimer links to both, so they have to exist beside index.html in every deployable artifact.
+for (const f of PAGES) {
+  if (!fs.existsSync(path.join(root, f))) throw new Error(`build: ${f} is missing - the disclaimer links to it and App Review requires a privacy policy`);
+  fs.copyFileSync(path.join(root, f), path.join(site, f));
+  fs.copyFileSync(path.join(root, f), path.join(root, 'dist', f));
+}
+console.log('dist/site pages:', PAGES.join(', '));
 // assets: png files only (app icons, Open Graph image)
 const assetsSrc = path.join(root, 'assets');
 if (fs.existsSync(assetsSrc)) {

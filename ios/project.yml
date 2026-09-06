@@ -20,6 +20,10 @@ targets:
     sources:
       - path: FreeRelief/Sources
       - path: FreeRelief/Assets.xcassets
+      # Required-reason API declaration (UserDefaults) plus the explicit "collects nothing,
+      # tracks nothing". Must land at the bundle root, so it is a plain resource, not a folder.
+      - path: FreeRelief/PrivacyInfo.xcprivacy
+        buildPhase: resources
       - path: FreeRelief/web
         type: folder
         buildPhase: resources
@@ -46,6 +50,16 @@ targets:
         UIViewControllerBasedStatusBarAppearance: true
         UIStatusBarStyle: UIStatusBarStyleLightContent
         UIRequiresFullScreen: false
+        # freerelief:// is the same scheme the bundled web app is served from inside WKWebView
+        # (WKURLSchemeHandler), so one URL shape works both places:
+        #   freerelief://app/index.html#lab
+        # Registering it here is what lets the system, a Home Screen shortcut or
+        # `xcrun simctl openurl` hand that URL to the app; DeepLinkRouter routes it into the page.
+        CFBundleURLTypes:
+          - CFBundleURLName: com.brampek.backswing.deeplink
+            CFBundleTypeRole: Viewer
+            CFBundleURLSchemes:
+              - freerelief
     settings:
       base:
         # legacy bundle id: kept so the existing App Store Connect record and

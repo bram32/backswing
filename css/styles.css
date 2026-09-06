@@ -551,3 +551,40 @@ main { min-width: 0; }
   .rail.open .nav a { display: flex; flex-direction: row; justify-content: flex-start; gap: 10px; padding: 12px; font-size: 0.95rem; }
   .rail.open .nav-more { color: var(--ink); }
 }
+
+/* ---------- swing lab v2: handedness, club, mobility sliders, your numbers, estimate ---------- */
+.lab-setup { flex-wrap: wrap; margin-top: -12px; }
+.lab-setup button { flex: 1 1 auto; }
+.lab-setup button[aria-pressed="true"] { background: var(--accent-soft); color: var(--accent-text); border-color: var(--accent); }
+
+/* clubhead speed and carry, over the stage. An estimate, so it reads quieter than the phase. */
+.lab-est {
+  position: absolute; top: 62px; right: 16px; max-width: 220px; padding: 8px 11px; border-radius: 10px;
+  background: rgba(6, 26, 17, 0.72); border: 1px solid rgba(191, 245, 220, 0.22);
+  color: #eef3ea; font-size: 0.82rem; line-height: 1.35; backdrop-filter: blur(6px); pointer-events: none;
+}
+.lab-est b { display: block; font-family: var(--display); font-variation-settings: 'wdth' 120; font-size: 1.05rem; }
+.lab-est em { display: block; font-style: normal; font-variant-numeric: tabular-nums; }
+.lab-est span { display: block; margin-top: 4px; color: #a9bfb0; font-size: 0.72rem; line-height: 1.3; }
+
+.mob { display: flex; flex-direction: column; gap: 4px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; }
+.mob label { display: flex; justify-content: space-between; align-items: baseline; font-size: 0.92rem; font-weight: 700; }
+.mob label b { color: var(--accent-text); font-variant-numeric: tabular-nums; }
+.mob .scrub { width: 100%; }
+.mob .small { color: var(--ink-2); font-size: 0.8rem; }
+.mob.low label b { color: var(--stop); }
+
+.yournum .small { color: var(--ink-2); margin-bottom: 2px; }
+.numrow { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.numrow label { display: flex; flex-direction: column; gap: 4px; font-size: 0.8rem; color: var(--ink-2); }
+.numrow input {
+  height: 38px; padding: 0 10px; border: 1px solid var(--line); border-radius: 8px;
+  background: var(--raised); color: var(--ink); font: inherit; font-weight: 700; font-variant-numeric: tabular-nums;
+}
+.numrow input:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+@media (max-width: 760px) {
+  .lab-est { top: auto; bottom: 58px; right: 12px; left: 12px; max-width: none; }
+  .numrow input { height: 44px; }
+  .mob .scrub { height: 40px; }
+}

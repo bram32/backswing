@@ -22,9 +22,9 @@
 <meta name="twitter:description" content="Golf back care: a 3D swing lab, a symptom-to-exercise planner, guided warm-ups and cool-downs, and an injury prevention guide.">
 <meta name="twitter:image" content="assets/social-1200x630.png">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230e261b'/%3E%3Cpath d='M16 5c-3 3-5 7-5 11s2 8 5 11c3-3 5-7 5-11s-2-8-5-11z' fill='none' stroke='%23f6c544' stroke-width='2.4'/%3E%3Ccircle cx='16' cy='16' r='2.2' fill='%23f6c544'/%3E%3C/svg%3E">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<!-- Archivo + Atkinson Hyperlegible, vendored beside three.js so the app never touches the
+     network. build.js swaps this back to the Google Fonts URL for dist/artifact.html only. -->
+<link rel="stylesheet" href="js/vendor/fonts/fonts.css">
 <link rel="stylesheet" href="css/styles.css">
 <link rel="stylesheet" href="css/screen.css">
 <link rel="stylesheet" href="css/programs.css">
@@ -70,6 +70,7 @@
             <div class="lab-phase" id="lab-phase">Address<small>Right-handed golfer, 7-iron</small></div>
             <div class="lab-reticle" id="lab-hover" hidden></div>
           </div>
+          <div class="lab-est" id="lab-est" hidden></div>
           <div class="lab-hint">Drag to orbit · scroll to zoom · click a body part · space plays</div>
           <div class="lab-cams" role="group" aria-label="Camera">
             <button type="button" data-cam="free" aria-pressed="true">Free</button>
@@ -93,6 +94,16 @@
           <div class="lab-speed lab-viz" role="group" aria-label="Overlays">
             <button type="button" id="ghost-btn" aria-pressed="false">Ghosts</button>
             <button type="button" id="trace-btn" aria-pressed="true">Swing trace</button>
+            <button type="button" id="motion-btn" aria-pressed="false" hidden>Motion</button>
+          </div>
+          <div class="lab-speed lab-setup" role="group" aria-label="Handedness">
+            <button type="button" data-handed="right" aria-pressed="true">Right-handed</button>
+            <button type="button" data-handed="left" aria-pressed="false">Left-handed</button>
+          </div>
+          <div class="lab-speed lab-setup" role="group" aria-label="Club">
+            <button type="button" data-club="driver" aria-pressed="false">Driver</button>
+            <button type="button" data-club="iron" aria-pressed="true">7-iron</button>
+            <button type="button" data-club="wedge" aria-pressed="false">Wedge</button>
           </div>
           <div class="readouts">
             <div class="readout"><span class="num" id="ro-hip">0°</span><span class="small">Hip turn</span></div>
@@ -100,16 +111,32 @@
             <div class="readout"><span class="num" id="ro-x">0°</span><span class="small">X-factor</span></div>
           </div>
           <div class="load">
-            <div class="load-head"><h4>Lumbar rotation</h4><span class="num" id="load-deg">0° of 13°</span></div>
+            <div class="load-head"><h4>Lumbar rotation</h4><span class="num" id="load-deg">0° of 10°</span></div>
             <div class="load-bar" aria-hidden="true"><i id="load-fill"></i></div>
             <div class="load-scale"><span>Comfortable</span><span>Working</span><span>Over capacity</span></div>
-            <p id="load-msg">The lumbar spine is built for about 13 degrees of rotation in total.</p>
+            <p id="load-msg">The lumbar spine is built for about 10 degrees of rotation in total.</p>
           </div>
           <div class="whatif">
             <h4>What if…</h4>
-            <button class="switch" type="button" data-fault="hips" aria-pressed="false"><i></i><div><b>Stiff hips</b><span>Hip turn halves. The trunk makes up the rest.</span></div></button>
-            <button class="switch" type="button" data-fault="tspine" aria-pressed="false"><i></i><div><b>Stiff mid back</b><span>Thoracic rotation drops. Lumbar picks it up.</span></div></button>
+            <div class="mob">
+              <label for="mob-hips">Hip mobility <b id="mob-hips-val">100%</b></label>
+              <input class="scrub" id="mob-hips" type="range" min="20" max="100" step="5" value="100" aria-describedby="mob-hips-note">
+              <span class="small" id="mob-hips-note">Turn away from the ball. Take it down and the trunk makes up the rest.</span>
+            </div>
+            <div class="mob">
+              <label for="mob-tspine">Mid-back mobility <b id="mob-tspine-val">100%</b></label>
+              <input class="scrub" id="mob-tspine" type="range" min="20" max="100" step="5" value="100" aria-describedby="mob-tspine-note">
+              <span class="small" id="mob-tspine-note">Thoracic rotation. Less here and the lumbar spine picks it up.</span>
+            </div>
             <button class="switch" type="button" data-fault="reverse" aria-pressed="false"><i></i><div><b>Reverse spine angle</b><span>Upper body leans at the target at the top.</span></div></button>
+          </div>
+          <div class="whatif yournum">
+            <h4>Your numbers</h4>
+            <p class="small">Degrees at the top, from a lesson or a launch monitor.</p>
+            <div class="numrow">
+              <label for="turn-hip">Hip turn<input id="turn-hip" type="number" min="10" max="70" step="1" value="45" inputmode="numeric"></label>
+              <label for="turn-sh">Shoulder turn<input id="turn-sh" type="number" min="40" max="130" step="1" value="95" inputmode="numeric"></label>
+            </div>
           </div>
           <div class="selection" id="lab-selection"><h4>Tap a body part</h4><p>Pick where it hurts on the 3D body and we will build a plan for it.</p></div>
         </aside>
@@ -122,11 +149,11 @@
       </div>
 
       <div class="lab-intro">
-        <article><span class="num">13°</span><h3>Lumbar spine</h3><p>Five big vertebrae built for bending and bracing, not turning. About 13 degrees of rotation in total, and every degree past that is borrowed from the joints and discs.</p></article>
-        <article><span class="num">35°</span><h3>Thoracic spine</h3><p>Twelve vertebrae with ribs attached. This is where the turn should come from. Desk life cuts it in half, and the swing has to find the rest somewhere.</p></article>
-        <article><span class="num">45°</span><h3>Hips</h3><p>Each hip should rotate inward about 45 degrees. That is the trail hip on the way back and the lead hip through impact. Stiff hips sway and slide, and the back pays.</p></article>
+        <article><span class="num">10°</span><h3>Lumbar spine</h3><p>Five big vertebrae built for bending and bracing, not turning. About 10 degrees of rotation in total, a couple per level, and every degree past that is borrowed from the joints and discs.</p></article>
+        <article><span class="num">25°</span><h3>Thoracic spine</h3><p>Twelve vertebrae with ribs attached, and roughly 25 degrees of rotation each way, well over twice the lumbar spine. This is where the turn should come from. Desk life eats into it, and the swing has to find the rest somewhere.</p></article>
+        <article><span class="num">40°</span><h3>Hips</h3><p>Each hip should rotate inward roughly 35 to 45 degrees. That is the trail hip on the way back and the lead hip through impact. Stiff hips sway and slide, and the back pays.</p></article>
       </div>
-      <p class="disclaimer">Free Relief gives general exercise and injury-prevention guidance for golfers. It is not medical advice and cannot examine you. If you are unsure, in a lot of pain, or any of the "see someone" signs apply, get assessed by a doctor or physiotherapist.</p>
+      <p class="disclaimer">Free Relief gives general exercise and injury-prevention guidance for golfers. It is not medical advice and cannot examine you. If you are unsure, in a lot of pain, or any of the "see someone" signs apply, get assessed by a doctor or physiotherapist. <a href="privacy.html">Privacy</a>&nbsp;·&nbsp;<a href="terms.html">Terms</a></p>
       <p class="credit">Anatomy adapted from BodyParts3D, © The Database Center for Life Science, licensed under <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC&nbsp;BY&nbsp;4.0</a>. Modified: a subset of skeletal structures was selected, simplified and re-rigged for animation. Adult male reference anatomy, not a scan of you. Via <a href="https://github.com/ashemag/human-atlas" target="_blank" rel="noopener noreferrer">Human&nbsp;Atlas</a> (MIT). Full notice: <a href="ATTRIBUTION.md">ATTRIBUTION.md</a>.</p>
     </section>
 
@@ -134,16 +161,18 @@
   </main>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/build/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/controls/OrbitControls.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/shaders/CopyShader.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/shaders/GammaCorrectionShader.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/postprocessing/EffectComposer.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/postprocessing/RenderPass.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/postprocessing/ShaderPass.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/environments/RoomEnvironment.js"></script>
+<!-- three.js r147, vendored so the app runs offline and App Review never depends on a CDN.
+     build.js rewrites these ten tags back to the jsDelivr URLs for dist/artifact.html only. -->
+<script src="js/vendor/three/build/three.min.js"></script>
+<script src="js/vendor/three/examples/js/controls/OrbitControls.js"></script>
+<script src="js/vendor/three/examples/js/shaders/CopyShader.js"></script>
+<script src="js/vendor/three/examples/js/shaders/LuminosityHighPassShader.js"></script>
+<script src="js/vendor/three/examples/js/shaders/GammaCorrectionShader.js"></script>
+<script src="js/vendor/three/examples/js/postprocessing/EffectComposer.js"></script>
+<script src="js/vendor/three/examples/js/postprocessing/RenderPass.js"></script>
+<script src="js/vendor/three/examples/js/postprocessing/ShaderPass.js"></script>
+<script src="js/vendor/three/examples/js/postprocessing/UnrealBloomPass.js"></script>
+<script src="js/vendor/three/examples/js/environments/RoomEnvironment.js"></script>
 <script src="js/data.js"></script>
 <script src="js/figures.js"></script>
 <script src="js/anatomy.js"></script>

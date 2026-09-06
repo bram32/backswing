@@ -161,7 +161,7 @@ const EXERCISES = [
     ],
     cue: 'Knees glued together. If they lift, the lower back is cheating.',
     avoid: 'Letting the top knee float up to get the arm further.',
-    golf: 'The thoracic spine should give you roughly 35 degrees of turn each way. Most desk-bound golfers have a good deal less.'
+    golf: 'The thoracic spine should give you roughly 25 degrees of turn each way, more than twice what the lumbar spine can. Most desk-bound golfers have a good deal less.'
   },
   {
     id: 'thread', name: 'Thread the needle', areas: ['upback', 'shoulder'], type: 'mobility', pose: 'threadNeedle',
@@ -754,7 +754,7 @@ function assessLevel(area, timing, feel) {
 const PLANS = {
   lowback: {
     intro: 'Lower back pain is the most common golf complaint. Somewhere between a quarter and a third of golfers report it in a given year. At speed the swing can send peak loads of up to about eight times your body weight through the lumbar spine, while asking it to bend sideways and twist at the same time.',
-    key: 'The lumbar spine only rotates about 13 degrees in total, a couple of degrees per level. A full backswing turns the shoulders around 90 degrees, so most of that has to come from the hips and the mid back. When those are stiff, the lower back does work it was never designed for.',
+    key: 'The lumbar spine only rotates about 10 degrees in total, a couple of degrees per level. A full backswing turns the shoulders around 90 degrees, so most of that has to come from the hips and the mid back. When those are stiff, the lower back does work it was never designed for.',
     timing: {
       during:  'Pain that shows up mid-swing points to the swing itself, usually the lower back rotating or side-bending too much because the hips or mid back are not moving. Have someone check your top-of-backswing position for a lean toward the target (reverse spine angle).',
       after:   'Fine on the course but sore that evening usually means the tissues coped with the round but not with the total load: four hours of posture, 60 bends to the ball, carrying a bag, then sitting in the car. The cool-down and how you handle the bag matter here.',
@@ -786,7 +786,7 @@ const PLANS = {
   },
   upback: {
     intro: 'Mid and upper back pain in golfers is almost always a stiffness problem rather than an injury. The thoracic spine is where a good turn should come from, and modern life locks it up.',
-    key: 'Each level of the thoracic spine contributes a few degrees of rotation, adding up to roughly 35 degrees each way. Years at a desk eat into that, and the swing then borrows the missing rotation from the lumbar spine and the neck.',
+    key: 'Each level of the thoracic spine contributes a few degrees of rotation, adding up to roughly 25 degrees each way, still well over twice what the lumbar spine offers. Years at a desk eat into that, and the swing then borrows the missing rotation from the lumbar spine and the neck.',
     timing: {
       during:  'A pinch between the shoulder blades on the backswing is the classic stiff-thoracic complaint. The trail-side ribs run out of room and the joints get jammed at the top.',
       after:   'Aching across the shoulders after a round is usually the postural muscles fatiguing from four hours of holding a forward-tilted trunk, plus the bag.',
@@ -999,7 +999,7 @@ const FAULTS = [
     id: 'reverse', name: 'Reverse spine angle',
     what: 'At the top of the backswing the upper body leans toward the target instead of slightly away from it.',
     body: 'Usually caused by hips that cannot turn, a stiff mid back, or a weak trunk that cannot hold posture as the club goes back.',
-    risk: 'The swing fault most consistently linked with lower back pain in golfers. It loads the trail-side lumbar joints on the way back and then forces the lower back to unwind first on the way down.',
+    risk: 'The swing fault coaches most often connect with lower back pain in golfers. The research has not confirmed that link, but the mechanics are plausible: it loads the trail-side lumbar joints on the way back and then asks the lower back to unwind first on the way down.',
     fix: ['hip9090', 'openbook', 'clubrot', 'hinge', 'sideplank'],
     drill: 'Set up with your head just behind the ball and keep it there to the top. Feel your trail hip sit back and your chest turn over the trail leg, not toward the target.'
   },

@@ -1,0 +1,475 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Free Relief Monetization Brief</title>
+<meta name="description" content="An honest, multi-perspective monetization and launch brief for Free Relief, a golf back-care app.">
+<meta name="theme-color" content="#0e261b">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<style>
+:root {
+  --ground: #0e261b;
+  --raised: #143323;
+  --inset: #1b4130;
+  --line: rgba(238, 243, 234, 0.14);
+  --line-strong: rgba(238, 243, 234, 0.28);
+  --ink: #eef3ea;
+  --ink-2: #a9bfb0;
+  --ink-3: #6f8a7b;
+  --accent: #f6c544;
+  --accent-ink: #1b1502;
+  --accent-text: #f6c544;
+  --accent-soft: rgba(246, 197, 68, 0.12);
+  --ok: #5ccb8c;
+  --warn: #f08a3e;
+  --stop: #f0564f;
+  --ok-soft: rgba(92, 203, 140, 0.14);
+  --warn-soft: rgba(240, 138, 62, 0.14);
+  --stop-soft: rgba(240, 86, 79, 0.14);
+  --display: 'Archivo', 'Helvetica Neue', Arial, sans-serif;
+  --body: 'Atkinson Hyperlegible', 'Helvetica Neue', Arial, sans-serif;
+  --radius: 14px;
+  color-scheme: dark;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --ground: #edf2ec;
+    --raised: #ffffff;
+    --inset: #e4ece3;
+    --line: rgba(19, 42, 31, 0.14);
+    --line-strong: rgba(19, 42, 31, 0.3);
+    --ink: #132a1f;
+    --ink-2: #405a4a;
+    --ink-3: #6d8579;
+    --accent: #f2c230;
+    --accent-ink: #1b1502;
+    --accent-text: #6f5300;
+    --accent-soft: rgba(242, 194, 48, 0.22);
+    --ok: #1a7a42;
+    --warn: #9c4b0d;
+    --stop: #b32b25;
+    --ok-soft: rgba(26, 122, 66, 0.1);
+    --warn-soft: rgba(156, 75, 13, 0.1);
+    --stop-soft: rgba(179, 43, 37, 0.1);
+    color-scheme: light;
+  }
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--ground);
+  color: var(--ink-2);
+  font: 17px/1.62 var(--body);
+  -webkit-font-smoothing: antialiased;
+}
+
+.wrap { max-width: 80rem; margin: 0 auto; padding: 0 1.25rem 6rem; }
+.col { max-width: 65ch; }
+.wide { max-width: 100%; }
+
+header.masthead { border-bottom: 1px solid var(--line); margin-bottom: 2.5rem; padding: 3.5rem 0 2.5rem; }
+.eyebrow {
+  font-family: var(--display); font-weight: 700; font-size: .72rem;
+  letter-spacing: .16em; text-transform: uppercase; color: var(--accent-text); margin: 0 0 1rem;
+}
+h1 {
+  font-family: var(--display); font-weight: 800;
+  font-size: clamp(2.1rem, 6vw, 3.4rem); line-height: 1.04; letter-spacing: -0.03em;
+  color: var(--ink); margin: 0 0 1rem; max-width: 20ch;
+}
+.standfirst { font-size: 1.12rem; color: var(--ink-2); max-width: 60ch; margin: 0 0 1.4rem; }
+.meta { font-size: .85rem; color: var(--ink-3); margin: 0; max-width: 65ch; }
+
+h2 {
+  font-family: var(--display); font-weight: 700;
+  font-size: clamp(1.45rem, 3.4vw, 1.9rem); line-height: 1.15; letter-spacing: -0.02em;
+  color: var(--ink); margin: 3.4rem 0 .4rem; scroll-margin-top: 1rem;
+}
+h2 .n {
+  display: block; font-size: .7rem; letter-spacing: .16em; text-transform: uppercase;
+  color: var(--ink-3); margin-bottom: .4rem; font-weight: 700;
+}
+h3 { font-family: var(--display); font-weight: 700; font-size: 1.06rem; letter-spacing: -0.01em; color: var(--ink); margin: 1.9rem 0 .4rem; }
+h4 { font-family: var(--display); font-weight: 700; font-size: .95rem; color: var(--ink); margin: 1.4rem 0 .3rem; }
+p { margin: 0 0 1.05rem; }
+strong { color: var(--ink); font-weight: 700; }
+a { color: var(--accent-text); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+a:hover { color: var(--ink); }
+ul, ol { padding-left: 1.15rem; margin: 0 0 1.15rem; }
+li { margin-bottom: .5rem; }
+
+.lede {
+  background: var(--raised); border: 1px solid var(--line); border-left: 3px solid var(--accent);
+  border-radius: var(--radius); padding: 1.4rem 1.5rem .6rem; margin: 0 0 1.6rem;
+}
+.lede h3 { margin-top: 0; }
+.lede li { color: var(--ink); }
+
+.callout {
+  background: var(--inset); border: 1px solid var(--line); border-radius: var(--radius);
+  padding: 1.05rem 1.2rem .25rem; margin: 1.5rem 0; font-size: .95rem;
+}
+.callout.warn { background: var(--warn-soft); border-color: rgba(240, 138, 62, .38); }
+.callout.stop { background: var(--stop-soft); border-color: rgba(240, 86, 79, .38); }
+.callout.ok { background: var(--ok-soft); border-color: rgba(92, 203, 140, .38); }
+.callout .tag {
+  font-family: var(--display); font-size: .68rem; letter-spacing: .14em; text-transform: uppercase;
+  font-weight: 700; color: var(--ink); display: block; margin-bottom: .45rem;
+}
+
+.tablewrap { overflow-x: auto; margin: 1.4rem 0 1.6rem; border: 1px solid var(--line); border-radius: var(--radius); background: var(--raised); }
+table { border-collapse: collapse; width: 100%; font-size: .86rem; min-width: 46rem; }
+caption { caption-side: bottom; text-align: left; font-size: .8rem; color: var(--ink-3); padding: .8rem 1rem 1rem; line-height: 1.5; }
+th, td { text-align: left; padding: .55rem .8rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+thead th {
+  font-family: var(--display); font-size: .7rem; letter-spacing: .09em; text-transform: uppercase;
+  color: var(--ink-3); font-weight: 700; background: var(--inset); white-space: nowrap;
+}
+tbody tr:last-child td { border-bottom: 0; }
+tbody th { font-weight: 700; color: var(--ink); font-family: var(--display); font-size: .86rem; }
+td.num, th.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+tr.self th, tr.self td { background: var(--accent-soft); }
+
+.grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(17.5rem, 1fr)); margin: 1.5rem 0 2rem; }
+.card { background: var(--raised); border: 1px solid var(--line); border-radius: var(--radius); padding: 1.05rem 1.15rem; }
+.card p:last-child { margin-bottom: 0; }
+.card .who { font-size: .72rem; letter-spacing: .1em; text-transform: uppercase; color: var(--accent-text); font-family: var(--display); font-weight: 700; margin-bottom: .35rem; }
+.card .worry { border-top: 1px solid var(--line); margin-top: .75rem; padding-top: .65rem; font-size: .89rem; }
+.card .worry b { color: var(--ink); }
+
+.verdict {
+  font-family: var(--display); font-weight: 700; font-size: .68rem; letter-spacing: .1em;
+  text-transform: uppercase; padding: .14rem .5rem; border-radius: 999px; display: inline-block;
+  margin-right: .45rem; vertical-align: 2px;
+}
+.v-do { background: var(--ok-soft); color: var(--ok); border: 1px solid currentColor; }
+.v-maybe { background: var(--warn-soft); color: var(--warn); border: 1px solid currentColor; }
+.v-no { background: var(--stop-soft); color: var(--stop); border: 1px solid currentColor; }
+
+.toc { font-size: .92rem; margin-bottom: 1rem; }
+.toc ol { columns: 2; column-gap: 2.5rem; padding-left: 1.1rem; }
+@media (max-width: 34rem) { .toc ol { columns: 1; } }
+
+.sources { font-size: .84rem; }
+.sources li { margin-bottom: .5rem; word-break: break-word; }
+
+footer.foot { border-top: 1px solid var(--line); margin-top: 3.5rem; padding-top: 1.4rem; font-size: .84rem; color: var(--ink-3); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="masthead">
+  <div class="col">
+    <p class="eyebrow">Internal brief, not for publication</p>
+    <h1>Free Relief Monetization Brief</h1>
+    <p class="standfirst">What this app can realistically earn, what it should charge, when it should start charging, and the good reasons it might never make money at all.</p>
+    <p class="meta">Written 6 September 2026 for a solo developer, pre-launch, iOS TestFlight and <a href="https://backswing-dkg.pages.dev">web</a>. Competitor prices and ratings observed the same day.</p>
+  </div>
+</header>
+
+<div class="col">
+
+<div class="lede">
+  <h3>The call, in one box</h3>
+  <ol>
+    <li><strong>Launch free, no paywall, no ads.</strong> At plausible year one volumes a paywall earns low four figures and costs the ratings velocity, word of mouth and clinician referrals that are your only distribution.</li>
+    <li><strong>The niche is open, and that is the real finding.</strong> The App Store returns one relevant app for "golf back pain", and everything positioned on pain rather than yards has under 200 ratings.</li>
+    <li><strong>Spend 90 days buying data, not revenue,</strong> using App Store Connect analytics, which need no SDK and do not change the "Data Not Collected" label.</li>
+    <li><strong>One gate:</strong> ship a paid tier only if day 28 retention clears 8 percent and installs clear 2,000 by day 90.</li>
+    <li><strong>Then sell a one time unlock:</strong> 29.99 USD, 24.99 GBP, 29.99 EUR. Nobody in this niche sells lifetime, and the loudest complaint about every competitor is the annual auto-renewal.</li>
+  </ol>
+</div>
+
+<nav class="toc">
+  <p><strong>Contents</strong></p>
+  <ol>
+    <li><a href="#product">What is actually being sold</a></li>
+    <li><a href="#market">The market, honestly sized</a></li>
+    <li><a href="#comps">What the competition charges</a></li>
+    <li><a href="#economics">The arithmetic</a></li>
+    <li><a href="#rules">The regulatory floor</a></li>
+    <li><a href="#options">Nine ways to make money</a></li>
+    <li><a href="#views">Eight points of view</a></li>
+    <li><a href="#plan">The recommendation</a></li>
+    <li><a href="#kpis">KPIs and the gate</a></li>
+    <li><a href="#ninety">The first 90 days</a></li>
+    <li><a href="#dont">What not to do</a></li>
+  </ol>
+</nav>
+
+<h2 id="product"><span class="n">01</span>What is actually being sold</h2>
+
+<p>Free Relief is three things stacked on each other: an unusual 3D swing lab with 24 articulated vertebrae and a load model, a large and careful body of general exercise content, and a privacy posture almost nobody in health and fitness can match, because there is no server.</p>
+
+<p>Two of the three are commodity. The same movements are free on YouTube from people with faces and credentials, where Bob and Brad have 5.48 million subscribers and the largest golf fitness channel, TPI, has 103,000. Privacy is a beautiful differentiator that few consumers pay for. Only the 3D lab is hard to copy, and it has the weakest connection to a wallet. Nobody has ever paid a subscription for a diagram.</p>
+
+<div class="callout stop">
+  <span class="tag">The uncomfortable finding</span>
+  <p>The best available meta-analysis of golf back pain, <a href="https://pubmed.ncbi.nlm.nih.gov/30130164/">Smith et al. 2018</a>, pooled 19 studies and found the evidence <strong>"does not support a relationship between swing characteristics and the development of golf-related pain."</strong> What does predict it is prior back pain, age and body mass. The swing lab is a superb explanatory device whose causal story runs ahead of the science. Say "here is where the load goes" and "here is how to build capacity", never "fix your swing to fix your back". Carrying that honestly on the evidence page will make the app more credible, not less.</p>
+</div>
+
+<h2 id="market"><span class="n">02</span>The market, honestly sized</h2>
+
+<p>The top line looks wonderful: <strong>29.1 million</strong> US on-course golfers in 2025, the highest in nearly two decades (<a href="https://www.ngf.org/the-clubhouse/golf-industry-research/">NGF</a>), and another <strong>43.9 million</strong> outside the US (<a href="https://www.randa.org/articles/junior-golf-growth-helps-drive-sustained-increase-in-global-participation">R&amp;A 2026</a>).</p>
+
+<p>The demographic fit is the strongest structural argument for the product. The average England Golf club member is <strong>54.99 years old</strong> (<a href="https://golfbusinessnews.com/news/management-topics/england-golf-reveals-what-is-means-to-be-an-average-golfer/">England Golf</a>). The WHO puts peak low back pain prevalence at <a href="https://www.who.int/news-room/fact-sheets/detail/low-back-pain">ages 50 to 55</a>. And among 1,170 male golfers with a mean age of 54.98, <strong>37.3 percent had low back pain in the previous seven days</strong>, more than double the next body region, with no difference by handicap (<a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC10069570/">Murray et al. 2023</a>). Three independent datasets land on the same person.</p>
+
+<p>Then the funnel narrows. NGF's core golfer, playing eight or more rounds a year, is about 13 million people in the US and accounts for roughly 90 percent of all golf spending. Call the serviceable market 20 million core English-speaking golfers, of whom 6 to 7 million have recurrent low back pain. Reaching 0.05 percent of that would be a good year.</p>
+
+<div class="callout">
+  <span class="tag">Estimate, wide range</span>
+  <p>Year one installs for an English-only, iOS, unfunded health app in a narrow niche, with competent ASO plus one video that travels: <strong>low 800, base 3,000, high 12,000</strong>. Apple took 557,000 new app submissions in 2025, and 80 percent of apps that clear 100 downloads a month still get under 10,000 (<a href="https://appfigures.com/resources/insights/20230714?f=1">Appfigures</a>). Plan on the base case.</p>
+</div>
+
+<h2 id="comps"><span class="n">03</span>What the competition charges</h2>
+
+<div class="tablewrap wide">
+<table>
+  <caption>US storefront, observed 6 September 2026. Ratings are App Store rating counts, not installs; Apple publishes no download data. Trustpilot scores are shown where they diverge sharply from the store rating.</caption>
+  <thead>
+    <tr><th>App</th><th>Positioning</th><th>Free tier</th><th class="num">Monthly</th><th class="num">Annual</th><th class="num">Rating (n)</th></tr>
+  </thead>
+  <tbody>
+    <tr><th><a href="https://apps.apple.com/us/app/golfforever/id1541864959">GolfForever</a></th><td>"Feel 10 years younger, get 10 yards longer". Justin Rose, trainer bar</td><td>30 day trial</td><td class="num">$24.99</td><td class="num">$199.99</td><td class="num">4.86 (6,835)</td></tr>
+    <tr><th><a href="https://apps.apple.com/us/app/fit-for-golf-2-0/id6458875869">Fit For Golf 2.0</a></th><td>"Train smarter, swing faster". Mike Carroll, creator led</td><td>7 day trial</td><td class="num">$19.99</td><td class="num">$159.99</td><td class="num">4.91 (1,165)</td></tr>
+    <tr><th><a href="https://apps.apple.com/us/app/drvn-golf-fitness-workouts/id1605626884">DRVN</a></th><td>Assessment-first golf fitness</td><td>Trial</td><td class="num">$29.99</td><td class="num">$179.99</td><td class="num">4.69 (426)</td></tr>
+    <tr><th><a href="https://apps.apple.com/us/app/dynamic-golfers/id6449952686">Dynamic Golfers</a></th><td><strong>"Play Pain Free"</strong>, the only explicit pain positioning in golf</td><td>Trial</td><td class="num">$9.99</td><td class="num">$85.00</td><td class="num">4.90 (175)</td></tr>
+    <tr><th><a href="https://apps.apple.com/us/app/mytpi/id1484682965">MyTPI</a></th><td>The authority brand, monetising practitioners not consumers</td><td>Free</td><td class="num">n/a</td><td class="num">$199 cert</td><td class="num">3.33 (12)</td></tr>
+    <tr><th><a href="https://18birdies.com/premium/">18Birdies</a></th><td>Mass market golf GPS, the software-only price ceiling</td><td>Generous</td><td class="num">$19.99</td><td class="num">$99.99</td><td class="num">4.92 (302,044)</td></tr>
+    <tr><th><a href="https://www.arccosgolf.com/products/air">Arccos Caddie</a></th><td>Hardware plus subscription, no free tier at all</td><td>None</td><td class="num">n/a</td><td class="num">$199.99</td><td class="num">4.59 (32,409) <em>Trustpilot 1.6</em></td></tr>
+    <tr><th><a href="https://apps.apple.com/us/app/pliability-stretch-mobility/id1175346453">Pliability</a></th><td>Daily mobility and recovery</td><td>7 day trial</td><td class="num">$19.99</td><td class="num">$179.99</td><td class="num">4.81 (9,970) <em>Trustpilot 1.4</em></td></tr>
+    <tr><th><a href="https://apps.apple.com/us/app/sworkit-fitness-wellness-app/id527219710">Sworkit</a></th><td>Home workouts, 14 day money-back guarantee</td><td>Yes</td><td class="num">$9.99</td><td class="num">$59.99</td><td class="num">4.71 (30,504)</td></tr>
+    <tr><th><a href="https://apps.apple.com/us/app/bend-stretching-flexibility/id1513988468">Bend</a></th><td>Mass market stretching, the low price anchor</td><td>Yes</td><td class="num">$4.99</td><td class="num">$19.99 to $39.99</td><td class="num">4.80 (173,220)</td></tr>
+    <tr><th><a href="https://www.hingehealth.com/for-individuals/">Hinge Health</a></th><td>Digital musculoskeletal care, employer only, no self-pay</td><td>Employer paid</td><td class="num">n/a</td><td class="num">$995 list</td><td class="num">4.93 (162,310)</td></tr>
+    <tr class="self"><th>Free Relief</th><td>Golf back care, 3D anatomy, on device, no account</td><td>Everything</td><td class="num">$0</td><td class="num">$0</td><td class="num">0 (0)</td></tr>
+  </tbody>
+</table>
+</div>
+
+<p><strong>The apps charging 199 dollars are selling a person, not software.</strong> Justin Rose is the product at GolfForever, Mike Carroll at Fit For Golf. Free Relief has no face on it, by a defensible earlier decision to build credibility through an evidence layer rather than a clinician partnership. Good for honesty, expensive for pricing power.</p>
+
+<p><strong>The pain position is vacant.</strong> Searching for "golf back pain" returns one relevant app, then GPS apps and arcade games. "Golf injury prevention" returns 25 results and not one app positioned on injury prevention. "Golf mobility" returns apps matching the word "mobile". The irony is load bearing: GolfForever's legal entity is Back Story LLC and it sells pain relief routines, yet it markets on ten extra yards. The category leader has abandoned the position this app is built for.</p>
+
+<p><strong>Nobody sells a lifetime unlock.</strong> Across GolfForever, Fit For Golf, Golfshot, 18Birdies, Arccos, TheStack, Pliability, Fitbod and Sworkit, every one is recurring only.</p>
+
+<p><strong>The store rating hides the anger.</strong> Pliability holds 4.81 on nearly 10,000 App Store ratings and 1.4 on Trustpilot; Arccos holds 4.59 and 1.6. The grievance in both is the annual auto-conversion after a seven day trial, a surprise charge of 180 to 400 dollars, not the price. Sworkit, with a 14 day money-back guarantee, has almost no billing complaints. A one time price here is a weapon aimed at the loudest complaint in the category.</p>
+
+<h2 id="economics"><span class="n">04</span>The arithmetic</h2>
+
+<p>RevenueCat's 2026 dataset covers 115,000 apps. <strong>17.3 percent</strong> of newly launched subscription apps ever reach 1,000 dollars a month and <strong>4.6 percent</strong> reach 10,000; median monthly revenue one year after launch is about <strong>72 dollars</strong>. Health and fitness realised revenue is <strong>0.66 dollars per install</strong> at day 60, and the category refund rate is 4.71 percent. Apple takes 15 percent under the <a href="https://developer.apple.com/app-store/small-business-program/">Small Business Program</a>, which any new developer qualifies for. Enrol on day one; it is a form, not a negotiation.</p>
+
+<div class="tablewrap">
+<table>
+  <caption>Modelled year one revenue, net of Apple's 15 percent and a 4.7 percent health and fitness refund rate. Estimates. Conversion assumptions follow RevenueCat's freemium median of 2.1 percent at day 35, with 1 percent low for an unknown app and 4 percent high.</caption>
+  <thead>
+    <tr><th>Scenario</th><th class="num">Installs</th><th class="num">Convert</th><th class="num">Price</th><th class="num">Payers</th><th class="num">Net to you</th></tr>
+  </thead>
+  <tbody>
+    <tr><th>Low</th><td class="num">800</td><td class="num">1.0%</td><td class="num">$29.99</td><td class="num">8</td><td class="num">$194</td></tr>
+    <tr><th>Base</th><td class="num">3,000</td><td class="num">2.1%</td><td class="num">$29.99</td><td class="num">63</td><td class="num">$1,529</td></tr>
+    <tr><th>High</th><td class="num">12,000</td><td class="num">4.0%</td><td class="num">$29.99</td><td class="num">480</td><td class="num">$11,656</td></tr>
+    <tr><th>Base at $9.99</th><td class="num">3,000</td><td class="num">4.0%</td><td class="num">$9.99</td><td class="num">120</td><td class="num">$970</td></tr>
+    <tr><th>Base, hard paywall</th><td class="num">3,000</td><td class="num">10.7%</td><td class="num">$29.99</td><td class="num">321</td><td class="num">$7,795</td></tr>
+  </tbody>
+</table>
+</div>
+
+<p><strong>The base case is roughly 1,500 dollars.</strong> Against 250 to 400 hours of skilled work that is four to six dollars an hour. Free Relief is not a business yet and no price available today makes it one. What price can change is whether it grows, and whether people trust it.</p>
+
+<h3>The strongest argument against this brief</h3>
+
+<p>It is the hard paywall row. RevenueCat's 2026 data shows hard paywalls converting at <strong>10.7 percent</strong> of downloads versus <strong>2.1 percent</strong> for freemium, an eight times difference in revenue per install, for <em>identical</em> one year retention of 27 versus 28 percent. On those numbers the freemium tax is paid entirely up front, and the case for gating on day one is strong.</p>
+
+<p>Three things push back, and on balance they win. That median includes apps with brands and review counts, so a new app with zero ratings behind a hard paywall converts nowhere near it. Ratings and downloads feed App Store search ranking, so gating suppresses the exact signal ASO needs in the first 90 days. And a hard paywall closes the physiotherapist and club professional route, the one channel where "free, no account, nothing leaves your phone" is an advantage to a gatekeeper. Revisit this at five figures of installs. At 3,000, the gap between the two models is about 6,000 dollars, which is not worth the distribution it costs.</p>
+
+<h2 id="rules"><span class="n">05</span>The regulatory floor</h2>
+
+<p><strong>App Review is the first real risk, and it is not about money.</strong> The iOS app renders in a web view, and guideline 4.2 requires an app to "include features, content, and UI that elevate it beyond a repackaged website" (<a href="https://developer.apple.com/app-store/review/guidelines/">App Review Guidelines</a>). The mitigations are in place and they are good: everything is bundled and served from a local custom scheme, three.js is vendored locally, and it renders a real time WebGL scene with interactive hit testing. Put that in the review notes rather than hoping. One loose end remains. The web fonts still load from Google's CDN, so "nothing leaves your device" is not strictly true on the web build, because the browser hands the user's IP address to a third party to fetch a font. Self host them.</p>
+
+<p><strong>Guideline 1.4.1</strong> gives extra scrutiny to medical apps "that could provide inaccurate data or information" and says apps "should remind users to check with a doctor". The app does this on every plan. Never let a paywall sit between a user and a red flag warning.</p>
+
+<p><strong>Medical device status.</strong> Software sits outside the US device definition when it is "for maintaining or encouraging a healthy lifestyle and is unrelated to the diagnosis, cure, mitigation, prevention, or treatment of a disease or condition" (<a href="https://www.fda.gov/regulatory-information/search-fda-guidance-documents/general-wellness-policy-low-risk-devices">FDA</a>); MDR Rule 11 and MDCG 2019-11 apply the same logic in Europe. The mobility self-screen walks at that line: measuring a user and outputting a personalised program resembles individualised recommendation, and a paywall reframes it from education to product claim. Keep outputs as ranges and general advice.</p>
+
+<p><strong>Privacy is an asset one SDK away from being a liability.</strong> With no server, accounts or analytics the nutrition label is "Data Not Collected" and the GDPR surface is nil. Add analytics or crash reporting and you become a controller needing a lawful basis, health-adjacent inputs become special category data, and the label changes.</p>
+
+<p><strong>Claims.</strong> The FTC's click-to-cancel rule was <a href="https://www.wilmerhale.com/en/insights/client-alerts/20250801-eighth-circuit-vacates-the-ftcs-click-to-cancel-rule-but-federal-and-state-regulators-likely-to-remain-active">vacated in July 2025</a>, but ROSCA, state auto-renewal laws and the UK ASA still bite. Never write cure, treat, clinically proven, or prevents injury.</p>
+
+<h2 id="options"><span class="n">06</span>Nine ways to make money</h2>
+
+<p><span class="verdict v-maybe">Later</span><strong>Freemium with a Pro unlock.</strong> The only option with real upside, and the boundary matters more than the price. Behind it: multi-week programs, the personalised avatar, the tempo trainer. In front of it permanently: the planner, the red flags, all 45 exercises, the routines, the swing lab, the log and the evidence page. Charging for the citations would undo the point of having them.</p>
+
+<p><span class="verdict v-do">Preferred</span><strong>One time unlock rather than subscription.</strong> Lower lifetime value per payer, higher conversion, no churn, no cancellation rage, no negative-option exposure, and differentiated in a category where nobody offers it. It fits an app with no server costs and a user whose success means he stops needing you. The objection that lifetime pricing caps revenue is true and irrelevant at 3,000 installs.</p>
+
+<p><span class="verdict v-no">No</span><strong>Advertising.</strong> Three reasons, any one sufficient. It destroys the "Data Not Collected" label, at base case volumes it earns a sandwich a month, and a supplement ad next to back pain guidance is exactly what makes health apps untrustworthy.</p>
+
+<p><span class="verdict v-no">No</span><strong>Affiliate links.</strong> Amazon Associates pays around 1 percent in Sports and in Health and Personal Care, so a 40 dollar massage ball earns 40 cents and 100 dollars a month means selling 250 of them. A recommendation engine inside a pain app also carries an obvious conflict.</p>
+
+<p><span class="verdict v-maybe">Small</span><strong>Tip jar.</strong> Guideline 3.1.1 permits in-app purchase "to enable customers to 'tip' the developer", so on iOS Apple takes its cut, while on the web a Stripe or Ko-fi link is unencumbered. Expect well under one percent to tip. Worth an afternoon, because it converts goodwill into a willingness-to-pay signal you cannot otherwise get.</p>
+
+<p><span class="verdict v-maybe">One pilot</span><strong>Clubs, coaches and physios.</strong> The seductive option and the biggest time sink. Do one pilot with one local club for the story and the testimonials, and build no white-label anything. The real asset is not revenue: a physiotherapist can recommend a free, account-free app without a data protection conversation.</p>
+
+<p><span class="verdict v-no">Not yet</span><strong>Corporate wellness.</strong> Hinge Health's published price is 995 dollars per participant per year, it will not sell to an individual at any price, and with clinicians and a sales force behind it still converts only 3.9 percent of 20 million eligible lives. No free golf app enters this market.</p>
+
+<p><span class="verdict v-maybe">Opportunistic</span><strong>Sponsorship.</strong> One tasteful credit from a golf physio clinic or a mobility brand, possible only once an audience exists, and arriving through content rather than the app.</p>
+
+<p><span class="verdict v-do">Now</span><strong>Cost control as strategy.</strong> Nothing beats a zero run rate: no server and no accounts means no bill, no password reset inbox and no breach. RevenueCat is free below 2,500 dollars of monthly tracked revenue, and StoreKit 2 alone handles one non-consumable. Do not add a payments platform before there are payments.</p>
+
+<h2 id="views"><span class="n">07</span>Eight points of view</h2>
+
+<div class="grid wide">
+  <div class="card">
+    <p class="who">The 52 year old with a sore back</p>
+    
+    <p>"I do not want a subscription. I want to know if I should play on Saturday." He loves the 3D spine for ninety seconds, then judges the app on whether the first-tee routine helps.</p>
+    <p class="worry"><b>Worries:</b> another thing to remember. Retention lives or dies on the seven minute warm-up, not the anatomy.</p>
+  </div>
+  <div class="card">
+    <p class="who">The physiotherapist</p>
+    <p>"Better content than most, and the model is a simplification, so say so." She approves of the red flags and the refusal to diagnose, and hands out a free app before a paid one.</p>
+    <p class="worry"><b>Worries:</b> the 13 degrees figure read as a hard threshold, and someone with radicular pain rotating because an app suggested it.</p>
+  </div>
+  <div class="card">
+    <p class="who">The golf coach</p>
+    <p>"I can use this to show him why I keep saying turn your ribs." The lab is a teaching aid, and coaches are the most likely evangelists available.</p>
+    <p class="worry"><b>Worries:</b> that it replaces him. Frame it as explaining what he already says, never as a substitute for a lesson.</p>
+  </div>
+  <div class="card">
+    <p class="who">The App Store reviewer</p>
+    <p>"Is this a repackaged website?" He has four minutes. He opens it, sees a spinning skeleton, and either is impressed or files a 4.2.</p>
+    <p class="worry"><b>Worries:</b> health claims and web wrappers. Lead the review notes with airplane mode and the local scheme.</p>
+  </div>
+  <div class="card">
+    <p class="who">The angel investor</p>
+    <p>"Lovely craft. Where is the wedge?" He sees no distribution, no data moat, no recurring revenue and a founder who ruled out the obvious credibility shortcuts.</p>
+    <p class="worry"><b>Worries:</b> that this is a portfolio piece with a business plan taped to it. He is not wrong, and that is fine if venture scale was never the point.</p>
+  </div>
+  <div class="card">
+    <p class="who">The skeptic</p>
+    <p>"It fails because nobody finds it." Not because it is bad. "Free Relief" has no search volume, the live domain still says backswing, there is no face and no list, and the north is heading into winter.</p>
+    <p class="worry"><b>Worries:</b> that six more features get built instead of one video getting made.</p>
+  </div>
+  <div class="card">
+    <p class="who">The ethicist</p>
+    <p>"You are selling to people in pain, so the honesty bar is higher." Exercise for chronic low back pain has effects that are real but pooled across comparisons <a href="https://www.cochranelibrary.com/cdsr/doi/10.1002/14651858.CD009790.pub2/full">small and not clinically important</a>, and there is still <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC9327285/">no completed trial showing a golf warm-up prevents injury</a>.</p>
+    <p class="worry"><b>Worries:</b> a paywall between a person in pain and the line telling them to see a doctor. Never build that.</p>
+  </div>
+  <div class="card">
+    <p class="who">The developer's own time</p>
+    <p>Every hour on StoreKit, receipts, restores and refunds is an hour not spent on the one video that would bring users. Payments are a week minimum, and worth about 1,500 dollars in the base case.</p>
+    <p class="worry"><b>Worries:</b> burning the fun. Free apps do not generate billing support email.</p>
+  </div>
+</div>
+
+<h2 id="plan"><span class="n">08</span>The recommendation</h2>
+
+<p>Launch completely free, with no paywall, no ads and no account, and say so loudly, because "free, no account, nothing leaves your phone" is differentiated, true, and aimed at the loudest complaint about every competitor in the table. Then use 90 days to find out whether anyone comes back on day 28.</p>
+
+<p>If the gate clears, ship <strong>Free Relief Pro as a one time unlock</strong> containing the multi-week programs and the personalised avatar, and add a tip jar with it. Keep every safety and evidence surface free forever. Note the naming friction now: an app called Free Relief that charges for anything invites a joke, so the free tier must stay substantial enough that the name stays honest.</p>
+
+<div class="tablewrap">
+<table>
+  <caption>Proposed price points. Apple tier pricing is approximate across storefronts and European prices include VAT. The launch window runs 60 days from the day the paid tier ships.</caption>
+  <thead>
+    <tr><th>Product</th><th class="num">USD</th><th class="num">GBP</th><th class="num">EUR</th><th>Type</th></tr>
+  </thead>
+  <tbody>
+    <tr><th>Pro, launch window</th><td class="num">$19.99</td><td class="num">£16.99</td><td class="num">€19.99</td><td>Non-consumable</td></tr>
+    <tr><th>Pro, standard</th><td class="num">$29.99</td><td class="num">£24.99</td><td class="num">€29.99</td><td>Non-consumable</td></tr>
+    <tr><th>Single program</th><td class="num">$9.99</td><td class="num">£8.99</td><td class="num">€9.99</td><td>Only if people ask for one program</td></tr>
+    <tr><th>Tip</th><td class="num">$4.99</td><td class="num">£4.49</td><td class="num">€4.99</td><td>Consumable, repeatable</td></tr>
+    <tr><th>Everything else</th><td class="num">$0</td><td class="num">£0</td><td class="num">€0</td><td>Permanently</td></tr>
+  </tbody>
+</table>
+</div>
+
+<p>Why 29.99 and not 99. Golf fitness carries a two to three times premium over general fitness, but 99.99 a year is the observed ceiling for software without hardware or a famous name, and Free Relief has neither. Against a health and fitness median annual price of 34.80 dollars, a 29.99 one time unlock reads as generous rather than cheap, and generosity is the position this app can hold.</p>
+
+<h2 id="kpis"><span class="n">09</span>KPIs and the gate</h2>
+
+<div class="tablewrap">
+<table>
+  <caption>Measured with App Store Connect App Analytics and Cloudflare Web Analytics, neither of which requires an SDK or changes the privacy label. Thresholds are judgement calls, set before the data arrives so they cannot be rationalised afterwards.</caption>
+  <thead>
+    <tr><th>Metric</th><th class="num">By day 90</th><th>What it decides</th></tr>
+  </thead>
+  <tbody>
+    <tr><th>Installs</th><td class="num">2,000</td><td>Below this, distribution is the problem and no price fixes it</td></tr>
+    <tr><th>Day 1 retention</th><td class="num">30%</td><td>Whether the first session delivers anything</td></tr>
+    <tr><th>Day 7 retention</th><td class="num">15%</td><td>Whether the routines became a habit</td></tr>
+    <tr><th>Day 28 retention</th><td class="num">8%</td><td><strong>The gate.</strong> Build a paid tier only if this clears</td></tr>
+    <tr><th>Ratings</th><td class="num">25 at 4.5+</td><td>Ranking input and social proof floor</td></tr>
+    <tr><th>Crash free sessions</th><td class="num">99.5%</td><td>WebGL on older iPhones is the main technical risk</td></tr>
+    <tr><th>Rank for "golf back pain"</th><td class="num">Top 5</td><td>Whether the one winnable keyword was won</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h2 id="ninety"><span class="n">10</span>The first 90 days, in time rather than money</h2>
+
+<ol>
+  <li><strong>Own the golf and back-care keyword intersection,</strong> using the name, subtitle and keyword field in the listing document. "Golf" is the moat: it disqualifies Bend (173,220 ratings) and Hinge Health (162,310), who will never want it. Four hours, and it compounds.</li>
+  <li><strong>Rebuild the first three screenshots around the lumbar load visualisation.</strong> Apple says "the first one to three images will appear in search results when no app preview is available", and StoreMaven's 500 million session dataset finds 60 percent never scroll past. This multiplies action one rather than adding to it.</li>
+  <li><strong>Make one 30 second silent captioned video of the lab.</strong> Play the swing, toggle stiff hips, watch the lumbar bar go red. Reuse it as the app preview, the nomination supplement and the social asset. Median outcome is a few hundred views; the tail is the only genuine upside here.</li>
+  <li><strong>Submit a Featuring Nomination</strong> in App Store Connect, type App Launch, three weeks ahead at minimum. It takes five supplemental URLs including a TestFlight link, and Apple's stated criteria include innovation and uniqueness, which is what the lab is.</li>
+  <li><strong>Participate, do not post, in r/backpain (83k) and r/golftips (96k),</strong> the two best matched communities. r/GolfSwing bans self-promotion, r/physicaltherapy is gated to licensed clinicians, and GolfWRX requires prior approval, so three of the most obvious audiences are structurally closed.</li>
+  <li><strong>Write six articles on the web version</strong> targeting golf lower back pain, reverse spine angle, first tee warm-up, S posture, golfer's elbow and thoracic rotation. The only channel you own outright.</li>
+  <li><strong>Email 20 club professionals and 10 physiotherapists</strong> with one paragraph, one image and a printable QR poster. Untested and cheap to test, and the first credible reviews matter more than the installs.</li>
+  <li><strong>Pitch MyGolfSpy's "We Tried It" format, and only that.</strong> Golf Monthly and Today's Golfer run roundups of major brands only, with no submission route.</li>
+</ol>
+
+<h2 id="dont"><span class="n">11</span>What not to do</h2>
+
+<ul>
+  <li><strong>Do not build accounts or cloud sync.</strong> It destroys the privacy claim, creates GDPR obligations, adds cost, and nobody asked for it.</li>
+  <li><strong>Do not add ads, ever.</strong></li>
+  <li><strong>Do not paywall safety content, red flags or the evidence page.</strong></li>
+  <li><strong>Do not fight for "back pain", "sciatica" or "posture" as head terms.</strong> Bend and Hinge Health have over 170,000 and 160,000 ratings, and chasing them dilutes the keyword field.</li>
+  <li><strong>Do not launch on Product Hunt.</strong> Non-featured launches get 100 to 500 visitors and 1 to 15 signups, only a tenth get featured, and 89 percent of surveyed founders would not do it again. The audience is founders, not 55 year olds with sore backs.</li>
+  <li><strong>Do not keyword-stuff the description.</strong> Apple indexes name, subtitle, keywords and category; description and promotional text do not affect search ranking, by Apple's own statement.</li>
+  <li><strong>Do not buy installs.</strong> Apple Search Ads in Health and Fitness run about 3.02 dollars per download against a freemium revenue per install of 0.38, roughly eight times underwater.</li>
+  <li><strong>Do not ship Android, translations, or a second video before day 90.</strong></li>
+  <li><strong>Do not claim clinical outcomes or imply a clinician endorses this</strong> unless one does and is named.</li>
+  <li><strong>Do not build six more features before making the video.</strong> The backlog is not the bottleneck. Distribution is.</li>
+</ul>
+
+<h2 id="sources"><span class="n">12</span>Sources</h2>
+
+<ul class="sources">
+  <li>National Golf Foundation, golf industry research and participation, 2026. <a href="https://www.ngf.org/the-clubhouse/golf-industry-research/">ngf.org</a></li>
+  <li>R&amp;A, global golf participation report, April 2026. <a href="https://www.randa.org/articles/junior-golf-growth-helps-drive-sustained-increase-in-global-participation">randa.org</a></li>
+  <li>England Golf, average golfer statistics, via Golf Business News. <a href="https://golfbusinessnews.com/news/management-topics/england-golf-reveals-what-is-means-to-be-an-average-golfer/">golfbusinessnews.com</a></li>
+  <li>Murray A, Junge A, Robinson PG, et al. Injury and illness in male golfers. BMJ Open Sport Exerc Med, 2023. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC10069570/">pmc.ncbi.nlm.nih.gov</a></li>
+  <li>Smith JA, Hawkins A, Grant-Beuttler M, et al. Risk factors for golf-related low back pain, systematic review and meta-analysis. Sports Health, 2018. <a href="https://pubmed.ncbi.nlm.nih.gov/30130164/">pubmed.ncbi.nlm.nih.gov</a></li>
+  <li>Hayden JA, et al. Exercise therapy for chronic low back pain. Cochrane Database Syst Rev, 2021. <a href="https://www.cochranelibrary.com/cdsr/doi/10.1002/14651858.CD009790.pub2/full">cochranelibrary.com</a></li>
+  <li>GRIPP trial protocol, golf injury prevention. BMC Sports Sci Med Rehabil, 2022. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC9327285/">pmc.ncbi.nlm.nih.gov</a></li>
+  <li>World Health Organization, low back pain fact sheet, June 2023. <a href="https://www.who.int/news-room/fact-sheets/detail/low-back-pain">who.int</a></li>
+  <li>Meertens RM, et al. Prevention praised, cure preferred. BMC Med Inform Decis Mak, 2013. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC3878324/">pmc.ncbi.nlm.nih.gov</a></li>
+  <li>RevenueCat, State of Subscription Apps 2026. <a href="https://www.revenuecat.com/state-of-subscription-apps">revenuecat.com</a></li>
+  <li>Appfigures, app download distribution. <a href="https://appfigures.com/resources/insights/20230714?f=1">appfigures.com</a></li>
+  <li>Apple, App Review Guidelines. <a href="https://developer.apple.com/app-store/review/guidelines/">developer.apple.com</a></li>
+  <li>Apple, App Store Small Business Program. <a href="https://developer.apple.com/app-store/small-business-program/">developer.apple.com</a></li>
+  <li>Apple, App Store search and product page guidance. <a href="https://developer.apple.com/app-store/search/">developer.apple.com/app-store/search</a> and <a href="https://developer.apple.com/app-store/product-page/">product-page</a></li>
+  <li>Apple, nominate your app for featuring. <a href="https://developer.apple.com/help/app-store-connect/manage-featuring-nominations/nominate-your-app-for-featuring/">developer.apple.com</a></li>
+  <li>FDA, General Wellness: Policy for Low Risk Devices. <a href="https://www.fda.gov/regulatory-information/search-fda-guidance-documents/general-wellness-policy-low-risk-devices">fda.gov</a></li>
+  <li>WilmerHale, Eighth Circuit vacates the FTC click to cancel rule, August 2025. <a href="https://www.wilmerhale.com/en/insights/client-alerts/20250801-eighth-circuit-vacates-the-ftcs-click-to-cancel-rule-but-federal-and-state-regulators-likely-to-remain-active">wilmerhale.com</a></li>
+  <li>Public Health Technology Institute, virtual musculoskeletal solutions assessment. <a href="https://www.phti.org/wp-content/uploads/2024/10/PHTI-Virtual-MSK-Solutions-Assessment-Report-v1.3.pdf">phti.org</a></li>
+  <li>StoreMaven, App Store statistics, 500 million session dataset. <a href="https://www.thestoremaven.store/academy/app-store-statistics-revealed/">thestoremaven.store</a></li>
+  <li>Product Hunt launch statistics compilation, 2025. <a href="https://www.shno.co/marketing-statistics/product-hunt-launch-statistics">shno.co</a></li>
+  <li>Competitor prices as linked in the comparison table, observed 6 September 2026.</li>
+</ul>
+
+<footer class="foot">
+  <p>Free Relief Monetization Brief, prepared 6 September 2026. Competitor prices, ratings and search rankings were observed on that date and change constantly, so verify before quoting any figure publicly. Several figures in the growth section come from vendor-published datasets with commercial motives and are labelled where that matters. Every number marked as an estimate is a judgement call, not a forecast.</p>
+</footer>
+
+</div>
+</div>
+</body>
+</html>

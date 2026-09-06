@@ -7,13 +7,17 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		078C82A29FEFAE5A4CB28596 /* NativeBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D3D16E8A721779997F6B6D8 /* NativeBridge.swift */; };
 		62106C0857D40308A1CC9852 /* FreeReliefApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D716A6B9993E311431F41E1 /* FreeReliefApp.swift */; };
+		738C997537C6FBCFED29051E /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 23BF62CDE0CC228A3336E060 /* PrivacyInfo.xcprivacy */; };
 		965E80B6E03BD7E9DF4CEA1B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B1403967928B8A1974865908 /* Assets.xcassets */; };
 		9A298D73C511F0A9973BC13F /* WebScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7F7BC02B39542DF56278496 /* WebScreen.swift */; };
 		BDCFAF74E01A6B4340BCBA5C /* web in Resources */ = {isa = PBXBuildFile; fileRef = D6301399AC81224AF24838FE /* web */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		23BF62CDE0CC228A3336E060 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		2D3D16E8A721779997F6B6D8 /* NativeBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NativeBridge.swift; sourceTree = "<group>"; };
 		5D716A6B9993E311431F41E1 /* FreeReliefApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FreeReliefApp.swift; sourceTree = "<group>"; };
 		B1403967928B8A1974865908 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C7F7BC02B39542DF56278496 /* WebScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebScreen.swift; sourceTree = "<group>"; };
@@ -26,6 +30,7 @@
 			isa = PBXGroup;
 			children = (
 				B1403967928B8A1974865908 /* Assets.xcassets */,
+				23BF62CDE0CC228A3336E060 /* PrivacyInfo.xcprivacy */,
 				D6301399AC81224AF24838FE /* web */,
 				3A581E6E73B196226B572E64 /* Sources */,
 			);
@@ -36,6 +41,7 @@
 			isa = PBXGroup;
 			children = (
 				5D716A6B9993E311431F41E1 /* FreeReliefApp.swift */,
+				2D3D16E8A721779997F6B6D8 /* NativeBridge.swift */,
 				C7F7BC02B39542DF56278496 /* WebScreen.swift */,
 			);
 			path = Sources;
@@ -118,6 +124,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				965E80B6E03BD7E9DF4CEA1B /* Assets.xcassets in Resources */,
+				738C997537C6FBCFED29051E /* PrivacyInfo.xcprivacy in Resources */,
 				BDCFAF74E01A6B4340BCBA5C /* web in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -130,6 +137,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				62106C0857D40308A1CC9852 /* FreeReliefApp.swift in Sources */,
+				078C82A29FEFAE5A4CB28596 /* NativeBridge.swift in Sources */,
 				9A298D73C511F0A9973BC13F /* WebScreen.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -171,7 +179,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = JYMA2YQJV9;
 				ENABLE_NS_ASSERTIONS = NO;
@@ -231,7 +239,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = JYMA2YQJV9;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;

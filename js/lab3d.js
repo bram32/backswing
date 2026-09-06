@@ -15,11 +15,27 @@
 
 const Lab = (() => {
   const DEG = Math.PI / 180;
-  const CLUB_LEN = 0.88;
   const ARM = { upper: 0.30, fore: 0.27 };
   const LEG = { thigh: 0.43, shin: 0.42 };
-  const CAP = { girdle: 15, thoracic: 40, lumbar: 13, cervical: 80 };
-  const COMPLIANCE = { girdle: 0.35, thoracic: 1.0, thoracicStiff: 0.4, lumbar: 0.30 };
+  const CAP = { girdle: 15, thoracic: 40, lumbar: 10, cervical: 80 };
+  const COMPLIANCE = { girdle: 0.35, thoracic: 1.0, thoracicStiff: 0.4, lumbar: 0.23 };
+
+  /* Clubs. `len` is the modelled shaft length in this (slightly compressed) figure's scale; the
+     ratios match real 45.5" / 37" / 35.5" clubs. `tilt`/`side` are posture deltas on the authored
+     7-iron keyframes: a driver stands taller with more tilt away from the target, a wedge is
+     steeper and more centred. `ballX` moves the ball (and with it the whole swing arc) along the
+     target line — forward off the lead heel for the driver, centre for the wedge. `tee` lifts the
+     ball off the turf. `carry` is yards per mph of clubhead speed for the estimate in the HUD. */
+  const CLUBS = {
+    driver: { label: 'driver', len: 1.082, tilt: -4, side: 6, ballX: 0.13, tee: 0.038, headScale: 1.9, arc: 1.00, turn: 1.00, pace: 1.00, carry: 2.42 },
+    iron: { label: '7-iron', len: 0.880, tilt: 0, side: 0, ballX: 0.00, tee: 0.000, headScale: 1.0, arc: 1.00, turn: 1.00, pace: 1.00, carry: 1.86 },
+    wedge: { label: 'wedge', len: 0.844, tilt: 3, side: -3, ballX: -0.09, tee: 0.000, headScale: 0.92, arc: 0.88, turn: 0.90, pace: 1.12, carry: 1.25 }
+  };
+  let clubSpec = CLUBS.iron;
+  let CLUB_LEN = clubSpec.len;
+  /* +1 right-handed, -1 left-handed. Mirrors every x position and flips every yaw / side-bend
+     sign; the readouts are taken before the mirror so they stay positive-is-backswing. */
+  let MIR = 1;
 
   /* Where the arms and the legs hang off the skeleton, in the parent bone's local frame:
      shoulders on T2, hips on the pelvis. These are variables rather than literals because the
@@ -36,18 +52,55 @@ const Lab = (() => {
     fog: 0x0b2a21, skyZenith: 0x020d0a, skyMid: 0x05221d, skyHorizon: 0x0d4f48, skySun: 0xff9d4e
   };
 
-  /* Swing keyframes. Turns in degrees, positive = backswing (away from target), negative = through.
-     hands and club are in root space: +x toward target, +y up, +z toward the ball. */
+  /* Swing keyframes for a right-handed golfer with a 7-iron. Turns in degrees, positive =
+     backswing (away from target), negative = through. hands and club are in root space:
+     +x toward target, +y up, +z toward the ball. `club` is a unit shaft direction pointing from
+     the grip to the clubhead; null means "derive it by aiming the shaft at the ball", which is
+     what makes address and impact land on the ball whatever the club length.
+     `face` is the clubface yaw in the same positive-is-backswing convention (0 = square to the
+     target); `rise` lifts the pelvis, which is how the lead leg extends through impact.
+
+     Reference frame for the numbers, all for a right-handed player:
+       address    trunk flexion 35-40 deg, spine tilted a few degrees away from the target
+       top        pelvis 45 (35-55), thorax 90-100, X-factor 45-55  [McTeigue 1994; TPI 3D norms]
+       transition pelvis reverses first, X-factor stretches ~10% early down  [Cheetham 2001]
+       impact     pelvis open 35-45, thorax open 20-30, trail side bend 25-35, shaft lean 8-12
+       finish     pelvis 90+ open, chest past the target                                        */
   const KEYS = [
-    { t: 0.00, pelvis: 0,   torso: 0,    tilt: 32, side: 0,  ext: 0,  head: 0,   shift: 0.00, hands: [0.02, 0.84, 0.35],   club: null,                     trailHeel: 0,    leadHeel: 0 },
-    { t: 0.18, pelvis: 8,   torso: 30,   tilt: 32, side: 2,  ext: 0,  head: -5,  shift: -0.02, hands: [-0.32, 0.86, 0.22],  club: [-0.542, -0.723, 0.429], trailHeel: 0,    leadHeel: 0 },
-    { t: 0.34, pelvis: 28,  torso: 65,   tilt: 31, side: 6,  ext: 0,  head: -10, shift: -0.03, hands: [-0.48, 1.12, -0.02], club: [-0.347, 0.938, -0.039], trailHeel: 0,    leadHeel: 0.15 },
-    { t: 0.50, pelvis: 45,  torso: 95,   tilt: 30, side: 10, ext: 2,  head: -18, shift: -0.03, hands: [-0.30, 1.50, -0.22], club: [-0.960, 0.113, -0.260], trailHeel: 0,    leadHeel: 0.3 },
-    { t: 0.60, pelvis: 15,  torso: 65,   tilt: 31, side: 14, ext: 0,  head: -12, shift: 0.02,  hands: [-0.42, 1.05, -0.02], club: [-0.948, 0.304, -0.097], trailHeel: 0.1,  leadHeel: 0 },
-    { t: 0.65, pelvis: -14, torso: 20,   tilt: 31, side: 18, ext: 1,  head: -8,  shift: 0.04,  hands: [-0.16, 0.95, 0.22],  club: [-0.808, -0.527, 0.269], trailHeel: 0.22, leadHeel: 0 },
-    { t: 0.70, pelvis: -40, torso: -22,  tilt: 30, side: 22, ext: 2,  head: -5,  shift: 0.06,  hands: [0.08, 0.88, 0.40],   club: null,                     trailHeel: 0.35, leadHeel: 0 },
-    { t: 0.80, pelvis: -70, torso: -80,  tilt: 22, side: 16, ext: 8,  head: 35,  shift: 0.08,  hands: [0.52, 1.02, 0.30],   club: [0.854, 0.386, 0.351],   trailHeel: 0.7,  leadHeel: 0 },
-    { t: 1.00, pelvis: -90, torso: -125, tilt: 6,  side: 4,  ext: 18, head: 95,  shift: 0.10,  hands: [0.05, 1.55, -0.35],  club: [-0.486, -0.432, -0.756], trailHeel: 1.0,  leadHeel: 0 }
+    { t: 0.000, pelvis: 0,   torso: 0,    tilt: 36, side: 5,  ext: 0,  head: 0,   shift: 0.00,  rise: 0.000, hands: [0.02, 0.840, 0.350],   club: null,                      face: 0,    trailHeel: 0,    leadHeel: 0 },
+    { t: 0.090, pelvis: 3,   torso: 12,   tilt: 36, side: 5,  ext: 0,  head: -2,  shift: -0.01, rise: 0.000, hands: [-0.16, 0.845, 0.300],  club: [-0.245, -0.909, 0.335],   face: 14,   trailHeel: 0,    leadHeel: 0 },
+    { t: 0.180, pelvis: 8,   torso: 30,   tilt: 36, side: 6,  ext: 0,  head: -5,  shift: -0.02, rise: 0.000, hands: [-0.32, 0.860, 0.220],  club: [-0.560, -0.725, 0.400],   face: 28,   trailHeel: 0,    leadHeel: 0 },
+    { t: 0.340, pelvis: 28,  torso: 65,   tilt: 35, side: 8,  ext: 0,  head: -10, shift: -0.03, rise: 0.000, hands: [-0.48, 1.120, -0.020], club: [-0.280, 0.945, -0.170],   face: 72,   trailHeel: 0,    leadHeel: 0.06 },
+    { t: 0.440, pelvis: 39,  torso: 84,   tilt: 34, side: 9,  ext: 1,  head: -15, shift: -0.03, rise: -0.005, hands: [-0.44, 1.380, -0.180], club: [0.320, 0.860, -0.400],   face: 88,   trailHeel: 0,    leadHeel: 0.10 },
+    { t: 0.500, pelvis: 45,  torso: 95,   tilt: 34, side: 10, ext: 2,  head: -18, shift: -0.03, rise: -0.010, hands: [-0.30, 1.500, -0.220], club: [0.878, 0.408, -0.250],   face: 92,   trailHeel: 0,    leadHeel: 0.12 },
+    { t: 0.535, pelvis: 40,  torso: 97,   tilt: 34, side: 11, ext: 2,  head: -18, shift: -0.02, rise: -0.008, hands: [-0.34, 1.440, -0.240], club: [0.722, 0.201, -0.662],   face: 86,   trailHeel: 0.02, leadHeel: 0.10 },
+    { t: 0.575, pelvis: 28,  torso: 83,   tilt: 34, side: 12, ext: 1,  head: -16, shift: -0.01, rise: -0.005, hands: [-0.42, 1.260, -0.180], club: [-0.420, 0.160, -0.893],  face: 76,   trailHeel: 0.05, leadHeel: 0.04 },
+    { t: 0.600, pelvis: 8,   torso: 62,   tilt: 34, side: 14, ext: 0,  head: -12, shift: 0.02,  rise: 0.000, hands: [-0.42, 1.050, -0.020],  club: [-0.910, 0.062, -0.412],  face: 58,   trailHeel: 0.12, leadHeel: 0 },
+    { t: 0.625, pelvis: -8,  torso: 42,   tilt: 34, side: 17, ext: 1,  head: -10, shift: 0.03,  rise: 0.007, hands: [-0.30, 1.000, 0.100],   club: [-0.968, -0.236, -0.094], face: 42,   trailHeel: 0.18, leadHeel: 0 },
+    { t: 0.650, pelvis: -22, torso: 18,   tilt: 33, side: 20, ext: 1,  head: -8,  shift: 0.04,  rise: 0.015, hands: [-0.16, 0.950, 0.220],   club: [-0.790, -0.560, 0.250],  face: 26,   trailHeel: 0.24, leadHeel: 0 },
+    { t: 0.675, pelvis: -32, torso: -6,   tilt: 33, side: 25, ext: 2,  head: -6,  shift: 0.05,  rise: 0.023, hands: [0.05, 0.885, 0.320],    club: [-0.505, -0.814, 0.281],  face: 12,   trailHeel: 0.31, leadHeel: 0 },
+    { t: 0.700, pelvis: -40, torso: -24,  tilt: 32, side: 28, ext: 2,  head: -4,  shift: 0.06,  rise: 0.030, hands: [0.24, 0.845, 0.375],    club: null,                     face: 0,    trailHeel: 0.38, leadHeel: 0 },
+    { t: 0.735, pelvis: -52, torso: -46,  tilt: 30, side: 25, ext: 4,  head: 6,   shift: 0.07,  rise: 0.038, hands: [0.40, 0.890, 0.395],    club: [0.386, -0.897, 0.215],   face: -20,  trailHeel: 0.50, leadHeel: 0 },
+    { t: 0.800, pelvis: -70, torso: -80,  tilt: 24, side: 16, ext: 8,  head: 35,  shift: 0.08,  rise: 0.050, hands: [0.52, 1.020, 0.300],    club: [0.854, 0.386, 0.351],    face: -48,  trailHeel: 0.70, leadHeel: 0 },
+    { t: 0.900, pelvis: -82, torso: -105, tilt: 14, side: 9,  ext: 13, head: 65,  shift: 0.09,  rise: 0.060, hands: [0.46, 1.440, 0.020],    club: [0.301, 0.723, -0.622],   face: -90,  trailHeel: 0.90, leadHeel: 0 },
+    { t: 1.000, pelvis: -92, torso: -128, tilt: 6,  side: 4,  ext: 18, head: 95,  shift: 0.10,  rise: 0.070, hands: [0.05, 1.550, -0.350],   club: [-0.676, -0.541, -0.500], face: -125, trailHeel: 1.0,  leadHeel: 0 }
+  ];
+  const CHANNELS = ['pelvis', 'torso', 'tilt', 'side', 'ext', 'head', 'shift', 'rise', 'face', 'trailHeel', 'leadHeel'];
+  const T_TOP = 0.50, T_IMPACT = 0.70;
+
+  /* Tempo. The keyframe t is a phase, not a clock. Running it linearly gave a 2.5:1
+     backswing:downswing ratio against a published ~3:1 (backswing 0.75-0.9 s, downswing
+     0.25-0.3 s), and worse, a clubhead that peaked halfway down and slowed into the ball,
+     because the keyframes are not evenly spaced along the arc. These three phases fix the ratio
+     — 0.80 s back, 0.27 s down (2.96:1), 0.43 s through, of a 1.5 s swing — and buildTempo()
+     then divides each phase between its keyframe intervals so the clubhead covers its own arc at
+     the speed a real swing has there: slow at the top, fastest at impact. */
+  const TEMPO = [[0, T_TOP, 0.5333], [T_TOP, T_IMPACT, 0.1800], [T_IMPACT, 1, 0.2867]];
+  const DURATION = { study: 4.6, real: 1.5 };
+  /* Clubhead speed through the swing, in arbitrary units: the shape, not the magnitude. */
+  const SPEED_SHAPE = [
+    [0.00, 0.06], [0.12, 0.50], [0.28, 0.62], [0.42, 0.42], [0.50, 0.20], [0.55, 0.44],
+    [0.62, 0.72], [0.66, 0.88], [0.70, 1.00], [0.74, 0.97], [0.82, 0.70], [0.92, 0.34], [1.00, 0.10]
   ];
 
   const REGION_LABELS = {
@@ -72,7 +125,7 @@ const Lab = (() => {
   let clubTrail = null, handTrail = null;
   let arcHip = null, arcSh = null, arcX = null, labHip = null, labSh = null, labX = null, arcGroup = null;
   let embers = null, lumbarLight = null;
-  let shock = null, flashLight = null, ballMesh = null, ballHome = null;
+  let shock = null, flashLight = null, ballMesh = null, ballHome = null, ballTeeMesh = null;
   let ghostGroup = null, ghostDirty = true;
   let finishPass = null;
   let lastInteract = 0, shakeAmt = 0, prevT = 0, fxOk = true;
@@ -88,8 +141,13 @@ const Lab = (() => {
   const state = {
     t: 0, playing: false, loop: false, speed: 'study', dir: 1, holdUntil: 0,
     faults: { hips: false, tspine: false, reverse: false },
-    camera: 'free', ghosts: false, trace: true
+    camera: 'free', ghosts: false, trace: true,
+    handed: 'right', club: 'iron', motion: false,
+    mobility: { hips: 1, tspine: 1 },     // 1 = full normal mobility, 0.5 = the old stiff toggles
+    turns: { pelvis: 1, torso: 1 },       // multipliers on the authored 45 / 95 degree top
+    estimate: null                        // { mph, yards } once measured
   };
+  const TOP = { pelvis: 45, torso: 95 };  // what the keyframes are authored at, for setTurns()
 
   /* ---------- helpers ---------- */
   const V3 = (x = 0, y = 0, z = 0) => new THREE.Vector3(x, y, z);
@@ -100,28 +158,95 @@ const Lab = (() => {
   function on(name, fn) { (listeners[name] = listeners[name] || []).push(fn); }
   function emit(name, data) { (listeners[name] || []).forEach(fn => fn(data)); }
 
-  /* Interpolate the keyframes at t (0..1). Positions use Catmull-Rom for a smooth arc. */
-  let handCurve = null, clubCurve = null;
-  /* keyframe index -> curve parameter, shared by sample() and the swing trace */
-  function keySpan(t) {
-    t = clamp(t, 0, 1);
-    let i = 0;
-    while (i < KEYS.length - 2 && t > KEYS[i + 1].t) i++;
-    const a = KEYS[i], b = KEYS[i + 1];
-    return { i, a, b, u: smooth(clamp((t - a.t) / (b.t - a.t), 0, 1)) };
+  /* ---------- interpolation ----------
+     Every channel runs through one non-uniform Catmull-Rom (Hermite with chord-length tangents),
+     so the swing is C1: velocity is continuous across a keyframe instead of easing to zero at
+     each one. The old sample() smoothstepped inside each span, which parked the clubhead at every
+     key — including impact, where the derivative has to be non-zero for the speed estimate to
+     mean anything. Tangents are pinned to zero at the two ends so address and finish settle.
+
+     A track is built per channel over the same t axis. Vector channels (hands, club) are three
+     scalar tracks; the club track is re-normalised after interpolation. */
+  let tracks = null;
+  const TIMES = KEYS.map(k => k.t);
+
+  function trackTangent(v, i) {
+    if (i <= 0 || i >= v.length - 1) return 0;         // pinned: still at address, settled at the finish
+    const dt = TIMES[i + 1] - TIMES[i - 1];
+    return dt > 1e-6 ? (v[i + 1] - v[i - 1]) / dt : 0;
   }
-  function curveParam(t) { const k = keySpan(t); return (k.i + k.u) / (KEYS.length - 1); }
+  function makeTrack(values) {
+    const m = values.map((_, i) => trackTangent(values, i));
+    return { v: values, m };
+  }
+  function trackAt(tr, i, u, h) {
+    const u2 = u * u, u3 = u2 * u;
+    return (2 * u3 - 3 * u2 + 1) * tr.v[i] + (u3 - 2 * u2 + u) * tr.m[i] * h
+      + (-2 * u3 + 3 * u2) * tr.v[i + 1] + (u3 - u2) * tr.m[i + 1] * h;
+  }
+  function spanOf(t) {
+    let i = 0;
+    while (i < KEYS.length - 2 && t > TIMES[i + 1]) i++;
+    const h = TIMES[i + 1] - TIMES[i];
+    return { i, h, u: clamp((t - TIMES[i]) / (h || 1), 0, 1) };
+  }
+  function vecAt(name, t, out) {
+    const s = spanOf(clamp(t, 0, 1)), g = tracks[name];
+    out.set(trackAt(g[0], s.i, s.u, s.h), trackAt(g[1], s.i, s.u, s.h), trackAt(g[2], s.i, s.u, s.h));
+    out.x *= MIR;
+    return out;
+  }
+  function scalarAt(name, t) {
+    const s = spanOf(clamp(t, 0, 1));
+    return trackAt(tracks[name], s.i, s.u, s.h);
+  }
+
   function sample(t) {
     t = clamp(t, 0, 1);
-    const k = keySpan(t), a = k.a, b = k.b, u = k.u;
-    const out = {};
-    ['pelvis', 'torso', 'tilt', 'side', 'ext', 'head', 'shift', 'trailHeel', 'leadHeel'].forEach(k2 => out[k2] = lerp(a[k2], b[k2], u));
-    // curve parameter runs over keyframe indices
-    const cu = (k.i + u) / (KEYS.length - 1);
-    out.hands = handCurve.getPoint(cu);
-    out.club = clubCurve.getPoint(cu).normalize();
+    const s = spanOf(t), out = {};
+    for (let c = 0; c < CHANNELS.length; c++) out[CHANNELS[c]] = trackAt(tracks[CHANNELS[c]], s.i, s.u, s.h);
+    out.shift *= MIR;
+    out.hands = vecAt('hands', t, V3());
+    out.club = vecAt('club', t, V3()).normalize();
     out.t = t;
     return out;
+  }
+
+  /* Rebuild every track. Called at init and whenever the club, the handedness or the golfer's own
+     turn numbers change. The two null club directions (address, impact) are resolved here by
+     aiming the shaft at the ball, so the clubhead meets the ball for any shaft length. */
+  function buildTracks() {
+    const sc = state.turns, cs = clubSpec;
+    const dt = cs.tilt, ds = cs.side, dx = cs.ballX, arc = cs.arc, turn = cs.turn;
+    const val = (k, c) => {
+      let v = k[c];
+      if (c === 'pelvis' || c === 'torso') {
+        const f = (c === 'pelvis' ? sc.pelvis : sc.torso) * turn;
+        v = v > 0 ? v * f : v * (1 + (f - 1) * 0.5);   // a smaller turn back means a smaller turn through, but less so
+      } else if (c === 'tilt') v += dt * (0.35 + 0.65 * clamp(k.tilt / 36, 0, 1));
+      else if (c === 'side') v += ds * (k.t < T_IMPACT ? 1 : Math.max(0, 1 - (k.t - T_IMPACT) / 0.3));
+      return v;
+    };
+    tracks = {};
+    CHANNELS.forEach(c => { tracks[c] = makeTrack(KEYS.map(k => val(k, c))); });
+
+    /* The hand path scales about the address grip, which is how a shorter club makes a shorter,
+       tighter swing arc without re-authoring a keyframe, then shifts with the ball position. */
+    const k0 = KEYS[0].hands;
+    const hand = (k, j) => k0[j] + (k.hands[j] - k0[j]) * arc + (j === 0 ? dx : 0);
+
+    // address: aim the shaft at where the ball will be, then place the ball at the clubhead
+    const h0 = V3(hand(KEYS[0], 0), hand(KEYS[0], 1), hand(KEYS[0], 2));
+    const aim = V3(0.10 + dx, 0.03 + cs.tee, 0.62).sub(h0).normalize();
+    ballTee = cs.tee;
+    ballPos.set(h0.x + aim.x * CLUB_LEN, ballTee, h0.z + aim.z * CLUB_LEN + 0.015);
+    const dirs = KEYS.map(k => {
+      if (k.club) return V3(k.club[0], k.club[1], k.club[2]).normalize();
+      return ballPos.clone().sub(V3(hand(k, 0), hand(k, 1), hand(k, 2))).normalize();
+    });
+    tracks.hands = [0, 1, 2].map(j => makeTrack(KEYS.map(k => hand(k, j))));
+    tracks.club = [makeTrack(dirs.map(d => d.x)), makeTrack(dirs.map(d => d.y)), makeTrack(dirs.map(d => d.z))];
+    buildTempo();
   }
 
   function phaseName(t) {
@@ -412,14 +537,17 @@ const Lab = (() => {
       legs[s].foot.renderOrder = 10; root.add(legs[s].foot);
     });
 
-    // club
-    const club = new THREE.Group();
-    const shaft = new THREE.Mesh(new THREE.CylinderGeometry(0.0055, 0.0045, CLUB_LEN, 12), metalMat);
-    shaft.position.y = -CLUB_LEN / 2; shaft.castShadow = true;
-    club.add(shaft);
+    /* club. Shaft length and head size come from the club spec, so setClub() only has to call
+       shapeClub() again — the swing itself is club-independent because the shaft is aimed at the
+       ball at address and impact. The blade sits on local +x (the toe) with its face on local -z,
+       which is the pairing pose() rolls to the keyframed face angle. */
+    const clubGroup = new THREE.Group();
+    const shaft = new THREE.Mesh(new THREE.CylinderGeometry(0.0055, 0.0045, 1, 12), metalMat);
+    shaft.castShadow = true;
+    clubGroup.add(shaft);
     const grip = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.010, 0.26, 12), gripMat);
     grip.position.y = -0.12;
-    club.add(grip);
+    clubGroup.add(grip);
     const head = new THREE.Group();
     const blade = box(0.085, 0.052, 0.014, metalMat);
     blade.position.set(0.035, 0.02, 0.0); blade.rotation.x = -0.35;
@@ -427,9 +555,9 @@ const Lab = (() => {
     const hosel = new THREE.Mesh(new THREE.CylinderGeometry(0.007, 0.009, 0.05, 10), metalMat);
     hosel.position.set(0, 0.02, 0);
     head.add(hosel);
-    head.position.y = -CLUB_LEN;
-    club.add(head);
-    root.add(club);
+    clubGroup.add(head);
+    root.add(clubGroup);
+    const club = clubGroup;
 
     // hit regions (invisible until hovered). Attached to bones where possible.
     const regions = [];
@@ -453,7 +581,29 @@ const Lab = (() => {
       dyn['knee:' + side] = region('knee:' + side, sphere(0.075, glowMat, 16));
     });
 
-    return { root, bones, vertebrae, pelvis, t2, skull, girdle, torso, arms, legs, club, clubHead: head, regions, dyn };
+    return { root, bones, vertebrae, pelvis, t2, skull, girdle, torso, arms, legs, club, clubShaft: shaft, clubHead: head, regions, dyn };
+  }
+
+  /* Stretch the shaft and size the head for the current club. */
+  function shapeClub() {
+    if (!F) return;
+    F.clubShaft.scale.y = CLUB_LEN;
+    F.clubShaft.position.y = -CLUB_LEN / 2;
+    F.clubHead.position.y = -CLUB_LEN;
+    F.clubHead.scale.setScalar(clubSpec.headScale);
+  }
+
+  /* Shoulder, hip and their hit regions follow the handedness mirror. */
+  function applyAnchors() {
+    if (!F) return;
+    F.regions.forEach(r => {
+      switch (r.userData.region) {
+        case 'shoulder:L': r.position.set(ANCHOR.shX * MIR, ANCHOR.shY, ANCHOR.shZ); break;
+        case 'shoulder:R': r.position.set(-ANCHOR.shX * MIR, ANCHOR.shY, ANCHOR.shZ); break;
+        case 'hip:L': r.position.set(ANCHOR.hipX * MIR, ANCHOR.hipY, ANCHOR.hipZ); break;
+        case 'hip:R': r.position.set(-ANCHOR.hipX * MIR, ANCHOR.hipY, ANCHOR.hipZ); break;
+      }
+    });
   }
 
   /* ---------- posing ---------- */
@@ -502,22 +652,28 @@ const Lab = (() => {
     return S;
   }
 
-  let ballPos = V3(0.10, 0.03, 0.62);
+  let ballPos = V3(0.10, 0.03, 0.62), ballTee = 0;
   const feet = { L: V3(0.22, 0.045, 0.0), R: V3(-0.22, 0.045, 0.0) };
 
+  /* Thoracic compliance as a continuous function of mobility. Anchored so 1 reproduces a normal
+     mid back (compliance 1.0) and 0.5 reproduces exactly what the old "stiff mid back" toggle
+     did (0.4): 0.5^k = 0.4, so k = ln0.4/ln0.5. Everything between is a real, continuous value,
+     which is what makes the lumbar load respond to a slider rather than a switch. */
+  const TSPINE_K = Math.log(0.4) / Math.log(0.5);
+
   function computeLoad(p) {
-    const f = state.faults;
+    const mob = state.mobility;
     let P = p.pelvis;
-    if (f.hips && P > 0) P *= 0.5;                 // stiff hips: backswing hip turn halves
+    if (P > 0) P *= clamp(mob.hips, 0, 1);         // less hip turn available on the way back
     const S = p.torso - P;                         // what the trunk must supply
-    const cT = f.tspine ? COMPLIANCE.thoracicStiff : COMPLIANCE.thoracic;
+    const cT = COMPLIANCE.thoracic * Math.pow(clamp(mob.tspine, 0, 1), TSPINE_K);
     const sum = COMPLIANCE.girdle + cT + COMPLIANCE.lumbar;
     const g = S * COMPLIANCE.girdle / sum, th = S * cT / sum, lu = S * COMPLIANCE.lumbar / sum;
     const t1yaw = -(P + lu + th);                  // rotation.y convention: + toward target
     const cerv = p.head - t1yaw;
     let side = p.side;
     let extraLumbar = 0;
-    if (f.reverse && p.t < 0.62) {
+    if (state.faults.reverse && p.t < 0.62) {
       const k = smooth(clamp(p.t / 0.5, 0, 1)) * (p.t > 0.5 ? 1 - (p.t - 0.5) / 0.12 : 1);
       side = lerp(p.side, -14, k);
       extraLumbar = 0.6 * k;
@@ -557,13 +713,14 @@ const Lab = (() => {
     const L = computeLoad(p);
     const f = F;
 
-    // pelvis
-    f.pelvis.position.set(p.shift, 0.95 - Math.abs(p.shift) * 0.35, 0);
-    f.pelvis.rotation.set(p.tilt * DEG, -L.P * DEG, 0);
+    /* pelvis. `rise` is the lead leg extending: the pelvis climbs 3 cm by impact and 7 cm by the
+       finish, which is what pulls the lead knee straight through the strike. */
+    f.pelvis.position.set(p.shift, 0.95 + p.rise - Math.abs(p.shift) * 0.20, 0);
+    f.pelvis.rotation.set(p.tilt * DEG, -L.P * DEG * MIR, 0);
 
     // distribute spine rotation, side bend, extension
-    const perLu = -L.lu / 5, perTh = -L.th / 12, perCe = L.cerv / 7;
-    const sideLu = L.side * 0.45 / 5, sideTh = L.side * 0.55 / 12;
+    const perLu = -L.lu / 5 * MIR, perTh = -L.th / 12 * MIR, perCe = L.cerv / 7 * MIR;
+    const sideLu = L.side * 0.45 / 5 * MIR, sideTh = L.side * 0.55 / 12 * MIR;
     const extLu = -L.ext * 0.6 / 5, extTh = -L.ext * 0.4 / 12;
     f.vertebrae.forEach((b, i) => {
       const base = b.userData.base, r = b.userData.spec.region;
@@ -574,22 +731,22 @@ const Lab = (() => {
         b.rotation.set(base.x + extTh * DEG, base.y + perTh * DEG, base.z + sideTh * DEG);
         applyStress(b, L.stress.thoracic, 1);
       } else {
-        b.rotation.set(base.x, base.y + perCe * DEG, base.z - L.side * 0.4 / 7 * DEG);
+        b.rotation.set(base.x, base.y + perCe * DEG, base.z - L.side * 0.4 / 7 * DEG * MIR);
         applyStress(b, L.stress.cervical, 1);
       }
     });
     f.root.updateMatrixWorld(true);
 
     // arms: shoulders from T2, hands from keyframes
-    const shL = f.t2.localToWorld(V3(ANCHOR.shX, ANCHOR.shY, ANCHOR.shZ));
-    const shR = f.t2.localToWorld(V3(-ANCHOR.shX, ANCHOR.shY, ANCHOR.shZ));
+    const shL = f.t2.localToWorld(V3(ANCHOR.shX * MIR, ANCHOR.shY, ANCHOR.shZ));
+    const shR = f.t2.localToWorld(V3(-ANCHOR.shX * MIR, ANCHOR.shY, ANCHOR.shZ));
     const chestFwd = f.t2.localToWorld(V3(0, 0, 1)).sub(f.t2.getWorldPosition(V3())).normalize();
     const clubDir = p.club.clone();
     const grip = p.hands.clone();
     const handL = grip.clone().sub(clubDir.clone().multiplyScalar(0.02));
     const handR = grip.clone().add(clubDir.clone().multiplyScalar(0.07));
-    const poleL = shL.clone().add(V3(0.5, -0.4, 0)).sub(chestFwd.clone().multiplyScalar(0.3));
-    const poleR = shR.clone().add(V3(-0.5, -0.4, 0)).sub(chestFwd.clone().multiplyScalar(0.3));
+    const poleL = shL.clone().add(V3(0.5 * MIR, -0.4, 0)).sub(chestFwd.clone().multiplyScalar(0.3));
+    const poleR = shR.clone().add(V3(-0.5 * MIR, -0.4, 0)).sub(chestFwd.clone().multiplyScalar(0.3));
     /* The shoulder girdle travels: the lead shoulder protracts across the chest
        at the top and the trail shoulder reaches through the finish. Without this
        the keyframed hand path is out of reach and the hands leave the grip. */
@@ -605,26 +762,34 @@ const Lab = (() => {
     // club follows the grip
     f.club.position.copy(grip);
     f.club.quaternion.setFromUnitVectors(V3(0, -1, 0), clubDir);
-    // twist the club so the face points roughly toward the target
-    const toe = V3(1, 0, 0).applyQuaternion(f.club.quaternion);
-    const want = V3(1, 0, 0).sub(clubDir.clone().multiplyScalar(clubDir.x)).normalize();
-    const twist = Math.atan2(toe.clone().cross(want).dot(clubDir), toe.dot(want));
+    /* Roll the head about the shaft to the keyframed face angle: 0 is square to the target,
+       positive rolls with the backswing, so the face is square at impact and on plane at the top.
+       The old code aimed the *toe* at the target, which left the face ninety degrees open through
+       the strike. The blade's normal is the club group's local -z for a right-handed head. */
+    const fa = p.face * DEG;
+    const want = V3(Math.cos(fa) * MIR, 0, Math.sin(fa));
+    want.addScaledVector(clubDir, -want.dot(clubDir));
+    if (want.lengthSq() < 0.0025) want.set(0, 1, 0).addScaledVector(clubDir, -clubDir.y);
+    want.normalize();
+    const faceNow = V3(0, 0, -MIR).applyQuaternion(f.club.quaternion);
+    const twist = Math.atan2(faceNow.clone().cross(want).dot(clubDir), faceNow.dot(want));
     f.club.rotateOnAxis(V3(0, -1, 0), twist);
     ['L', 'R'].forEach(s => {
       const h = f.arms[s].hand; h.position.copy(s === 'L' ? handL : handR); h.quaternion.copy(f.club.quaternion);
     });
 
     // legs: hips from pelvis, feet fixed (trail heel lifts through impact)
-    const hipL = f.pelvis.localToWorld(V3(ANCHOR.hipX, ANCHOR.hipY, ANCHOR.hipZ));
-    const hipR = f.pelvis.localToWorld(V3(-ANCHOR.hipX, ANCHOR.hipY, ANCHOR.hipZ));
+    const hipL = f.pelvis.localToWorld(V3(ANCHOR.hipX * MIR, ANCHOR.hipY, ANCHOR.hipZ));
+    const hipR = f.pelvis.localToWorld(V3(-ANCHOR.hipX * MIR, ANCHOR.hipY, ANCHOR.hipZ));
     const ankle = (s, heel) => {
       const toe = feet[s].clone().add(V3(0, -0.015, 0.16));
+      toe.x *= MIR;
       const phi = heel * 62 * DEG;
       return { a: toe.clone().add(V3(0, 0.18 * Math.sin(phi) + 0.015, -0.18 * Math.cos(phi))), phi, toe };
     };
     const aL = ankle('L', p.leadHeel), aR = ankle('R', p.trailHeel);
-    const knL = solveIK(hipL, aL.a, LEG.thigh, LEG.shin, hipL.clone().add(V3(0.15, -0.5, 1.2)));
-    const knR = solveIK(hipR, aR.a, LEG.thigh, LEG.shin, hipR.clone().add(V3(-0.15, -0.5, 1.2)));
+    const knL = solveIK(hipL, aL.a, LEG.thigh, LEG.shin, hipL.clone().add(V3(0.15 * MIR, -0.5, 1.2)));
+    const knR = solveIK(hipR, aR.a, LEG.thigh, LEG.shin, hipR.clone().add(V3(-0.15 * MIR, -0.5, 1.2)));
     placeSegment(f.legs.L.thigh, hipL, knL, LEG.thigh); placeSegment(f.legs.L.shin, knL, aL.a, LEG.shin);
     placeSegment(f.legs.R.thigh, hipR, knR, LEG.thigh); placeSegment(f.legs.R.shin, knR, aR.a, LEG.shin);
     f.legs.L.knee.position.copy(knL); f.legs.R.knee.position.copy(knR);
@@ -632,7 +797,7 @@ const Lab = (() => {
     [['L', aL], ['R', aR]].forEach(([s, a]) => {
       const foot = f.legs[s].foot;
       foot.position.copy(a.toe).add(V3(0, 0.03, -0.09));
-      foot.quaternion.setFromEuler(new THREE.Euler(Math.PI / 2 - a.phi, s === 'L' ? -0.2 : 0.05, 0, 'YXZ'));
+      foot.quaternion.setFromEuler(new THREE.Euler(Math.PI / 2 - a.phi, (s === 'L' ? -0.2 : 0.05) * MIR, 0, 'YXZ'));
       // rotate about the toe for heel lift
       if (a.phi > 0) {
         const off = foot.position.clone().sub(a.toe);
@@ -736,14 +901,7 @@ const Lab = (() => {
     }
     const ha = rig.hipAnchorHint;   // the real femoral head centres, pelvis-local
     if (ha && ha.length === 3) { ANCHOR.hipX = Math.abs(ha[0]); ANCHOR.hipY = ha[1]; ANCHOR.hipZ = ha[2]; }
-    F.regions.forEach(r => {
-      switch (r.userData.region) {
-        case 'shoulder:L': r.position.set(ANCHOR.shX, ANCHOR.shY, ANCHOR.shZ); break;
-        case 'shoulder:R': r.position.set(-ANCHOR.shX, ANCHOR.shY, ANCHOR.shZ); break;
-        case 'hip:L': r.position.set(ANCHOR.hipX, ANCHOR.hipY, ANCHOR.hipZ); break;
-        case 'hip:R': r.position.set(-ANCHOR.hipX, ANCHOR.hipY, ANCHOR.hipZ); break;
-      }
-    });
+    applyAnchors();
 
     // 5. the skinned torso was bound to the old chain; rebind it to the new one.
     if (F.torso) skinTorso(F.root, F.bones, F.torso);
@@ -868,6 +1026,7 @@ const Lab = (() => {
     const tee = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.004, 0.035, 10), new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.8 }));
     tee.position.y = 0.0175; tee.castShadow = true;
     ball.add(tee);
+    ballTeeMesh = tee;
     scene.add(ball);
 
     // dew particles
@@ -888,17 +1047,22 @@ const Lab = (() => {
     scene.add(F.root);
     hitMeshes = F.regions;
 
-    // place the ball where the club head sits at address
-    handCurve = new THREE.CatmullRomCurve3(KEYS.map(k => V3(...k.hands)), false, 'catmullrom', 0.5);
-    const addressDir = V3().copy(ballPos).sub(V3(...KEYS[0].hands)).normalize();
-    const impactKey = KEYS.find(k => k.club === null && k.t > 0.5) || KEYS[KEYS.length - 1];
-    const impactDir = V3().copy(ballPos).sub(V3(...impactKey.hands)).normalize();
-    clubCurve = new THREE.CatmullRomCurve3(KEYS.map(k => k.club ? V3(...k.club).normalize() : (k.t === 0 ? addressDir : impactDir)), false, 'catmullrom', 0.5);
-    ball.position.copy(V3(...KEYS[0].hands).add(addressDir.multiplyScalar(CLUB_LEN))).setY(0);
-    ball.position.z += 0.015;
-    ballPos.copy(ball.position);
-
+    // tracks resolve the address and impact shaft directions, which is what places the ball
+    buildTracks();
     buildEffects();
+    placeBall();
+  }
+
+  /* Ball, tee and the struck-ball origin. ballPos.y is the tee height, so a driver ball sits up
+     and a wedge ball sits on the turf; the shaft is aimed at it, so the clubhead meets it for
+     any shaft length or ball position. */
+  function placeBall() {
+    if (!ball) return;
+    ball.position.set(ballPos.x * MIR, 0, ballPos.z);
+    if (ballMesh) { ballMesh.position.y = 0.0214 + 0.028 + ballTee; ballHome = ballMesh.position.clone(); }
+    if (ballTeeMesh) { ballTeeMesh.visible = ballTee > 0.001; ballTeeMesh.scale.y = 1 + ballTee / 0.035; ballTeeMesh.position.y = 0.0175 * ballTeeMesh.scale.y; }
+    if (shock) shock.position.set(ballPos.x * MIR, 0.014, ballPos.z);
+    if (flashLight) flashLight.position.set(ballPos.x * MIR, 0.12 + ballTee, ballPos.z);
   }
 
   /* ================= atmosphere, trace, gauges, embers, ghosts =================
@@ -1045,9 +1209,8 @@ const Lab = (() => {
   const traceTmp = { dir: V3(), cam: V3(), side: V3(), col: new THREE.Color() };
 
   function traceAt(t, out, head) {
-    const cu = curveParam(t);
-    handCurve.getPoint(cu, out);
-    if (head) { clubCurve.getPoint(cu, traceTmp.dir); out.addScaledVector(traceTmp.dir.normalize(), CLUB_LEN); }
+    vecAt('hands', t, out);
+    if (head) { vecAt('club', t, traceTmp.dir); out.addScaledVector(traceTmp.dir.normalize(), CLUB_LEN); }
     return out;
   }
 
@@ -1183,7 +1346,7 @@ const Lab = (() => {
   function updateGauges(L, p) {
     if (!arcGroup) return;
     const cx = p.shift;
-    const aHip = -L.hipTurn * DEG, aSh = -p.torso * DEG;
+    const aHip = -L.hipTurn * DEG * MIR, aSh = -p.torso * DEG * MIR;
     updateArc(arcHip, cx, 0, aHip);
     updateArc(arcSh, cx, 0, aSh);
     const x = Math.abs(L.xfactor);
@@ -1315,7 +1478,7 @@ const Lab = (() => {
       if (u >= 1) { impact.launch = -1; ballMesh.visible = false; }
       else {
         ballMesh.visible = true;
-        ballMesh.position.set(ballHome.x + 12 * u, ballHome.y + (7.6 * u - 6.2 * u * u), ballHome.z - 0.9 * u);
+        ballMesh.position.set(ballHome.x + 12 * u * MIR, ballHome.y + (7.6 * u - 6.2 * u * u), ballHome.z - 0.9 * u);
         ballMesh.material.opacity = clamp(1 - (u - 0.45) / 0.55, 0, 1);
       }
     }
@@ -1334,8 +1497,8 @@ const Lab = (() => {
     let prev = F.pelvis.getWorldPosition(V3());
     F.vertebrae.forEach(b => { const q = b.getWorldPosition(V3()); segs.push([prev, q]); prev = q; });
     segs.push([prev, F.skull.localToWorld(V3(0, 0.11, 0.015))]);
-    const shL = F.t2.localToWorld(V3(ANCHOR.shX, ANCHOR.shY, ANCHOR.shZ)), shR = F.t2.localToWorld(V3(-ANCHOR.shX, ANCHOR.shY, ANCHOR.shZ));
-    const hipL = F.pelvis.localToWorld(V3(ANCHOR.hipX, ANCHOR.hipY, ANCHOR.hipZ)), hipR = F.pelvis.localToWorld(V3(-ANCHOR.hipX, ANCHOR.hipY, ANCHOR.hipZ));
+    const shL = F.t2.localToWorld(V3(ANCHOR.shX * MIR, ANCHOR.shY, ANCHOR.shZ)), shR = F.t2.localToWorld(V3(-ANCHOR.shX * MIR, ANCHOR.shY, ANCHOR.shZ));
+    const hipL = F.pelvis.localToWorld(V3(ANCHOR.hipX * MIR, ANCHOR.hipY, ANCHOR.hipZ)), hipR = F.pelvis.localToWorld(V3(-ANCHOR.hipX * MIR, ANCHOR.hipY, ANCHOR.hipZ));
     segs.push([shL.clone(), shR.clone()]);
     segs.push([hipL.clone(), hipR.clone()]);
     ['L', 'R'].forEach(s => {
@@ -1492,25 +1655,69 @@ const Lab = (() => {
     composer.setSize(w, h);
   }
 
-  function setCamera(name, instant) {
+  /* Camera presets mirror with the golfer, so "face on" is still face on for a left-hander. */
+  function camPreset(name) {
     const c = CAMERAS[name] || CAMERAS.free;
-    state.camera = name;
+    return { pos: V3(c.pos[0] * MIR, c.pos[1], c.pos[2]), target: V3(c.target[0] * MIR, c.target[1], c.target[2]) };
+  }
+  function setCamera(name, instant) {
+    if (!camera || !controls) return;
+    const c = camPreset(name);
+    state.camera = CAMERAS[name] ? name : 'free';
     touch();
-    if (instant) { camera.position.set(...c.pos); controls.target.set(...c.target); controls.update(); return; }
-    camTween = { from: camera.position.clone(), to: V3(...c.pos), tFrom: controls.target.clone(), tTo: V3(...c.target), t: 0 };
+    if (instant) { camera.position.copy(c.pos); controls.target.copy(c.target); controls.update(); return; }
+    camTween = { from: camera.position.clone(), to: c.pos, tFrom: controls.target.clone(), tTo: c.target, t: 0 };
+  }
+
+  /* Phase per second, sampled on a fine grid. rate = target clubhead speed / how far the clubhead
+     moves per unit of phase, so playing the swing reproduces SPEED_SHAPE exactly whatever the
+     keyframe spacing; each of the three phases is then scaled to its share of the clock, which is
+     what holds the 3:1 tempo. Rebuilt whenever the tracks are, because the arc lengths move with
+     the club and the golfer's own numbers. */
+  const RN = 240;
+  let RATE = null;
+
+  function shapeAt(t) {
+    let i = 0;
+    while (i < SPEED_SHAPE.length - 2 && t > SPEED_SHAPE[i + 1][0]) i++;
+    const a = SPEED_SHAPE[i], b = SPEED_SHAPE[i + 1];
+    return lerp(a[1], b[1], clamp((t - a[0]) / (b[0] - a[0]), 0, 1));
+  }
+
+  function buildTempo() {
+    const a = V3(), b = V3(), r = new Float64Array(RN), e = 0.5 / RN;
+    for (let i = 0; i < RN; i++) {
+      const t = (i + 0.5) / RN;
+      traceAt(Math.max(t - e, 0), a, true);
+      traceAt(Math.min(t + e, 1), b, true);
+      const perPhase = b.distanceTo(a) / (2 * e);          // metres of clubhead per unit of phase
+      r[i] = shapeAt(t) / Math.max(perPhase, 0.05);
+    }
+    // scale each phase so it takes its share of the swing
+    for (let q = 0; q < TEMPO.length; q++) {
+      const ph = TEMPO[q];
+      let secs = 0;
+      for (let i = 0; i < RN; i++) { const t = (i + 0.5) / RN; if (t >= ph[0] && t < ph[1]) secs += (1 / RN) / r[i]; }
+      if (!(secs > 0)) continue;
+      const k = secs / ph[2];
+      for (let i = 0; i < RN; i++) { const t = (i + 0.5) / RN; if (t >= ph[0] && t < ph[1]) r[i] *= k; }
+    }
+    RATE = r;
+  }
+
+  function rate(t) {
+    const dur = (DURATION[state.speed] || DURATION.study) * clubSpec.pace;
+    if (!RATE) return 1 / dur;
+    return RATE[clamp(Math.floor(clamp(t, 0, 0.9999) * RN), 0, RN - 1)] / dur;
   }
 
   function step(dt) {
     if (state.playing) {
-      const dur = state.speed === 'real' ? 1.5 : 4.6;
-      // at real speed the strike gets a short slow-motion dilation
-      let adv = dt;
-      if (state.speed === 'real' && state.dir > 0 && state.t > 0.655 && state.t < 0.745) adv *= 0.28;
       if (state.holdUntil > 0) {
         state.holdUntil -= dt;
         if (state.holdUntil <= 0) { state.holdUntil = 0; if (state.loop) { state.t = 0; resetImpact(); } else { state.dir = -1; } }
       } else if (state.dir > 0) {
-        state.t += adv / dur;
+        state.t += dt * rate(state.t);
         if (state.t >= 1) { state.t = 1; state.holdUntil = 0.9; }
       } else {
         state.t -= dt / 1.1;
@@ -1537,8 +1744,8 @@ const Lab = (() => {
     if (groundRing) groundRing.material.opacity = 0.28 + 0.1 * Math.sin(clock.elapsedTime * 1.4);
 
     // the ball is struck the moment playback crosses the impact key
-    if (state.playing && state.dir > 0 && prevT < 0.70 && state.t >= 0.70) fireImpact();
-    if (state.t < 0.66 && impact.launch < 0 && ballMesh && ballMesh.visible === false) resetImpact();
+    if (state.playing && state.dir > 0 && prevT < T_IMPACT && state.t >= T_IMPACT) fireImpact();
+    if (state.t < T_IMPACT - 0.04 && impact.launch < 0 && ballMesh && ballMesh.visible === false) resetImpact();
     prevT = state.t;
 
     // idle cinematic: nothing has happened for a while, so drift the camera
@@ -1555,6 +1762,7 @@ const Lab = (() => {
     step(dt);
     const r = pose(state.t);
     controls.update();
+    if (motion.on) { try { updateMotion(dt); } catch (e) { stopMotion(); } }
     if (fxOk) { try { updateEffects(dt, r); } catch (e) { fxOk = false; if (window.console) console.warn('lab3d: effects disabled', e); } }
     let sx = 0, sy = 0, sz = 0;
     if (shakeAmt > 0) {
@@ -1568,7 +1776,11 @@ const Lab = (() => {
     const now = performance.now();
     if (now - lastHud > 90) {
       lastHud = now;
-      emit('frame', { t: state.t, phase: phaseName(state.t), load: r.L, playing: state.playing });
+      emit('frame', {
+        t: state.t, phase: phaseName(state.t), load: r.L, playing: state.playing,
+        speed: state.speed, club: clubSpec.label, handed: state.handed,
+        estimate: state.speed === 'real' ? state.estimate : null
+      });
     }
   }
 
@@ -1619,6 +1831,187 @@ const Lab = (() => {
     });
   }
 
+  /* ---------- clubhead speed and carry ----------
+     An estimate for THIS model, not a launch monitor. The clubhead is a known function of the
+     swing phase, so its speed at impact is |d(head)/d(phase)| times the real-time phase rate
+     through the downswing. The figure is modelled a little smaller than a real golfer and the
+     shaft a little short, so one calibration constant maps model metres per second onto the mph a
+     club golfer actually produces — anchored so the default 7-iron lands at about 80 mph, the
+     middle of the 75-85 mph amateur band. Carry is a yards-per-mph factor per club, anchored on
+     7-iron 80 mph -> ~149 yd, driver 95 mph -> ~230 yd. */
+  const SPEED_CAL = 2.50;                 // model m/s -> mph, anchored on the default 7-iron at ~80 mph
+  const measTmp = { a: V3(), b: V3() };
+
+  function measure() {
+    try {
+      if (!tracks || !RATE) return null;
+      const e = 0.008;
+      traceAt(T_IMPACT - e, measTmp.a, true);
+      traceAt(T_IMPACT, measTmp.b, true);
+      const perPhase = measTmp.b.distanceTo(measTmp.a) / e;                  // metres per unit phase
+      const phasePerSec = RATE[clamp(Math.floor((T_IMPACT - e / 2) * RN), 0, RN - 1)] / (DURATION.real * clubSpec.pace);
+      const mph = perPhase * phasePerSec * SPEED_CAL;
+      state.estimate = { mph: Math.round(mph), yards: Math.round(mph * clubSpec.carry), club: clubSpec.label };
+    } catch (e) { state.estimate = null; }
+    return state.estimate;
+  }
+
+  /* Rebuild everything that depends on the club, the handedness or the golfer's own numbers.
+     Every step is guarded: a bad input must never leave the scene half-posed or blank. */
+  function reconfigure() {
+    try {
+      buildTracks();
+      shapeClub();
+      applyAnchors();
+      placeBall();
+      measure();
+      ghostDirty = true;
+      if (state.ghosts && ghostGroup) { try { buildGhosts(); } catch (e) { warn('lab3d: ghost rebuild failed', e); } }
+      if (inited && F) pose(state.t);
+      emit('config', { handed: state.handed, club: state.club, mobility: state.mobility, turns: state.turns, estimate: state.estimate });
+    } catch (e) { warn('lab3d: reconfigure failed', e); }
+  }
+
+  function setHanded(h) {
+    const want = h === 'left' ? 'left' : 'right';
+    if (want === state.handed) return state.handed;
+    state.handed = want;
+    MIR = want === 'left' ? -1 : 1;
+    reconfigure();
+    if (inited) setCamera(state.camera, true);
+    return state.handed;
+  }
+
+  /* 1 = full normal mobility, 0.5 = exactly what the old stiff toggles did, 0 = none. */
+  function setMobility(m) {
+    if (!m) return state.mobility;
+    if (typeof m.hips === 'number' && isFinite(m.hips)) state.mobility.hips = clamp(m.hips, 0, 1);
+    if (typeof m.tspine === 'number' && isFinite(m.tspine)) state.mobility.tspine = clamp(m.tspine, 0, 1);
+    state.faults.hips = state.mobility.hips < 0.995;
+    state.faults.tspine = state.mobility.tspine < 0.995;
+    ghostDirty = true;
+    if (state.ghosts && ghostGroup) { try { buildGhosts(); } catch (e) { } }
+    if (inited && F) pose(state.t);
+    return state.mobility;
+  }
+
+  function setClub(name) {
+    const spec = CLUBS[name];
+    if (!spec) return state.club;
+    state.club = name;
+    clubSpec = spec;
+    CLUB_LEN = spec.len;
+    reconfigure();
+    return state.club;
+  }
+
+  /* A golfer's own numbers from a lesson or a launch monitor, in degrees at the top. */
+  function setTurns(o) {
+    if (!o) return state.turns;
+    const p = Number(o.pelvisTop), s = Number(o.torsoTop);
+    if (isFinite(p) && p > 0) state.turns.pelvis = clamp(p, 5, 90) / TOP.pelvis;
+    if (isFinite(s) && s > 0) state.turns.torso = clamp(s, 20, 140) / TOP.torso;
+    reconfigure();
+    return { pelvisTop: Math.round(state.turns.pelvis * TOP.pelvis), torsoTop: Math.round(state.turns.torso * TOP.torso) };
+  }
+
+  /* ---------- phone motion orbit ----------
+     Off by default. iOS 13+ only grants DeviceOrientationEvent from inside a user gesture, so
+     setMotion(true) has to be called straight from a click handler. Anything missing (desktop,
+     a refused permission, a browser without the API) resolves false and changes nothing. */
+  const motion = { on: false, az: 0, pol: 0, base: null, handler: null, radius: 3.4 };
+
+  function onOrient(ev) {
+    if (ev.alpha === null && ev.beta === null && ev.gamma === null) return;
+    const b = (ev.beta || 0), g = (ev.gamma || 0);
+    if (!motion.base) motion.base = { b, g };
+    motion.az = clamp((g - motion.base.g) / 45, -1, 1) * 1.5;
+    motion.pol = clamp((b - motion.base.b) / 45, -1, 1) * 0.55;
+  }
+
+  function stopMotion() {
+    if (motion.handler) { try { window.removeEventListener('deviceorientation', motion.handler); } catch (e) { } }
+    motion.handler = null; motion.on = false; motion.base = null;
+    if (controls) controls.enabled = true;
+  }
+
+  function setMotion(on) {
+    const P = window.Promise;
+    if (!on) { stopMotion(); return P ? P.resolve(false) : false; }
+    const ok = () => {
+      if (!window.DeviceOrientationEvent) return false;
+      motion.handler = onOrient;
+      motion.base = null;
+      const c = camPreset(state.camera);
+      motion.radius = camera ? camera.position.distanceTo(controls.target) : c.pos.length();
+      window.addEventListener('deviceorientation', motion.handler);
+      motion.on = true;
+      if (controls) controls.enabled = false;
+      touch();
+      return true;
+    };
+    try {
+      const D = window.DeviceOrientationEvent;
+      if (D && typeof D.requestPermission === 'function') {
+        return D.requestPermission().then(r => (r === 'granted' ? ok() : false), () => false);
+      }
+      const r = ok();
+      return P ? P.resolve(r) : r;
+    } catch (e) { stopMotion(); return P ? P.resolve(false) : false; }
+  }
+
+  const motionTmp = { sph: null };
+  function updateMotion(dt) {
+    if (!motion.on || !camera || !controls) return;
+    if (!motionTmp.sph) motionTmp.sph = new THREE.Spherical();
+    const base = camPreset(state.camera);
+    const off = tmp.a.copy(base.pos).sub(base.target);
+    motionTmp.sph.setFromVector3(off);
+    motionTmp.sph.theta += motion.az;
+    motionTmp.sph.phi = clamp(motionTmp.sph.phi - motion.pol, 0.25, 1.55);
+    motionTmp.sph.radius = motion.radius;
+    tmp.b.setFromSpherical(motionTmp.sph).add(base.target);
+    camera.position.lerp(tmp.b, Math.min(1, dt * 6));
+    controls.target.lerp(base.target, Math.min(1, dt * 6));
+    camera.lookAt(controls.target);
+  }
+
+  /* ---------- shared user profile ----------
+     The lab reads the app's profile if there is one and re-reads it when the app says it changed.
+     Everything is optional and everything is guarded: no profile, a partial profile or a hostile
+     one all leave the lab exactly as it was. Mobility is accepted either as a 0-1 fraction or as
+     degrees (hip internal rotation out of a normal 45, thoracic rotation out of a normal 45). */
+  function mobilityFrom(v, normal) {
+    const n = Number(v);
+    if (!isFinite(n) || n <= 0) return null;
+    return clamp(n <= 1 ? n : n / normal, 0.1, 1);
+  }
+  function readProfile() {
+    try {
+      const FR = window.FR;
+      if (!FR || typeof FR.profile !== 'function') return;
+      const pr = FR.profile() || {};
+      if (pr.handed === 'left' || pr.handed === 'right') setHanded(pr.handed);
+      if (pr.club && CLUBS[pr.club]) setClub(pr.club);
+      const m = pr.mobility || {};
+      const hips = mobilityFrom(m.hipIR, 45), tsp = mobilityFrom(m.thoracic, 45);
+      if (hips !== null || tsp !== null) setMobility({ hips: hips === null ? undefined : hips, tspine: tsp === null ? undefined : tsp });
+      const tn = pr.turns || {};
+      if (tn.pelvisTop || tn.torsoTop) setTurns({ pelvisTop: tn.pelvisTop, torsoTop: tn.torsoTop });
+    } catch (e) { warn('lab3d: profile unreadable', e); }
+  }
+  /* lab3d.js loads before the app defines window.FR, so the hook is registered from init(). */
+  let profileHooked = false;
+  function hookProfile() {
+    if (profileHooked) return;
+    try {
+      const FR = window.FR;
+      if (!FR || typeof FR.on !== 'function') return;
+      FR.on('profile:changed', () => { if (inited) readProfile(); });
+      profileHooked = true;
+    } catch (e) { /* optional */ }
+  }
+
   /* ---------- public ---------- */
   function init(el, opts = {}) {
     if (inited) return true;
@@ -1641,6 +2034,10 @@ const Lab = (() => {
     else window.addEventListener('resize', resize);
     inited = true;
     lastInteract = performance.now();
+    shapeClub();
+    hookProfile();
+    readProfile();
+    measure();
     pose(0);
     if (!reduced && !opts.noAuto) { setTimeout(() => play(), 900); }
     /* The real spine is an upgrade, never a dependency: the lab is already built, posed and
@@ -1656,8 +2053,16 @@ const Lab = (() => {
   function pause() { state.playing = false; state.holdUntil = 0; state.dir = 1; emit('play', false); }
   function toggle() { touch(); state.playing ? pause() : play(); }
   function seek(t) { touch(); pause(); state.t = clamp(t, 0, 1); prevT = state.t; resetImpact(); }
-  function setFault(k, v) { state.faults[k] = !!v; ghostDirty = true; if (state.ghosts) { try { buildGhosts(); } catch (e) { } } }
-  function setSpeed(s) { state.speed = s; }
+  /* Kept for callers that still think in switches: the two mobility faults are now the ends of a
+     slider, and "on" is the 0.5 the toggle always meant. */
+  function setFault(k, v) {
+    if (k === 'hips' || k === 'tspine') return setMobility({ [k]: v ? 0.5 : 1 });
+    state.faults[k] = !!v;
+    ghostDirty = true;
+    if (state.ghosts) { try { buildGhosts(); } catch (e) { } }
+    if (inited && F) pose(state.t);
+  }
+  function setSpeed(s) { state.speed = DURATION[s] ? s : 'study'; }
   function setLoop(v) { state.loop = !!v; }
   function setGhosts(v) {
     state.ghosts = !!v;
@@ -1676,7 +2081,13 @@ const Lab = (() => {
   function selectRegion(key) { const m = hitMeshes.find(h => h.userData.region === key); select(m || null); }
   function getState() { return state; }
 
-  return { init, start, stop, play, pause, toggle, seek, setFault, setSpeed, setLoop, setCamera, setGhosts, setTrace, selectRegion, on, getState, phaseName, CAP };
+  function getEstimate() { return state.estimate ? Object.assign({}, state.estimate) : null; }
+
+  return {
+    init, start, stop, play, pause, toggle, seek, setFault, setSpeed, setLoop, setCamera,
+    setGhosts, setTrace, selectRegion, on, getState, phaseName, CAP,
+    setHanded, setMobility, setClub, setTurns, setMotion, getEstimate, CLUBS
+  };
 })();
 
 window.Lab = Lab;

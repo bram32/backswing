@@ -1,1 +1,177 @@
-/* Free Relief — programs module styles. Uses the tokens from css/styles.css. */
+/* Free Relief — Programs, Tempo and the Voice coach toggle.
+   Tokens and base classes come from css/styles.css; everything here is
+   .prog- or .tempo- prefixed. Dark and light both come from the tokens. */
+
+/* ---------- voice coach toggle (used by both views) ---------- */
+.prog-voice-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 24px; }
+.prog-voice { max-width: 520px; }
+.prog-voice[aria-pressed="true"] i { background: var(--ok); }
+.prog-voice[aria-pressed="true"] i::after { background: var(--ground); }
+.prog-voice-off {
+  display: flex; align-items: center; gap: 12px; max-width: 520px; margin-bottom: 24px;
+  padding: 10px 12px; border: 1px dashed var(--line); border-radius: 10px; color: var(--ink-3);
+}
+.prog-voice-off i { flex: none; width: 36px; height: 20px; border-radius: 10px; background: var(--inset); }
+.prog-voice-off b { display: block; font-size: 0.92rem; color: var(--ink-2); }
+.prog-voice-off span { display: block; font-size: 0.8rem; }
+
+/* ---------- today card ---------- */
+.prog-today {
+  display: flex; flex-direction: column; gap: 12px; padding: 22px 24px; margin-bottom: 22px;
+  border: 1px solid var(--line-strong); border-radius: var(--radius); background: var(--raised); box-shadow: var(--shadow);
+}
+.prog-today .tag { align-self: flex-start; }
+.prog-today h2 { font-size: clamp(1.4rem, 2.4vw, 1.9rem); }
+.prog-today p { font-size: 0.95rem; }
+.prog-today.is-done { border-color: var(--ok); }
+.prog-today.prog-rest-card { background: transparent; box-shadow: none; border-style: dashed; }
+.prog-today.prog-paused { border-color: var(--warn); background: var(--warn-soft); }
+.prog-today.prog-done { border-color: var(--accent); background: var(--accent-soft); }
+.prog-today-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; }
+.prog-today-head > div { display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
+.prog-mins { font-size: 2.2rem; line-height: 1; color: var(--accent-text); white-space: nowrap; }
+.prog-mins small { font-family: var(--body); font-weight: 400; font-size: 0.78rem; color: var(--ink-2); margin-left: 3px; }
+.prog-figs { display: flex; flex-wrap: wrap; gap: 4px; }
+.prog-figs .figure { width: 40px; height: 40px; }
+.prog-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.prog-actions .small { color: var(--ink-2); }
+.prog-list { margin-top: 4px; }
+.prog-list .plan-list { gap: 8px; }
+
+/* ---------- stats ---------- */
+.prog-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 26px; }
+.prog-stat { padding: 14px 16px; border: 1px solid var(--line); border-radius: 12px; }
+.prog-stat .num { display: block; font-size: 1.9rem; line-height: 1; color: var(--accent-text); }
+.prog-stat .num small { font-family: var(--body); font-weight: 400; font-size: 0.85rem; color: var(--ink-2); }
+.prog-stat .small { display: block; margin-top: 6px; line-height: 1.3; }
+
+.prog-head2 { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 14px 24px; margin-bottom: 16px; }
+.prog-head2 p { margin-top: 6px; font-size: 0.95rem; }
+
+/* ---------- calendar ---------- */
+.prog-cal { display: flex; flex-direction: column; gap: 10px; margin-bottom: 30px; }
+.prog-wk { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 16px; align-items: center; padding: 10px 0; border-top: 1px solid var(--line); }
+.prog-wk:first-child { border-top: 0; }
+.prog-wk-label { display: flex; flex-direction: column; gap: 2px; }
+.prog-wk-label b { font-family: var(--display); font-variation-settings: 'wdth' 108; font-size: 1rem; }
+.prog-days { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; max-width: 560px; }
+.prog-day {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+  min-height: 52px; padding: 6px 2px; border: 1px solid var(--line); border-radius: 10px;
+  background: transparent; color: var(--ink-2); text-align: center;
+}
+.prog-day-d { font-size: 0.66rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink-3); }
+.prog-day-mark { font-family: var(--display); font-weight: 800; font-variant-numeric: tabular-nums; font-size: 1rem; line-height: 1; }
+button.prog-day:hover { border-color: var(--line-strong); color: var(--ink); }
+.prog-day.is-done { background: var(--ok-soft); border-color: var(--ok); color: var(--ok); }
+.prog-day.is-done .prog-day-d { color: var(--ok); }
+.prog-day.is-now { background: var(--accent-soft); border-color: var(--accent-text); color: var(--ink); box-shadow: inset 0 0 0 1px var(--accent-text); }
+.prog-day.is-now .prog-day-d { color: var(--accent-text); }
+.prog-day.is-miss { border-style: dashed; color: var(--ink-3); }
+.prog-day.is-rest { border-style: dashed; border-color: var(--line); color: var(--ink-3); }
+.prog-day.is-rest .prog-day-mark { color: var(--ink-3); font-size: 1.2rem; }
+.prog-day.is-future { color: var(--ink-3); }
+.prog-legend { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; padding-top: 12px; border-top: 1px solid var(--line); }
+.prog-legend span { display: inline-flex; align-items: center; gap: 6px; }
+.prog-legend i { width: 12px; height: 12px; border-radius: 4px; border: 1px solid var(--line-strong); }
+.prog-legend i.k-now { background: var(--accent-soft); border-color: var(--accent-text); }
+.prog-legend i.k-done { background: var(--ok-soft); border-color: var(--ok); }
+.prog-legend i.k-miss { border-style: dashed; }
+.prog-legend i.k-rest { border-style: dashed; background: transparent; }
+.prog-legend-note { flex: 1 1 220px; }
+
+/* ---------- detail ---------- */
+.prog-detail { display: flex; flex-direction: column; gap: 20px; margin-bottom: 28px; }
+.prog-two { display: grid; grid-template-columns: 1fr 1fr; gap: 20px 28px; }
+.prog-rule { display: flex; flex-direction: column; gap: 4px; padding: 14px 16px; border-left: 3px solid var(--accent); border-radius: 0 10px 10px 0; background: var(--accent-soft); }
+.prog-rule b { font-family: var(--display); font-variation-settings: 'wdth' 106; font-size: 1rem; }
+.prog-rule span { font-size: 0.92rem; color: var(--ink-2); max-width: 68ch; }
+.prog-sub { max-width: 68ch; }
+.prog-foot { margin-bottom: 10px; }
+
+/* ---------- programme cards ---------- */
+.prog-cards { display: flex; flex-direction: column; gap: 16px; margin-bottom: 26px; }
+.prog-card { display: flex; flex-direction: column; gap: 12px; padding: 22px 24px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--raised); }
+.prog-card.is-active { border-color: var(--accent-text); }
+.prog-card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; }
+.prog-card-head h3 { margin-bottom: 8px; font-size: 1.35rem; }
+.prog-card-head .tag { margin-right: 4px; }
+.prog-card p { font-size: 0.95rem; }
+.prog-browse { margin-top: 8px; }
+
+/* ---------- tempo ---------- */
+.tempo-model { padding: 22px 24px; margin-bottom: 26px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--raised); }
+.tempo-model-head { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 24px; align-items: start; }
+.tempo-model-head h2 { font-size: clamp(2.4rem, 6vw, 4rem); color: var(--accent-text); line-height: 0.9; white-space: nowrap; }
+.tempo-model-head p { font-size: 0.95rem; }
+.tempo-frames { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+.tempo-frame { height: auto; flex-direction: column; align-items: flex-start; gap: 2px; padding: 10px 16px; border-radius: 12px; }
+.tempo-frame b { font-family: var(--display); font-variation-settings: 'wdth' 112; font-size: 1.15rem; }
+.tempo-frame .small { font-weight: 400; }
+.tempo-blurb { margin-top: 14px; }
+
+.tempo-trainer, .tempo-measure-wrap { margin-bottom: 30px; }
+.tempo-trainer h3, .tempo-measure-wrap h3 { margin-bottom: 8px; }
+.tempo-trainer p, .tempo-measure-wrap p { margin-bottom: 16px; }
+.tempo-stage { padding: 20px 22px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--raised); }
+.tempo-track { position: relative; display: flex; height: 46px; border-radius: 10px; overflow: hidden; background: var(--inset); }
+.tempo-seg { display: flex; align-items: center; justify-content: center; min-width: 0; }
+.tempo-seg span { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-3); }
+.tempo-seg-back { background: var(--inset); }
+.tempo-seg-down { background: var(--accent-soft); border-left: 1px solid var(--line-strong); }
+.tempo-fill { position: absolute; left: 0; top: 0; bottom: 0; width: 0; background: var(--ok-soft); border-right: 2px solid var(--ok); pointer-events: none; }
+.tempo-fill[data-phase="down"] { background: var(--accent-soft); border-right-color: var(--accent); }
+.tempo-dots { display: flex; gap: 10px; margin-top: 16px; }
+.tempo-dot { width: 16px; height: 16px; border-radius: 50%; border: 1px solid var(--line-strong); background: transparent; transition: background 0.06s linear, border-color 0.06s linear; }
+.tempo-dot.is-lit { background: var(--accent); border-color: var(--accent); }
+.tempo-say { margin-top: 12px; font-family: var(--display); font-variation-settings: 'wdth' 110; font-weight: 800; font-size: 1.1rem; color: var(--ink-2); }
+.tempo-stage[data-phase="back"] .tempo-say { color: var(--ok); }
+.tempo-stage[data-phase="down"] .tempo-say { color: var(--accent-text); }
+.tempo-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 18px; }
+
+.tempo-tap {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; width: 100%;
+  min-height: 170px; padding: 24px; border: 2px dashed var(--line-strong); border-radius: var(--radius);
+  background: var(--raised); color: var(--ink); text-align: center;
+}
+.tempo-tap:hover { border-color: var(--accent-text); }
+.tempo-tap:active { border-style: solid; background: var(--inset); }
+.tempo-tap-label { font-family: var(--display); font-variation-settings: 'wdth' 112; font-weight: 800; font-size: clamp(1.3rem, 3vw, 1.9rem); }
+.tempo-tap .small { color: var(--ink-2); max-width: 40ch; }
+.tempo-taps { display: flex; gap: 10px; }
+.tempo-tapdot { width: 14px; height: 14px; border-radius: 50%; border: 1px solid var(--line-strong); }
+.tempo-tapdot.is-on { background: var(--accent); border-color: var(--accent); }
+.tempo-result { display: flex; flex-direction: column; gap: 16px; margin-top: 18px; padding: 20px 22px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--raised); }
+.tempo-nums { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+.tempo-num .num { display: block; font-size: 1.9rem; line-height: 1; }
+.tempo-num .num small { font-family: var(--body); font-weight: 400; font-size: 0.85rem; color: var(--ink-2); }
+.tempo-num .small { display: block; margin-top: 6px; }
+.tempo-ratio .num { color: var(--accent-text); }
+.tempo-verdict b { font-family: var(--display); font-variation-settings: 'wdth' 108; font-size: 1.15rem; }
+.tempo-verdict p { margin-top: 6px; font-size: 0.95rem; color: var(--ink-2); }
+
+/* ---------- responsive ---------- */
+@media (max-width: 900px) {
+  .prog-stats { grid-template-columns: repeat(2, 1fr); }
+  .prog-two { grid-template-columns: 1fr; }
+  .prog-wk { grid-template-columns: 1fr; gap: 8px; }
+  .prog-days { max-width: none; }
+  .tempo-model-head { grid-template-columns: 1fr; gap: 8px; }
+  .tempo-nums { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 760px) {
+  .prog-today { padding: 18px; }
+  .prog-today-head { flex-direction: column; gap: 10px; }
+  .prog-card { padding: 18px; }
+  .prog-voice-row { align-items: stretch; }
+  .prog-day { min-height: 56px; }
+  .tempo-model { padding: 18px; }
+  .tempo-controls .btn { flex: 1 1 auto; }
+}
+
+/* Reduced motion: css/styles.css already kills transitions globally; the tempo
+   beat stays a colour change, which is the accessible half of the cue anyway. */
+
+/* today, on a rest day */
+.prog-day.is-today-rest { border-color: var(--accent-text); border-style: solid; color: var(--accent-text); }
+.prog-day.is-today-rest .prog-day-d { color: var(--accent-text); }

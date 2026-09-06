@@ -331,9 +331,16 @@
       const s = L.stress.lumbar; const bar = $('#load-fill');
       bar.style.width = Math.min(100, s / 1.3 * 100).toFixed(1) + '%';
       bar.className = s >= 1 ? 'stop' : s >= 0.7 ? 'warn' : '';
-      $('#load-deg').textContent = Math.round(Math.abs(L.lu)) + '° of 13°';
+      $('#load-deg').textContent = Math.round(Math.abs(L.lu)) + '° of 10°';
       $('#load-msg').textContent = s >= 1 ? 'Over capacity. This is where lower back pain starts.' : s >= 0.7 ? 'Working hard. Fine for a good swing, tiring over 18 holes.' : 'Comfortable. The hips and mid back are doing their share.';
       if (!scrub.matches(':active')) { scrub.value = Math.round(f.t * 1000); scrub.style.setProperty('--pct', (f.t * 100) + '%'); }
+      const est = $('#lab-est');
+      if (est) {
+        if (f.estimate) {
+          est.innerHTML = `<b>${f.estimate.mph} mph</b><em>carry ~${f.estimate.yards} yd</em><span>Estimate for this model's ${esc(f.estimate.club)}, not a launch monitor.</span>`;
+          est.hidden = false;
+        } else est.hidden = true;
+      }
     });
     Lab.on('play', (p) => { playBtn.innerHTML = p ? icon('pause') : icon('play'); playBtn.setAttribute('aria-label', p ? 'Pause swing' : 'Play swing'); });
     Lab.on('hover', (h) => { const r = $('#lab-hover'); if (h) { r.textContent = h.label; r.hidden = false; } else r.hidden = true; });
@@ -353,6 +360,93 @@
     $('#loop-btn').addEventListener('click', (e) => { const b = e.currentTarget; const on = b.getAttribute('aria-pressed') !== 'true'; b.setAttribute('aria-pressed', String(on)); Lab.setLoop(on); });
     $('#ghost-btn').addEventListener('click', (e) => { const b = e.currentTarget; const on = b.getAttribute('aria-pressed') !== 'true'; b.setAttribute('aria-pressed', String(on)); Lab.setGhosts(on); });
     $('#trace-btn').addEventListener('click', (e) => { const b = e.currentTarget; const on = b.getAttribute('aria-pressed') !== 'true'; b.setAttribute('aria-pressed', String(on)); Lab.setTrace(on); });
+
+    /* ----- lab v2: handedness, club, mobility, your numbers, phone motion ----- */
+    const press = (sel, val, attr) => $$(sel).forEach(x => x.setAttribute('aria-pressed', String(x.dataset[attr] === val)));
+    const labSub = () => {
+      const st = Lab.getState();
+      const el = $('#lab-phase'); if (!el) return;
+      const club = (Lab.CLUBS && Lab.CLUBS[st.club] && Lab.CLUBS[st.club].label) || '7-iron';
+      el.querySelector('small').textContent = `${st.handed === 'left' ? 'Left' : 'Right'}-handed golfer, ${club}`;
+    };
+    $$('.lab-setup button[data-handed]').forEach(b => b.addEventListener('click', () => {
+      Lab.setHanded(b.dataset.handed);
+      press('.lab-setup button[data-handed]', b.dataset.handed, 'handed');
+      const p = FR.profile(); p.handed = b.dataset.handed; save();
+      labSub();
+    }));
+    $$('.lab-setup button[data-club]').forEach(b => b.addEventListener('click', () => {
+      Lab.setClub(b.dataset.club);
+      press('.lab-setup button[data-club]', b.dataset.club, 'club');
+      const p = FR.profile(); p.club = b.dataset.club; save();
+      labSub();
+    }));
+
+    const mobs = [['#mob-hips', 'hips'], ['#mob-tspine', 'tspine']];
+    const paintMob = (sel, key) => {
+      const el = $(sel); if (!el) return;
+      const pct = Number(el.value);
+      el.style.setProperty('--pct', ((pct - 20) / 80 * 100) + '%');
+      const out = $(sel + '-val'); if (out) out.textContent = pct + '%';
+      el.closest('.mob').classList.toggle('low', pct < 60);
+    };
+    mobs.forEach(([sel, key]) => {
+      const el = $(sel); if (!el) return;
+      el.addEventListener('input', () => { Lab.setMobility({ [key]: Number(el.value) / 100 }); paintMob(sel, key); });
+    });
+
+    const turnInputs = [['#turn-hip', 'pelvisTop'], ['#turn-sh', 'torsoTop']];
+    const applyTurns = () => {
+      const o = {};
+      turnInputs.forEach(([sel, k]) => { const el = $(sel); if (el && el.value !== '') o[k] = Number(el.value); });
+      const got = Lab.setTurns(o);
+      const p = FR.profile(); p.turns = { pelvisTop: got.pelvisTop, torsoTop: got.torsoTop }; save();
+    };
+    turnInputs.forEach(([sel]) => { const el = $(sel); if (el) { el.addEventListener('change', applyTurns); el.addEventListener('input', applyTurns); } });
+
+    /* Phone only, and only ever after a tap: iOS will not grant orientation without a gesture. */
+    const motionBtn = $('#motion-btn');
+    if (motionBtn && window.DeviceOrientationEvent && matchMedia('(pointer: coarse)').matches) {
+      motionBtn.hidden = false;
+      motionBtn.addEventListener('click', () => {
+        const on = motionBtn.getAttribute('aria-pressed') !== 'true';
+        Promise.resolve(Lab.setMotion(on)).then(ok => {
+          motionBtn.setAttribute('aria-pressed', String(!!ok));
+          if (on && !ok) toast('Motion needs permission for device orientation.');
+        }, () => motionBtn.setAttribute('aria-pressed', 'false'));
+      });
+    }
+
+    /* Seed the controls from whatever the lab settled on: profile, defaults, or a saved choice. */
+    const syncLab = () => {
+      const st = Lab.getState();
+      press('.lab-setup button[data-handed]', st.handed, 'handed');
+      press('.lab-setup button[data-club]', st.club, 'club');
+      mobs.forEach(([sel, key]) => { const el = $(sel); if (el) { el.value = Math.round(st.mobility[key] * 100); paintMob(sel, key); } });
+      const hip = $('#turn-hip'), sh = $('#turn-sh');
+      if (hip) hip.value = Math.round(45 * st.turns.pelvis);
+      if (sh) sh.value = Math.round(95 * st.turns.torso);
+      labSub();
+    };
+    Lab.on('config', syncLab);
+    syncLab();
+
+    /* Debug hooks alongside the existing ?t= and ?cam=, so a URL can pose any setup for a
+       screenshot: ?handed=left ?club=driver ?speed=real ?hips=0.5 ?tspine=0.5 ?hipturn= ?shturn= */
+    const q = new URLSearchParams(location.search);
+    if (q.get('handed')) Lab.setHanded(q.get('handed'));
+    if (q.get('club')) Lab.setClub(q.get('club'));
+    if (q.get('speed')) { Lab.setSpeed(q.get('speed')); press('.lab-speed button[data-speed]', q.get('speed'), 'speed'); }
+    if (q.get('hips') || q.get('tspine')) {
+      const m = {};
+      if (q.get('hips')) m.hips = Number(q.get('hips'));
+      if (q.get('tspine')) m.tspine = Number(q.get('tspine'));
+      Lab.setMobility(m);
+    }
+    if (q.get('hipturn') || q.get('shturn')) Lab.setTurns({ pelvisTop: Number(q.get('hipturn')) || undefined, torsoTop: Number(q.get('shturn')) || undefined });
+    if (q.get('ghosts')) { Lab.setGhosts(q.get('ghosts') !== '0'); $('#ghost-btn').setAttribute('aria-pressed', String(q.get('ghosts') !== '0')); }
+    syncLab();
+
     document.addEventListener('keydown', (e) => {
       if (route() !== 'lab' || player || $('#modal')) return;
       if (e.target.matches('input, textarea, select, button, a, [role="button"]')) return;
