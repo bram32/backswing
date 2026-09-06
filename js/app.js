@@ -492,6 +492,18 @@
     const ready = p.area && p.timing && p.feel;
     view().innerHTML = `
       <div class="view-head"><div><h1>Where does it hurt?</h1><p>Three quick questions. Then a plan you can start right now, and what to change so it does not come back.</p></div></div>
+      <div class="callout warn redflags">
+        <h3>Before you start</h3>
+        <p>Free Relief gives general mobility and fitness information. It cannot examine you and it cannot rule out a serious cause of pain. Speak to a doctor or physiotherapist first, rather than using the app, if any of these apply:</p>
+        <ul class="plan-list stop">
+          <li>Numbness, weakness, or trouble controlling your bladder or bowel.</li>
+          <li>Pain after a fall, a heavy lift or a knock.</li>
+          <li>Pain that wakes you at night, or keeps getting worse.</li>
+          <li>Fever, chills, or unexplained weight loss.</li>
+          <li>Surgery or a significant injury in the last three months.</li>
+          <li>You are under 18.</li>
+        </ul>
+      </div>
       <div class="fix">
         <div class="bodymap" id="bodymap">${bodyMap(p.area)}</div>
         <div class="fix-steps">
@@ -501,7 +513,7 @@
           <div id="plan">${ready ? renderPlan(p.area, p.timing, p.feel) : `<div class="empty">${p.area ? 'Answer the two questions above to get your plan.' : 'Tap the body or pick a spot to begin.'}</div>`}</div>
         </div>
       </div>
-      <p class="disclaimer">Free Relief gives general exercise and injury-prevention guidance for golfers. It is not medical advice and cannot examine you. If you are unsure, in a lot of pain, or any of the "see someone" signs apply, get assessed by a doctor or physiotherapist.</p>`;
+      <p class="disclaimer">Free Relief gives general exercise and injury-prevention guidance for golfers. It is for education, mobility and warm-up, not diagnosis or treatment. It is not medical advice and cannot examine you. If you are unsure, in a lot of pain, or any of the "see someone" signs apply, get assessed by a doctor or physiotherapist.</p>`;
     const setArea = (a) => { p.area = a; save(); renderFix(); };
     $$('#bodymap .bm-hot').forEach(g => { g.addEventListener('click', () => setArea(g.dataset.area)); g.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setArea(g.dataset.area); } }); });
     $$('#area-chips .chip').forEach(b => b.addEventListener('click', () => setArea(b.dataset.area)));
@@ -515,15 +527,19 @@
     const exs = plan.feel[feel].map(id => EX[id]).filter(Boolean);
     const routine = ROUTINE[plan.daily];
     const total = exs.reduce((s, e) => s + e.secs * (e.sides ? 2 : 1), 0);
-    const see = `<div class="plan-section"><h3>See someone if</h3><ul class="plan-list stop">${plan.see.map(s => `<li>${esc(s)}</li>`).join('')}</ul></div>`;
+    /* Area-specific signs are shown for every level, as education. The universal red-flag panel sits
+       above the planner and is identical for everyone; nothing here is computed as an individual verdict. */
+    const see = `<div class="plan-section"><h3>Signs this is not a mobility problem</h3><p class="small muted">These point to something a clinician should look at, whatever the level above says.</p><ul class="plan-list stop">${plan.see.map(s => `<li>${esc(s)}</li>`).join('')}</ul></div>`;
+    const gear = plan.gear ? `<div class="plan-section"><h3>${esc(plan.gear.name)}</h3><p>${esc(plan.gear.intro)}</p><ol class="plan-list">${plan.gear.steps.map(s => `<li>${esc(s)}</li>`).join('')}</ol></div>` : '';
     return `<div class="plan">
       <div class="level level-${level}">${icon('flag')}<div><h2>${lv.label}</h2><p>${lv.sub}</p></div></div>
-      ${level === 'pickup' ? see : ''}
+      ${see}
       <div class="plan-section"><h3>What is probably going on</h3><p>${esc(plan.intro)}</p><p>${esc(plan.key)}</p><p><b>${esc(TIMINGS[timing].label)}:</b> ${esc(plan.timing[timing])}</p></div>
       <div class="plan-section"><h3>${level === 'pickup' ? 'Gentle movement only, if it is comfortable' : 'Do these now'} <span class="muted small">${fmtMin(total)}</span></h3>
         <div class="exlist">${exs.map(e => exCard(e)).join('')}</div>
         <div class="plan-actions" style="margin-top:14px"><button class="btn btn-primary" type="button" data-start-plan>${icon('play')} Start the ${fmtMin(total)} plan</button></div>
       </div>
+      ${gear}
       <div class="plan-section"><h3>Then, most days</h3><p>The ${routine.name.toLowerCase()} routine. ${esc(routine.tagline)}</p>
         <div class="plan-actions" style="margin-top:12px"><button class="btn" type="button" data-start-routine="${routine.id}">${icon('play')} ${routine.name} (${routine.minutes} min)</button><a class="btn btn-ghost" href="#routines">All routines</a></div></div>
       <div class="plan-section"><h3>In your swing</h3><div class="faults">${plan.faults.map(id => FAULT[id]).map(f => `<div class="fault"><h4>${esc(f.name)}</h4><p>${esc(f.what)} ${esc(f.body)}</p></div>`).join('')}</div>
@@ -744,6 +760,13 @@
     document.body.insertAdjacentHTML('afterbegin', figureDefs());
     $('#theme-btn').addEventListener('click', cycleTheme);
     $$('.quick a[data-routine]').forEach(a => a.addEventListener('click', (e) => { e.preventDefault(); startRoutine(a.dataset.routine); }));
+    /* quick tiles that jump straight to a pre-filled plan, e.g. data-plan="elbow,after,stiff" */
+    $$('.quick a[data-plan]').forEach(a => a.addEventListener('click', (e) => {
+      e.preventDefault();
+      const [area, timing, feel] = a.dataset.plan.split(',');
+      if (PLANS[area]) { store.plan = { area, timing: TIMINGS[timing] ? timing : null, feel: FEELS[feel] ? feel : null }; save(); }
+      location.hash = '#fix';
+    }));
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { if ($('#modal')) closeModal(); else if (player) closePlayer(); } });
     window.addEventListener('hashchange', render);
     const more = $('#nav-more'); if (more) more.addEventListener('click', () => $('.rail').classList.toggle('open'));

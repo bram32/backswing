@@ -312,6 +312,12 @@ main { min-width: 0; }
 .fig-arrow { fill: none; stroke: var(--accent-text); stroke-width: 2; stroke-linecap: round; }
 .fig-arrow-head { fill: none; stroke: var(--accent-text); stroke-width: 1.2; }
 
+/* ---------- planner: fixed red-flag panel (identical for everyone, shown before the questions) ---------- */
+.redflags { margin: 0 0 22px; padding: 16px 18px; border: 1px solid var(--line); border-left: 4px solid var(--stop, #b0352f); border-radius: var(--radius); background: var(--raised); max-width: 70ch; }
+.redflags h3 { margin: 0 0 6px; }
+.redflags p { color: var(--ink-2); margin: 0 0 8px; }
+.redflags .plan-list { margin: 0; }
+
 /* ---------- routines ---------- */
 .routines { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; }
 .routine { display: flex; flex-direction: column; gap: 12px; padding: 20px; border-radius: var(--radius); background: var(--raised); border: 1px solid var(--line); }

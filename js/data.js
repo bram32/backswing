@@ -738,10 +738,12 @@ const FEELS = {
 };
 
 /* Level: play (green) / drop (amber) / pickup (red) */
+/* Levels describe what golfers with a pattern usually do. They are deliberately not instructions:
+   the app cannot examine anyone, so it reports the pattern and leaves the decision where it belongs. */
 const LEVELS = {
-  play:   { label: 'Play on',      sub: 'Keep playing. Do the plan and change the habit that caused it.' },
-  drop:   { label: 'Take a drop',  sub: 'Ease off for three to five days. Do the gentle plan, then build back.' },
-  pickup: { label: 'Pick up',      sub: 'Do not play through this. Get it looked at by a doctor or physio.' }
+  play:   { label: 'Play on',      sub: 'Golfers with this pattern usually keep playing while they work on it. Do the plan, and change the habit that caused it.' },
+  drop:   { label: 'Take a drop',  sub: 'Golfers with this pattern usually ease off for a few days, then build back. Fewer holes, the gentle plan, then the full one.' },
+  pickup: { label: 'Pick up',      sub: 'This is a pattern most golfers sit out, and a good day to speak to a physio or doctor. Gentle movement only, if it is comfortable.' }
 };
 
 function assessLevel(area, timing, feel) {
@@ -917,6 +919,20 @@ const PLANS = {
       nerve: ['chintuck', 'wristrot']
     },
     daily: 'elbow',
+    /* The forum answer to golfer's elbow is the TheraBand FlexBar, and every thread then asks which
+       twist, which colour and how many. This is the dose, for people who own one. Eccentric wrist
+       curls (eccwrist) are the no-equipment version and stay in the plan above. */
+    gear: {
+      name: 'If you own a FlexBar',
+      intro: 'Golfer\u2019s elbow is the inside of the elbow: use the reverse Tyler twist. Tennis elbow is the outside: use the Tyler twist. Start on the red bar (light); move to green (medium) when three sets feel easy.',
+      steps: [
+        'Hold the bar vertically in the sore-side hand, palm facing you, wrist bent toward you.',
+        'Grab the top with the other hand, palm away from you, and twist so the bar winds up.',
+        'Straighten both arms out in front, holding the twist.',
+        'Let the sore-side wrist slowly release the twist over four seconds. That slow release is the whole exercise.',
+        'Three sets of ten, once a day, for two to three weeks. A dull ache during the set is expected; sharp pain is not, so stop and go lighter.'
+      ]
+    },
     faults: ['casting', 'chickenwing'],
     avoid: [
       'Strangling the club. If your knuckles whiten you are gripping too hard.',
