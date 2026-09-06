@@ -187,13 +187,14 @@
     el.className = 'player'; el.id = 'player'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-modal', 'true'); el.setAttribute('aria-label', opts.title);
     document.body.appendChild(el);
     if (window.Lab) Lab.stop();
+    if (window.FreeRelief && window.FreeRelief.isNative) window.FreeRelief.keepAwake(true);
     renderPlayer();
     player.tick = setInterval(() => {
       if (!player || !player.running) return;
       player.left -= 1; player.elapsed += 1; player.active += 1;
       if (player.left <= 0) {
         if (player.i >= player.blocks.length - 1) { finishPlayer(); return; }
-        player.i++; player.left = player.blocks[player.i].secs; beep('next'); renderPlayer();
+        player.i++; player.left = player.blocks[player.i].secs; beep('next'); if (window.FreeRelief && window.FreeRelief.isNative) window.FreeRelief.haptic('selection'); renderPlayer();
       } else { updateTimer(); if (player.left <= 3) beep('tick'); }
     }, 1000);
   }
@@ -265,10 +266,12 @@
         </div>
       </div>`;
     $$('[data-close]', el).forEach(b => b.addEventListener('click', () => closePlayer()));
+    if (window.FreeRelief && window.FreeRelief.isNative) window.FreeRelief.haptic('success');
     updateRail();
   }
   function closePlayer() {
     if (player && player.tick) clearInterval(player.tick);
+    if (player && window.FreeRelief && window.FreeRelief.isNative) window.FreeRelief.keepAwake(false);
     player = null;
     const el = $('#player'); if (el) el.remove();
     if (location.hash.replace('#', '') === 'lab' || !location.hash) if (window.Lab) Lab.start();

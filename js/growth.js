@@ -404,6 +404,11 @@
     } catch (e) {
       if (e && e.name === 'AbortError') return;   /* the user closed the sheet */
     }
+    /* inside the iOS app a download link does nothing, but the system share sheet is one call away */
+    if (window.FreeRelief && window.FreeRelief.isNative && typeof window.FreeRelief.share === 'function') {
+      window.FreeRelief.share({ title: 'Free Relief', text: spec.caption, url: 'https://backswing-dkg.pages.dev' });
+      return;
+    }
     /* everywhere else: download it */
     try {
       const url = URL.createObjectURL(blob);

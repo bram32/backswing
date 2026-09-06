@@ -56,10 +56,11 @@ REVIEW_NOTES = <<~TXT.strip
   Not a medical device. The app makes no diagnostic or treatment claims and shows a wellness disclaimer. Anatomy geometry is BodyParts3D, licensed CC BY 4.0 and credited in the app.
 TXT
 
-# PLACEHOLDER contact number. Apple validates the format, so the requested
-# "+31 000000000" is tried first and the run falls through to the next candidate if
-# Apple rejects it. Every one of these is fake, replace before submitting.
-PHONE_CANDIDATES = ['+31 000000000', '+31 6 00000000', '+31 6 12345678'].freeze
+# The App Review contact phone has to be a number Apple can actually call: they ring it when
+# review has questions. It is deliberately not kept in the repo. Pass it as ASC_CONTACT_PHONE
+# (E.164, e.g. +31612345678). Without it the review-detail section is reported as a gap and left
+# untouched - the script never writes a format-valid fake.
+PHONE = ENV['ASC_CONTACT_PHONE'].to_s.strip
 CONTACT = { contactFirstName: 'Bram', contactLastName: 'Pek', contactEmail: 'brampek@gmail.com',
             demoAccountRequired: false, notes: REVIEW_NOTES }.freeze
 
@@ -305,16 +306,12 @@ end
 # --- 5. review details --------------------------------------------------------
 
 section 'appStoreReviewDetail'
-code, d = api('GET', "appStoreVersions/#{VER_ID}/appStoreReviewDetail")
-detail = d['data']
-rd_done = false
-# A phone Apple already accepted goes first, so a re-run does not walk the rejects again.
-stored = detail && detail.dig('attributes', 'contactPhone')
-candidates = ([stored] & PHONE_CANDIDATES) + PHONE_CANDIDATES - [nil]
-candidates.uniq!
-candidates.each do |phone|
-  break if rd_done
-  attrs = CONTACT.merge(contactPhone: phone)
+if PHONE.empty?
+  bad('reviewDetail', 0, 'ASC_CONTACT_PHONE is not set: review contact left untouched. Set a real number Apple can call, then re-run.')
+else
+  code, d = api('GET', "appStoreVersions/#{VER_ID}/appStoreReviewDetail")
+  detail = d['data']
+  attrs = CONTACT.merge(contactPhone: PHONE)
   if detail
     c, r = api('PATCH', "appStoreReviewDetails/#{detail['id']}",
                { data: { type: 'appStoreReviewDetails', id: detail['id'], attributes: attrs } })
@@ -322,17 +319,14 @@ candidates.each do |phone|
     c, r = api('POST', 'appStoreReviewDetails',
                { data: { type: 'appStoreReviewDetails', attributes: attrs,
                          relationships: { appStoreVersion: { data: { type: 'appStoreVersions', id: VER_ID } } } } })
-    detail = r['data'] if (200..299).cover?(c)
   end
   if (200..299).cover?(c)
     attrs.each { |k, v| good("reviewDetail.#{k}", v, c) }
-    PHONE_USED.replace(phone)
-    rd_done = true
+    PHONE_USED.replace(PHONE)
   else
-    puts "  ..    #{c}  reviewDetail with phone #{phone.inspect}: #{errs(r)}"
+    bad('reviewDetail', c, "review contact was not accepted: #{errs(r)}")
   end
 end
-bad('reviewDetail', 409, "no contactPhone candidate was accepted: #{candidates.join(', ')}") unless rd_done
 
 # --- 6. read everything back --------------------------------------------------
 
