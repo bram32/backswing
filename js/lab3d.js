@@ -663,7 +663,7 @@ const Lab = (() => {
      between real disc centres instead of a bare +Y. That is the one thing that must move, or
      the real vertebrae interpenetrate. Everything downstream of a moved bone origin is fixed up
      here: the shoulder and hip anchors, the girdle group, and the torso's skin bind. */
-  const ANATOMY_URL = 'assets/anatomy/spine.bin';
+  const ANATOMY_URL = 'assets/anatomy/spine.bin.gz';   // gzipped: the host will not compress octet-stream
   let anatomyState = 'idle';   // idle | loading | ready | failed | skipped
 
   function warn(msg, err) { if (window.console && console.warn) console.warn(msg, err && err.message ? err.message : err); }

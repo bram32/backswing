@@ -306,11 +306,28 @@
    * Rejects — never throws — on: no THREE, network error, non-2xx, timeout, bad magic, wrong
    * container version, malformed header, truncated or corrupt streams.
    */
+  /* Cloudflare Pages does not compress application/octet-stream, so a plain .bin ships at its full
+     172 KB. Rather than depend on host config, the asset is stored gzipped and inflated here:
+     108 KB over the wire, and a smaller iOS bundle too. DecompressionStream is Safari 16.4+, well
+     under this app's floor; without it we fall back to the uncompressed sibling if one is served,
+     and failing that the caller keeps the procedural skeleton. */
+  function inflate(buf) {
+    var head = new Uint8Array(buf, 0, Math.min(2, buf.byteLength));
+    if (!(head[0] === 0x1f && head[1] === 0x8b)) return global.Promise.resolve(buf); // already plain
+    if (typeof global.DecompressionStream !== 'function' || typeof global.Response !== 'function') {
+      return global.Promise.reject(fail('asset is gzipped but DecompressionStream is unavailable'));
+    }
+    var stream = new global.Response(buf).body.pipeThrough(new global.DecompressionStream('gzip'));
+    return new global.Response(stream).arrayBuffer();
+  }
+
   function load(url, opts) {
     opts = opts || {};
     if (!global.Promise) { throw fail('Promise is not available in this environment'); }
     if (!url) return global.Promise.reject(fail('load() needs a url'));
-    return fetchBuffer(url, opts).then(function (buf) { return decode(buf, opts); });
+    return fetchBuffer(url, opts)
+      .then(inflate)
+      .then(function (buf) { return decode(buf, opts); });
   }
 
   global.Anatomy = {

@@ -55,15 +55,15 @@ if (fs.existsSync(assetsSrc)) {
   const anatomySrc = path.join(assetsSrc, 'anatomy');
   if (fs.existsSync(anatomySrc)) {
     // spine.json is build metadata (per-part decimation stats); the runtime header lives inside spine.bin
-    const files = fs.readdirSync(anatomySrc).filter((f) => /\.(bin|txt)$/.test(f));
+    const files = fs.readdirSync(anatomySrc).filter((f) => /\.(bin\.gz|txt)$/.test(f));
     if (files.length) {
       fs.mkdirSync(path.join(site, 'assets/anatomy'), { recursive: true });
       let bytes = 0;
       for (const f of files) {
         fs.copyFileSync(path.join(anatomySrc, f), path.join(site, 'assets/anatomy', f));
-        if (f === 'spine.bin') bytes = fs.statSync(path.join(anatomySrc, f)).size;
+        if (f === 'spine.bin.gz') bytes = fs.statSync(path.join(anatomySrc, f)).size;
       }
-      console.log('dist/site/assets/anatomy', files.length, 'files, spine.bin', (bytes / 1024).toFixed(0) + ' KB');
+      console.log('dist/site/assets/anatomy', files.length, 'files, spine.bin.gz', (bytes / 1024).toFixed(0) + ' KB over the wire');
     }
   }
 }
@@ -72,8 +72,9 @@ if (fs.existsSync(assetsSrc)) {
 // a loader it already carries. dist/artifact.html cannot have siblings and falls back by design.
 {
   const anatomySrc = path.join(root, 'assets', 'anatomy');
+  fs.rmSync(path.join(root, 'dist/assets'), { recursive: true, force: true });
   if (fs.existsSync(anatomySrc)) {
-    const files = fs.readdirSync(anatomySrc).filter((f) => /\.(bin|txt)$/.test(f));
+    const files = fs.readdirSync(anatomySrc).filter((f) => /\.(bin\.gz|txt)$/.test(f));
     if (files.length) {
       fs.mkdirSync(path.join(root, 'dist/assets/anatomy'), { recursive: true });
       for (const f of files) fs.copyFileSync(path.join(anatomySrc, f), path.join(root, 'dist/assets/anatomy', f));
