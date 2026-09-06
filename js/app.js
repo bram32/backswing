@@ -3,6 +3,30 @@
 
 (() => {
   const STORE_KEY = 'freerelief.v1';
+
+  /* ---------- plugin API: feature modules register views and hooks here ---------- */
+  const plugins = { views: {}, hooks: {} };
+  function emit(event, payload) { (plugins.hooks[event] || []).forEach(fn => { try { fn(payload); } catch (e) { console.error('hook', event, e); } }); }
+  function addNav(name, nav) {
+    const navEl = document.querySelector('.nav'); if (!navEl || navEl.querySelector(`a[data-route="${name}"]`)) return;
+    const a = document.createElement('a'); a.href = '#' + name; a.dataset.route = name; if (nav.primary) a.dataset.primary = 'true';
+    a.innerHTML = (nav.icon || '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg>') + (nav.label || name);
+    const ref = nav.after ? navEl.querySelector(`a[data-route="${nav.after}"]`) : null;
+    if (nav.first) navEl.prepend(a); else if (ref && ref.nextSibling) navEl.insertBefore(a, ref.nextSibling); else navEl.appendChild(a);
+  }
+  window.FR = {
+    version: 1,
+    registerView(name, def) { plugins.views[name] = def; if (def.nav) addNav(name, def.nav); },
+    on(event, fn) { (plugins.hooks[event] = plugins.hooks[event] || []).push(fn); },
+    emit,
+    store: () => store, save: () => save(), profile: () => (store.profile = store.profile || {}),
+    toast: (m) => toast(m), startPlayer: (o) => startPlayer(o), startRoutine: (id) => startRoutine(id), openExercise: (id) => openExercise(id),
+    exCard: (ex, extra) => exCard(ex, extra), icon: (n) => icon(n), esc: (x) => esc(x), streak: () => streak(), entries: () => entries(),
+    todayISO: () => todayISO(), localISO: (d) => localISO(d), fmtMin: (s) => fmtMin(s),
+    route: () => route(), navigate: (hash) => { location.hash = hash; }, render: () => render(),
+    lab: () => window.Lab || null,
+    data: () => ({ EXERCISES, EX, ROUTINES, ROUTINE, PLANS, AREAS, TYPES, FAULTS, FAULT, INJURIES, HABITS, TIMINGS, FEELS, LEVELS, assessLevel })
+  };
   const LEGACY_STORE_KEYS = ['backswing.v1'];
   const $ = (s, el = document) => el.querySelector(s);
   const $$ = (s, el = document) => Array.from(el.querySelectorAll(s));
@@ -177,6 +201,7 @@
   function renderPlayer() {
     if (!player) return;
     const el = $('#player'); const b = player.blocks[player.i]; const ex = b.ex;
+    emit('player:block', { ex, side: b.side, index: player.i, total: player.blocks.length, secs: b.secs });
     const r = 52, circ = 2 * Math.PI * r;
     el.innerHTML = `
       <div class="player-top">
@@ -224,7 +249,9 @@
     clearInterval(player.tick); player.tick = null; player.running = false;
     beep('done');
     const id = player.opts.routineId || null;
-    store.done.push({ date: todayISO(), routine: id, title: player.opts.title, secs: player.active });
+    const doneEntry = { date: todayISO(), routine: id, title: player.opts.title, secs: player.active };
+    store.done.push(doneEntry);
+    emit('routine:done', doneEntry);
     save();
     const el = $('#player');
     el.innerHTML = `<div class="player-top"><b>${esc(player.opts.title)}</b><span></span><button class="btn btn-ghost btn-sm" data-close type="button">${icon('x')} Close</button></div>
@@ -253,7 +280,8 @@
 
   function route() {
     const r = location.hash.replace('#', '').split('/')[0];
-    return routes.includes(r) ? r : 'lab';
+    if (plugins.views[r]) return r;
+    return routes.includes(r) ? r : (plugins.views.home ? 'home' : 'lab');
   }
 
   function render() {
@@ -262,10 +290,13 @@
     if (player) closePlayer();
     $$('.nav a').forEach(a => { if (a.dataset.route === r) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); });
     const lab = $('#lab-view');
-    if (r === 'lab') { lab.hidden = false; view().hidden = true; view().innerHTML = ''; bootLab(); return; }
+    document.querySelector('.rail') && document.querySelector('.rail').classList.remove('open');
+    if (r === 'lab') { lab.hidden = false; view().hidden = true; view().innerHTML = ''; bootLab(); emit('route', r); return; }
     lab.hidden = true; view().hidden = false;
     if (window.Lab) Lab.stop();
-    ({ fix: renderFix, routines: renderRoutines, exercises: renderExercises, prevent: renderPrevent, log: renderLog })[r]();
+    if (plugins.views[r]) { view().innerHTML = ''; plugins.views[r].render(view(), window.FR); }
+    else ({ fix: renderFix, routines: renderRoutines, exercises: renderExercises, prevent: renderPrevent, log: renderLog })[r]();
+    emit('route', r);
     window.scrollTo({ top: 0 });
   }
 
@@ -538,7 +569,8 @@
     $('#f-note').addEventListener('input', e => form.note = e.target.value);
     $('#logform').addEventListener('submit', (e) => {
       e.preventDefault();
-      store.log.push({ id: 'r' + Date.now(), date: form.date, area: form.area, pain: form.pain, warm: form.warm, move: form.move, holes: form.holes, note: form.note.trim() });
+      const roundEntry = { id: 'r' + Date.now(), date: form.date, area: form.area, pain: form.pain, warm: form.warm, move: form.move, holes: form.holes, note: form.note.trim() };
+      store.log.push(roundEntry); emit('round:saved', roundEntry);
       save(); form.note = ''; toast('Round saved'); renderLog(); updateRail();
     });
     $$('[data-del]').forEach(b => b.addEventListener('click', () => { store.log = store.log.filter(e => e.id !== b.dataset.del); save(); renderLog(); }));
@@ -617,6 +649,8 @@
     $$('.quick a[data-routine]').forEach(a => a.addEventListener('click', (e) => { e.preventDefault(); startRoutine(a.dataset.routine); }));
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { if ($('#modal')) closeModal(); else if (player) closePlayer(); } });
     window.addEventListener('hashchange', render);
+    const more = $('#nav-more'); if (more) more.addEventListener('click', () => $('.rail').classList.toggle('open'));
+    emit('boot');
     updateRail();
     render();
     debugOpen(qs);

@@ -540,3 +540,14 @@ main { min-width: 0; }
   /* toast clears the tab bar */
   .toast { left: 16px; right: 16px; bottom: calc(88px + env(safe-area-inset-bottom)); transform: none; text-align: center; }
 }
+
+/* ---------- mobile "More" menu (feature modules add tabs; only primary ones show in the bar) ---------- */
+.nav-more { display: none; }
+@media (max-width: 760px) {
+  .nav a:not([data-primary="true"]) { display: none; }
+  .nav-more { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 6px 4px; border: 0; background: transparent; color: var(--ink-2); font-weight: 700; font-size: 0.68rem; flex: 1; }
+  .nav-more svg { width: 20px; height: 20px; fill: currentColor; }
+  .rail.open .nav { position: fixed; left: 10px; right: 10px; bottom: calc(64px + env(safe-area-inset-bottom)); display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding: 12px; border-radius: 14px; background: var(--raised); border: 1px solid var(--line-strong); box-shadow: var(--shadow); z-index: 45; }
+  .rail.open .nav a { display: flex; flex-direction: row; justify-content: flex-start; gap: 10px; padding: 12px; font-size: 0.95rem; }
+  .rail.open .nav-more { color: var(--ink); }
+}
