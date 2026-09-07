@@ -402,7 +402,7 @@ const EXERCISES = [
     golf: 'Tired posture muscles are why your setup on the 15th tee looks nothing like the 1st.'
   },
   {
-    id: 'wristflex', name: 'Wrist flexor stretch', areas: ['elbow', 'wrist'], type: 'stretch', pose: 'wristStretch',
+    id: 'wristflex', name: 'Wrist flexor stretch', areas: ['elbow', 'wrist'], type: 'stretch', pose: 'wristStretchUp',
     secs: 30, sides: true, reps: 'Hold 30 seconds each arm', where: 'course', gear: 'None',
     why: 'Stretches the muscles on the palm side of the forearm that attach at the inside of the elbow (golfer’s elbow).',
     steps: [

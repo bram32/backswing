@@ -1,0 +1,3 @@
+I'll generate the golf-club crest as a two-colour 1:1 emblem. First I'm loading the image-generation and logo-asset guidance so the prompt, colours, and save path match the spec.The spec is a two-colour full-bleed crest, so I’ll generate a 1:1 vector-style emblem and then check rings, pose, and palette against the brief.I'll inspect the generated crest against the spec—rings, pose, two-colour palette, and full-bleed green—before saving it.The first pass has rounded corners and too much internal detail. I’ll measure colours and corners, then rebuild a sharp square full-bleed version.The first result has white rounded corners and off-spec colours. I’ll edit it into a sharp full-bleed square and lock the two-colour palette.Max turns reached
+
+Error: max turns reached

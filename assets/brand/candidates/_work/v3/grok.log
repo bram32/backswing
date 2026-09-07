@@ -1,0 +1,3 @@
+I'll generate a two-color monoline golf emblem as a full-bleed square icon. First I'm loading the image and UI-icon generation guidance so the artwork matches the spec.I'll check existing emblem work in this folder so the new badge matches the series, then generate it as a full-bleed two-color icon.Generating the monoline golf emblem as a 1:1 full-bleed icon, then I’ll lock the two brand colors and save it to the path you specified.I'll copy the generated emblem into the requested path, then check colors, corners, and composition against the spec.The first pass has rounded white corners and off-brand greens. I’ll regenerate with a square full-bleed canvas, then snap the result to the two exact brand colours.Max turns reached
+
+Error: max turns reached
