@@ -2,7 +2,7 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<!-- Free Relief privacy manifest.
+	<!-- Uncoil privacy manifest.
 
 	     The app collects nothing, tracks nothing and contacts no server, so the two collection
 	     arrays are deliberately empty rather than absent - an empty array is the affirmative

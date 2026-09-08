@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /*
- * build-anatomy.mjs — bake the Free Relief anatomical spine asset.
+ * build-anatomy.mjs — bake the Uncoil anatomical spine asset.
  *
  * Reads the human-atlas (BodyParts3D 4.0) mesh chunks, pulls the 72 skeletal parts the app
  * needs, decimates them to a phone budget, re-origins each one onto the lab's existing bone
@@ -366,7 +366,7 @@ const args = parseArgs(process.argv.slice(2));
 const log = args.quiet ? () => {} : (...a) => console.log(...a);
 const src = openAtlas(args.atlas);
 
-log('build-anatomy — Free Relief spine asset');
+log('build-anatomy — Uncoil spine asset');
 log('  atlas   ' + args.atlas);
 log('  version ' + src.atlas.version + '  (' + src.atlas.sex + ', ' + src.atlas.triangles.toLocaleString() + ' source triangles)');
 log('  out     ' + args.out);
@@ -662,7 +662,7 @@ index.parts = manifest.map((p) => ({
 fs.writeFileSync(path.join(args.out, 'spine.json'), JSON.stringify(index, null, 1) + '\n');
 
 fs.writeFileSync(path.join(args.out, 'LICENSE.txt'), [
-  'Free Relief — anatomical spine asset (assets/anatomy/spine.bin)',
+  'Uncoil — anatomical spine asset (assets/anatomy/spine.bin)',
   '',
   'Geometry derived from BodyParts3D 4.0.',
   'Copyright (c) The Database Center for Life Science (DBCLS), Japan.',
@@ -672,7 +672,7 @@ fs.writeFileSync(path.join(args.out, 'LICENSE.txt'), [
   'Obtained via human-atlas (https://github.com/ashemag/human-atlas), application code MIT (c) ashemag.',
   '',
   'The meshes here are modified: a subset of skeletal parts, decimated by grid vertex clustering,',
-  'rescaled by ' + SCALE + ', re-origined onto the Free Relief joint chain and re-encoded.',
+  'rescaled by ' + SCALE + ', re-origined onto the Uncoil joint chain and re-encoded.',
   '',
   'CC BY 4.0 permits commercial use WITH attribution. The attribution must be visible in the',
   'running app (credits/about panel), not only in this repository.',
