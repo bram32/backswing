@@ -130,9 +130,12 @@ satisfaction, not about changing behaviour.
 
 - **Privacy policy URL:** `https://backswing-dkg.pages.dev/privacy.html`, set on the App Store
   Connect app info. It is a real, specific page: no accounts, no analytics, no server, on-device
-  `localStorage` only, contact address, and explicit instructions for deleting the data (delete the
+  `localStorage` only, a Feedback section, and explicit instructions for deleting the data (delete the
   app, or clear site data).
-- **Support URL:** `https://backswing-dkg.pages.dev/privacy.html#contact`.
+- **Support URL:** `https://backswing-dkg.pages.dev/feedback` — the anonymous feedback form.
+  It is a real page with a working form, not a bare `mailto:`, and it carries no personal
+  contact details: messages go through an e-mail relay (`functions/api/feedback.js`, destination
+  in the `FEEDBACK_TO` Pages secret).
 - **App Privacy questionnaire — NOT YET DONE, website only.** App Store Connect → the app → App
   Privacy → Get Started → answer **"No, we do not collect data from this app"** → Publish. This
   cannot be set through the API and **submission is blocked until it is answered.**
@@ -203,7 +206,7 @@ After deploying, confirm all three by hand — a 200 is not proof of anything on
 ```sh
 curl -s https://backswing-dkg.pages.dev/privacy.html | grep -o '<title>[^<]*</title>'   # expect "Privacy Policy — Uncoil"
 curl -s https://backswing-dkg.pages.dev/terms.html   | grep -o '<title>[^<]*</title>'   # expect "Terms of Use — Uncoil"
-curl -s https://backswing-dkg.pages.dev/privacy.html | grep -c 'id="contact"'           # expect 1, the support-URL anchor
+curl -s https://backswing-dkg.pages.dev/feedback     | grep -o '<title>[^<]*</title>'   # expect "Feedback — Uncoil", the support URL
 ```
 
 ## Export compliance

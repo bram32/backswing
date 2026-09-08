@@ -4,9 +4,9 @@ const path = require('path');
 const root = __dirname;
 const read = (p) => fs.readFileSync(path.join(root, p), 'utf8');
 let html = read('index.html');
-const CSS_FILES = ['css/styles.css', 'css/screen.css', 'css/programs.css', 'css/growth.css'];
+const CSS_FILES = ['css/styles.css', 'css/screen.css', 'css/programs.css', 'css/growth.css', 'css/feedback.css'];
 const css = CSS_FILES.map(read).join('\n');
-const JS_FILES = ['js/data.js', 'js/figures.js', 'js/anatomy.js', 'js/lab3d.js', 'js/app.js', 'js/screen.js', 'js/programs.js', 'js/growth.js'];
+const JS_FILES = ['js/data.js', 'js/figures.js', 'js/anatomy.js', 'js/lab3d.js', 'js/app.js', 'js/screen.js', 'js/programs.js', 'js/growth.js', 'js/feedback.js'];
 const js = JS_FILES.map(read).join('\n;\n');
 // three.js r147 is vendored under js/vendor/three so the app runs with no network at all: the iOS
 // bundle and the offline PWA both need it, and App Review must never hang on a CDN. The paths under
@@ -42,7 +42,8 @@ const FONTS_CDN = '<link rel="preconnect" href="https://fonts.googleapis.com">\n
 if (!html.includes(FONTS_LOCAL)) throw new Error('build: index.html no longer links the vendored fonts (' + FONTS_LOCAL + ')');
 if (!fs.existsSync(path.join(root, 'js/vendor/fonts/fonts.css'))) throw new Error('build: js/vendor/fonts/fonts.css is missing');
 // Static pages that ship beside the app (linked from the disclaimer, and required by App Review).
-const PAGES = ['privacy.html', 'terms.html'];
+// feedback.html is the App Store support URL as well as the web form, so it ships everywhere.
+const PAGES = ['privacy.html', 'terms.html', 'feedback.html'];
 html = html.replace('<link rel="stylesheet" href="css/styles.css">', `<style>\n${css}\n</style>`);
 for (const f of CSS_FILES.slice(1)) html = html.replace(`<link rel="stylesheet" href="${f}">\n`, '');
 const scriptTags = new RegExp(JS_FILES.map((f) => `<script src="${f.replace(/[./]/g, (c) => '\\' + c)}"><\\/script>`).join('\\s*'));
@@ -77,7 +78,7 @@ if ((frag.match(new RegExp(VENDOR_CDN.replace(/[.*+?^${}()|[\]\\/]/g, '\\$&'), '
 }
 frag = frag.replace(FONTS_LOCAL, FONTS_CDN);
 // Same reason: relative links to the legal pages cannot resolve inside a hosted fragment.
-frag = frag.replace(/href="(privacy|terms)\.html"/g, 'href="https://backswing-dkg.pages.dev/$1.html"');
+frag = frag.replace(/href="(privacy|terms|feedback)\.html"/g, 'href="https://backswing-dkg.pages.dev/$1.html"');
 fs.writeFileSync(path.join(root, 'dist/artifact.html'), frag.trim() + '\n');
 console.log('dist/index.html', (html.length / 1024).toFixed(0) + ' KB');
 console.log('dist/artifact.html', (frag.length / 1024).toFixed(0) + ' KB');
@@ -161,6 +162,21 @@ if (fs.existsSync(assetsSrc)) {
   }
 }
 console.log('dist/site staged');
+// Cloudflare Pages Functions. `wrangler pages deploy dist/site` looks for a `functions`
+// directory inside the directory it is given, so the source tree's functions/ has to be staged
+// there or /api/feedback simply 404s and the deploy still reports success.
+{
+  const fnSrc = path.join(root, 'functions');
+  if (!fs.existsSync(path.join(fnSrc, 'api/feedback.js'))) {
+    throw new Error('build: functions/api/feedback.js is missing - the Feedback screen and the App Store support URL both post to /api/feedback');
+  }
+  copyTree(fnSrc, path.join(site, 'functions'));
+  const n = (function count(dir) {
+    return fs.readdirSync(dir, { withFileTypes: true })
+      .reduce((sum, e) => sum + (e.isDirectory() ? count(path.join(dir, e.name)) : 1), 0);
+  })(fnSrc);
+  console.log('dist/site/functions', n, 'file' + (n === 1 ? '' : 's'));
+}
 // PWA: manifest + service worker (icon PNGs are already covered by the assets copy above)
 for (const f of ['manifest.webmanifest', 'sw.js']) {
   if (fs.existsSync(path.join(root, f))) fs.copyFileSync(path.join(root, f), path.join(site, f));

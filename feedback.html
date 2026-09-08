@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Feedback — Uncoil</title>
+<meta name="description" content="Send anonymous feedback about Uncoil: a bug, an idea, or the exercises. Nothing identifies you.">
+<meta name="theme-color" content="#0e261b">
+<meta name="robots" content="noindex">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon-180.png">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230e261b'/%3E%3Cpath d='M16 5c-3 3-5 7-5 11s2 8 5 11c3-3 5-7 5-11s-2-8-5-11z' fill='none' stroke='%23f6c544' stroke-width='2.4'/%3E%3Ccircle cx='16' cy='16' r='2.2' fill='%23f6c544'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="js/vendor/fonts/fonts.css">
+<style>
+:root {
+  --ground: #0e261b;
+  --raised: #143323;
+  --inset: #1b4130;
+  --line: rgba(238, 243, 234, 0.14);
+  --ink: #eef3ea;
+  --ink-2: #a9bfb0;
+  --ink-3: #6f8a7b;
+  --accent: #f6c544;
+  --accent-text: #f6c544;
+  --accent-soft: rgba(246, 197, 68, 0.14);
+  --radius: 14px;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) {
+  :root {
+    --ground: #edf2ec;
+    --raised: #ffffff;
+    --inset: #dfe8df;
+    --line: rgba(19, 42, 31, 0.14);
+    --ink: #132a1f;
+    --ink-2: #4f6b5b;
+    --ink-3: #7e968a;
+    --accent: #f2c230;
+    --accent-text: #7a5b00;
+    --accent-soft: rgba(242, 194, 48, 0.2);
+    color-scheme: light;
+  }
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--ground);
+  color: var(--ink);
+  font: 16px/1.6 'Atkinson Hyperlegible', 'Helvetica Neue', Arial, sans-serif;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+.wrap { max-width: 44rem; margin: 0 auto; padding: 2.5rem 1.25rem 4rem; }
+.brand { display: inline-flex; align-items: center; gap: .6rem; text-decoration: none; color: var(--ink); margin-bottom: 2rem; }
+.brand svg { width: 32px; height: 32px; display: block; }
+.brand span { font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-weight: 700; letter-spacing: -0.01em; font-size: 1.05rem; }
+h1 { font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-size: clamp(1.8rem, 5vw, 2.4rem); line-height: 1.15; letter-spacing: -0.02em; margin: 0 0 .5rem; }
+h2 { font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif; font-size: 1.15rem; letter-spacing: -0.01em; margin: 2.2rem 0 .6rem; }
+.meta { color: var(--ink-3); font-size: .9rem; margin: 0 0 2rem; }
+p, li { color: var(--ink-2); }
+p { margin: 0 0 1rem; }
+strong { color: var(--ink); }
+ul { padding-left: 1.15rem; margin: 0 0 1rem; }
+li { margin-bottom: .45rem; }
+a { color: var(--accent-text); }
+a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 3px; }
+.lede {
+  background: var(--raised);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius);
+  padding: 1.1rem 1.2rem;
+  margin: 0 0 2rem;
+}
+.lede p { margin: 0; color: var(--ink); font-size: 1.05rem; }
+.card { background: var(--raised); border: 1px solid var(--line); border-radius: var(--radius); padding: 1.1rem 1.2rem; margin: 1rem 0 1.5rem; }
+.card p:last-child, .card ul:last-child { margin-bottom: 0; }
+.foot { margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--line); color: var(--ink-3); font-size: .9rem; }
+.foot a { margin-right: .35rem; }
+.sep { color: var(--ink-3); margin-right: .35rem; }
+/* ---- feedback form ---- */
+form { margin: 0; }
+fieldset { border: 0; padding: 0; margin: 0 0 1.6rem; }
+legend, .flabel { display: block; font-weight: 700; color: var(--ink); margin: 0 0 .6rem; padding: 0; }
+.chips { display: flex; flex-wrap: wrap; gap: .5rem; }
+.chip {
+  height: 38px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--line);
+  background: transparent; color: var(--ink-2); font: inherit; font-weight: 700; font-size: .9rem; cursor: pointer;
+}
+.chip:hover { color: var(--ink); border-color: var(--line-strong); }
+.chip[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent-text); color: var(--ink); }
+textarea {
+  width: 100%; min-height: 190px; padding: .75rem .8rem; border-radius: 8px; border: 1px solid var(--line);
+  background: var(--ground); color: var(--ink); font: inherit; line-height: 1.55; resize: vertical;
+}
+textarea:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.count { margin: .4rem 0 0; text-align: right; font-size: .8rem; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+.count.is-full { color: var(--warn); }
+.check {
+  display: grid; grid-template-columns: auto minmax(0, 1fr); gap: .75rem; align-items: start;
+  padding: 1rem 1.1rem; border-radius: var(--radius); border: 1px solid var(--line); background: var(--raised); cursor: pointer;
+}
+.check:hover { border-color: var(--line-strong); }
+.check input { width: 20px; height: 20px; margin: 2px 0 0; accent-color: var(--accent); }
+.check b { display: block; color: var(--ink); }
+.check small { display: block; margin-top: .25rem; color: var(--ink-2); font-size: .85rem; line-height: 1.5; }
+code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .82em; padding: 1px 6px; border-radius: 5px; background: var(--inset); color: var(--ink); overflow-wrap: anywhere; }
+.hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+.actions { display: flex; flex-wrap: wrap; align-items: center; gap: .9rem; margin-top: 1.6rem; }
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: .5rem; height: 50px; padding: 0 1.4rem;
+  border-radius: 10px; border: 1px solid transparent; background: var(--accent); color: #1b1502;
+  font: inherit; font-weight: 700; font-size: 1.02rem; cursor: pointer; text-decoration: none;
+}
+.btn:hover { filter: brightness(1.06); }
+.btn[disabled] { opacity: .55; cursor: not-allowed; filter: none; }
+.btn-ghost { background: transparent; border-color: var(--line-strong); color: var(--ink); }
+.btn-ghost:hover { background: var(--raised); filter: none; }
+.status { margin: 0; font-size: .9rem; color: var(--ink-2); max-width: 40ch; }
+.status.is-bad { color: var(--warn); }
+[hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="brand" href="index.html">
+    <svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8" fill="#0e261b"/><path d="M16 5c-3 3-5 7-5 11s2 8 5 11c3-3 5-7 5-11s-2-8-5-11z" fill="none" stroke="#f6c544" stroke-width="2.4"/><circle cx="16" cy="16" r="2.2" fill="#f6c544"/></svg>
+    <span>Uncoil</span>
+  </a>
+
+  <h1>Feedback</h1>
+  <p class="meta">Anonymous · nothing is sent until you press Send</p>
+
+  <div class="lede">
+    <p><strong>Nothing here identifies you.</strong> No sign-in, no e-mail address, no IP address, no tracking. The message you type is the message we get, and we cannot tell who wrote it.</p>
+  </div>
+
+  <form id="form">
+    <fieldset>
+      <legend>What is this about?</legend>
+      <div class="chips" id="cats">
+        <button class="chip" type="button" data-cat="bug" aria-pressed="true">Something is broken</button>
+        <button class="chip" type="button" data-cat="idea" aria-pressed="false">An idea</button>
+        <button class="chip" type="button" data-cat="content" aria-pressed="false">The exercises or advice</button>
+        <button class="chip" type="button" data-cat="other" aria-pressed="false">Something else</button>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <label class="flabel" for="msg">Your message</label>
+      <textarea id="msg" maxlength="2000" spellcheck="true" placeholder="What happened, what you expected, or what you would change. If it is a bug, the screen you were on and what you tapped helps most."></textarea>
+      <p class="count" id="countwrap"><span id="count">0</span> / 2000</p>
+    </fieldset>
+
+    <label class="check" for="ctx">
+      <input type="checkbox" id="ctx">
+      <span>
+        <b>Include app version and device type</b>
+        <small>Adds one line — <code id="ctxline">Uncoil</code> — and nothing else. Off by default.</small>
+      </span>
+    </label>
+
+    <div class="hp" aria-hidden="true"><label>Website<input type="text" id="website" name="website" tabindex="-1" autocomplete="off"></label></div>
+
+    <div class="actions">
+      <button class="btn" id="send" type="submit">Send</button>
+      <p class="status" id="status" role="status" aria-live="polite"></p>
+    </div>
+  </form>
+
+  <div id="done" hidden>
+    <div class="card">
+      <p><strong>Thank you — your message is on its way.</strong></p>
+      <p>It went without a name, an address or an identifier attached. It lands in the maker's inbox as an ordinary e-mail. Because nothing identified you there is no way to reply, so fixes and changes show up in the next release instead.</p>
+      <p style="margin:0"><button class="btn btn-ghost" id="again" type="button">Send another</button></p>
+    </div>
+  </div>
+
+  <h2>What gets sent</h2>
+  <div class="card">
+    <ul>
+      <li>The message you type, and the category you picked.</li>
+      <li>The version line above, <strong>only</strong> if you tick the box.</li>
+      <li>Nothing else: no name, no e-mail address, no IP address, no cookies, and nothing the app has stored on your device — your plan, log, streak and settings never leave it.</li>
+    </ul>
+  </div>
+  <p>Messages are passed to an e-mail relay which turns them into an e-mail to the maker of Uncoil. Uncoil is an independent app made in the Netherlands. Full detail is in the <a href="privacy.html">privacy policy</a>.</p>
+
+  <div class="foot">
+    <a href="index.html">Uncoil</a><span class="sep">·</span><a href="privacy.html">Privacy</a><span class="sep">·</span><a href="terms.html">Terms</a>
+    <p style="margin:.6rem 0 0">Uncoil provides general exercise and injury-prevention information. It is not medical advice.</p>
+  </div>
+</div>
+
+<script>
+/* Standalone on purpose: this page is the App Store support URL, so it has to work with no build
+   step, no framework and nothing loaded from anywhere else. Same endpoint as the in-app screen. */
+(function () {
+  var ENDPOINT = 'https://backswing-dkg.pages.dev/api/feedback';
+  var APP_VERSION = '1.0.0';
+  var MAX = 2000;
+  var category = 'bug';
+
+  var form = document.getElementById('form');
+  var msg = document.getElementById('msg');
+  var count = document.getElementById('count');
+  var countwrap = document.getElementById('countwrap');
+  var ctx = document.getElementById('ctx');
+  var send = document.getElementById('send');
+  var status = document.getElementById('status');
+  var done = document.getElementById('done');
+  var website = document.getElementById('website');
+
+  function isNative() {
+    try {
+      if (window.FreeRelief && (window.FreeRelief.isNative || window.FreeRelief.native)) return true;
+      return document.documentElement.getAttribute('data-native') === 'ios';
+    } catch (e) { return false; }
+  }
+  function contextLine() {
+    var platform = '';
+    try { platform = String(navigator.platform || '').trim(); } catch (e) { platform = ''; }
+    return 'Uncoil ' + APP_VERSION + ' \u00b7 ' + (isNative() ? 'iOS app' : 'web') + ' \u00b7 ' + (platform || 'unknown device');
+  }
+  document.getElementById('ctxline').textContent = contextLine();
+
+  function setStatus(text, bad) {
+    status.textContent = text || '';
+    status.className = 'status' + (bad ? ' is-bad' : '');
+  }
+
+  Array.prototype.forEach.call(document.querySelectorAll('[data-cat]'), function (b) {
+    b.addEventListener('click', function () {
+      category = b.getAttribute('data-cat');
+      Array.prototype.forEach.call(document.querySelectorAll('[data-cat]'), function (o) {
+        o.setAttribute('aria-pressed', o === b ? 'true' : 'false');
+      });
+    });
+  });
+
+  msg.addEventListener('input', function () {
+    count.textContent = String(msg.value.length);
+    countwrap.className = 'count' + (msg.value.length >= MAX ? ' is-full' : '');
+    setStatus('');
+  });
+
+  document.getElementById('again').addEventListener('click', function () {
+    done.hidden = true; form.hidden = false; msg.value = ''; count.textContent = '0';
+    setStatus(''); msg.focus();
+  });
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var text = String(msg.value || '').trim();
+    if (!text) { setStatus('Write a message first.', true); msg.focus(); return; }
+    if (text.length > MAX) { setStatus('That is longer than ' + MAX + ' characters.', true); return; }
+    if (navigator.onLine === false) { setStatus('You are offline. Your message is still here — press Send again once you have a connection.', true); return; }
+
+    send.disabled = true;
+    setStatus('Sending…');
+
+    var body = { category: category, message: text, website: website.value };
+    if (ctx.checked) body.context = contextLine();
+
+    fetch(ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'omit',
+      body: JSON.stringify(body)
+    }).then(function (res) {
+      return res.json().catch(function () { return null; }).then(function (data) {
+        if (res.ok && data && data.ok) {
+          form.hidden = true; done.hidden = false;
+          done.scrollIntoView({ block: 'nearest' });
+          return;
+        }
+        throw new Error('failed');
+      });
+    }).catch(function () {
+      send.disabled = false;
+      setStatus('That did not go through. Your message is still here — try again in a moment.', true);
+    });
+  });
+}());
+</script>
+</body>
+</html>

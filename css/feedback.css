@@ -1,0 +1,55 @@
+/* Uncoil — feedback module styles. Uses the tokens from css/styles.css.
+   .fb- the anonymous feedback form and its "what gets sent" panel. */
+
+.fb { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 32px; align-items: start; }
+.fb-form { display: flex; flex-direction: column; gap: 22px; min-width: 0; }
+
+.fb-form .field { margin: 0; }
+.fb-msg { min-height: 200px; line-height: 1.55; }
+.fb-count { margin-top: 6px; text-align: right; font-size: 0.8rem; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+.fb-count.is-full { color: var(--warn); }
+
+/* Opt-in context line. Unticked by default, and the exact string is printed inside the label so
+   there is never a question about what ticking it adds. */
+.fb-check {
+  display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 12px; align-items: start;
+  padding: 16px 18px; border-radius: var(--radius); border: 1px solid var(--line); background: var(--raised); cursor: pointer;
+}
+.fb-check:hover { border-color: var(--line-strong); }
+.fb-check input { width: 20px; height: 20px; margin: 2px 0 0; accent-color: var(--accent); flex: none; }
+.fb-check b { display: block; }
+.fb-check small { display: block; margin-top: 4px; color: var(--ink-2); font-size: 0.85rem; line-height: 1.5; }
+.fb-check code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.82em;
+  padding: 1px 6px; border-radius: 5px; background: var(--inset); color: var(--ink);
+  overflow-wrap: anywhere;
+}
+
+/* Honeypot: taken out of the layout and out of the tab order, never hidden with display:none -
+   some bots skip what the browser will not render. */
+.fb-hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
+.fb-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; }
+.fb-actions .btn.is-busy { opacity: 0.7; }
+.fb-status { margin: 0; color: var(--ink-2); max-width: 42ch; }
+.fb-status.is-bad { color: var(--warn); }
+
+.fb-aside { position: sticky; top: 24px; padding: 22px; border-radius: var(--radius); background: var(--raised); border: 1px solid var(--line); }
+.fb-aside .plan-section { border-top: 0; padding-top: 0; }
+.fb-aside .plan-list { margin-bottom: 14px; }
+.fb-aside p { margin: 0; }
+
+.fb-done { max-width: 62ch; padding: 26px; border-radius: var(--radius); background: var(--raised); border: 1px solid var(--line); }
+.fb-done p { color: var(--ink-2); margin: 0 0 18px; }
+.fb-done b { color: var(--ink); }
+
+/* Launch-screen entry point, injected after the quick actions by js/feedback.js. */
+.fb-homelink { margin-top: 16px; }
+.fb-homelink a { display: inline-flex; align-items: center; gap: 8px; color: var(--ink-2); text-decoration: none; font-size: 0.9rem; }
+.fb-homelink a:hover { color: var(--ink); }
+.fb-homelink svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+@media (max-width: 900px) {
+  .fb { grid-template-columns: 1fr; gap: 22px; }
+  .fb-aside { position: static; }
+}

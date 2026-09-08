@@ -1,5 +1,5 @@
 /* Uncoil service worker: offline-capable static app shell. */
-const VERSION = 'uncoil-v4';
+const VERSION = 'uncoil-v5';
 const SHELL = `${VERSION}-shell`;
 const VENDOR = `${VERSION}-vendor`;
 const KEEP = [SHELL, VENDOR];
@@ -8,10 +8,12 @@ const PRECACHE = [
   'index.html',
   'privacy.html',
   'terms.html',
+  'feedback.html',
   'css/styles.css',
   'css/screen.css',
   'css/programs.css',
   'css/growth.css',
+  'css/feedback.css',
   'js/data.js',
   'js/figures.js',
   'js/anatomy.js',
@@ -20,6 +22,7 @@ const PRECACHE = [
   'js/screen.js',
   'js/programs.js',
   'js/growth.js',
+  'js/feedback.js',
   /* three.js r147, vendored: without these the swing lab is a blank canvas offline. They are the
      bulk of the install (~660 KB) but they are the whole point of precaching - the lab is the app. */
   'js/vendor/three/build/three.min.js',
@@ -98,6 +101,10 @@ self.addEventListener('fetch', (event) => {
   let url;
   try { url = new URL(request.url); } catch (e) { return; }
   if (url.protocol !== 'http:' && url.protocol !== 'https:') return;
+  /* /api/ is never cached and never served stale: the feedback endpoint has to reach the
+     network or fail honestly, and a cached 200 would silently swallow a message. POSTs already
+     skip this handler; this covers everything else under /api/. */
+  if (url.pathname.startsWith('/api/')) { event.respondWith(fetch(request)); return; }
   if (url.origin === self.location.origin) {
     event.respondWith(
       staleWhileRevalidate(request).then((r) => r || fetch(request)).catch(() => caches.match('index.html'))

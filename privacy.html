@@ -86,18 +86,19 @@ a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-
   </a>
 
   <h1>Privacy Policy</h1>
-  <p class="meta">Effective 6 September 2026 · Last updated 6 September 2026</p>
+  <p class="meta">Effective 6 September 2026 · Last updated 8 September 2026</p>
 
   <div class="lede">
     <p><strong>Uncoil collects no personal data at all.</strong> There are no accounts, no analytics, no advertising and no server that stores anything about you. Everything you do in the app stays on your device.</p>
   </div>
 
   <h2>Who is responsible</h2>
-  <p>Uncoil is made and operated by Bram Pek. If you have a question about this policy, write to <a href="mailto:brampek@gmail.com">brampek@gmail.com</a>.</p>
+  <p>Uncoil is an independent app made in the Netherlands. There is no company behind it and no team: it is made and operated by one person, who is responsible for this policy. There is no contact address to publish, because Uncoil deliberately holds no mailbox that could tie a message to a person — if you have a question about this policy, use <strong>Feedback</strong> in the app, or the form at <a href="feedback.html">backswing-dkg.pages.dev/feedback</a>.</p>
 
   <h2>What we collect</h2>
   <p><strong>Nothing.</strong> We do not ask for your name, e-mail address, date of birth, height, weight, location or any other identifier. There is no sign-up and no login. We do not use analytics, crash reporting, advertising identifiers, cookies for tracking, fingerprinting, or any third-party SDK that reports back to us or to anyone else.</p>
   <p>Because we never receive your information, we also never sell it, share it, or use it to build a profile of you — there is nothing to sell or share.</p>
+  <p>The one thing that can ever leave your device is a feedback message, and only because you wrote it and pressed Send. It is optional, user-initiated, anonymous, and carries no identifier — see <a href="#feedback">Feedback</a> below.</p>
 
   <h2>What stays on your device</h2>
   <p>The app remembers your progress so it is useful the next time you open it. That information is written to your browser's <strong>localStorage</strong> (or, in the iOS app, to the app's own private storage) and never leaves the device:</p>
@@ -115,13 +116,25 @@ a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-
   <p>Some of what you type — the body area that hurts, when it hurts — is health-related. It is treated the same as everything else: stored only on your device, never transmitted, never seen by us. Uncoil does not read from or write to Apple Health, and does not request access to it.</p>
 
   <h2>Network requests</h2>
-  <p>The app is built to work fully offline, and it contacts no third party at all. Everything it needs — the 3D library (three.js), the fonts, the anatomy geometry — is bundled with it rather than fetched from a content delivery network. There is no analytics endpoint, no ad network and no tracker to block.</p>
+  <p>The app is built to work fully offline, and it starts no request of its own. Everything it needs — the 3D library (three.js), the fonts, the anatomy geometry — is bundled with it rather than fetched from a content delivery network. There is no analytics endpoint, no ad network and no tracker to block. The only request the app will ever make is the one you start yourself by sending feedback.</p>
   <div class="card">
     <ul>
-      <li><strong>iOS app:</strong> no network requests whatsoever. Every file is inside the app, so it runs with no internet connection and has nothing to send.</li>
+      <li><strong>iOS app:</strong> no network requests at all while you use it. Every file is inside the app, so it runs with no internet connection. The single exception is pressing Send on the Feedback screen, which posts your message and nothing else.</li>
       <li><strong>Website:</strong> your browser downloads the app's own files from our host, Cloudflare Pages, and then caches them so later visits work offline too. Like any web host, Cloudflare processes the technical request data needed to serve a page — see <a href="https://www.cloudflare.com/privacypolicy/" target="_blank" rel="noopener noreferrer">Cloudflare's privacy policy</a>. We do not run analytics on top of those logs and we do not read them.</li>
     </ul>
   </div>
+
+  <h2 id="feedback">Feedback</h2>
+  <p>The app has a <strong>Feedback</strong> screen, and the website carries the same form at <a href="feedback.html">backswing-dkg.pages.dev/feedback</a>. It is the only route out of the app, it is entirely optional, and nothing is sent until you press Send.</p>
+  <div class="card">
+    <ul>
+      <li><strong>Sent:</strong> the message you type, and the category you picked (bug, idea, content or other).</li>
+      <li><strong>Sent only if you tick the box:</strong> one line naming the app version and the kind of device you are on. The box is unticked by default.</li>
+      <li><strong>Never sent:</strong> your name, an e-mail address, your IP address, your browser's user agent, or anything the app has stored — your plan, your log, your streak, your notes and your settings all stay on the device.</li>
+    </ul>
+  </div>
+  <p>The message is passed to a third-party e-mail relay service, which turns it into an ordinary e-mail to the maker's inbox, and it is kept there like any other e-mail. Our server makes that call, so the relay sees our request rather than your device. No identifier travels with the message, which has two consequences worth being plain about: we cannot tell whether two messages came from the same person, and <strong>we cannot reply to you</strong>. What we learn from feedback shows up in the app itself, in the next release.</p>
+  <p>Feedback does not change the app's "Data Not Collected" privacy label. Nothing is gathered in the background, nothing is linked to you, nothing is used for tracking or advertising: this is a message you chose to write and chose to send, and it is used only to fix and improve the app.</p>
 
   <h2>Children</h2>
   <p>Uncoil is a general fitness and wellness guide intended for adults. It is not directed at children, and since it collects no data, it collects no data from children either.</p>
@@ -142,10 +155,10 @@ a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-
   <p>If this policy ever changes, the new version will be published on this page with a new effective date. Since the app holds no contact details for you, we cannot notify you directly — please check back here.</p>
 
   <h2 id="contact">Contact and support</h2>
-  <p>Questions, bug reports, feature requests and anything at all about privacy: <a href="mailto:brampek@gmail.com">brampek@gmail.com</a>. Include your device and iOS version if you are reporting a problem. We aim to reply within a few days.</p>
+  <p>Questions, bug reports, feature requests and anything at all about privacy go through <strong>Feedback</strong> in the app, or the form at <a href="feedback.html">backswing-dkg.pages.dev/feedback</a>. Tick the box that includes your app version and device type if you are reporting a problem — it is the only thing that helps us reproduce it. Messages are anonymous, so we have no way to write back; fixes show up in the next release.</p>
 
   <div class="foot">
-    <a href="index.html">Uncoil</a><span class="sep">·</span><a href="terms.html">Terms</a><span class="sep">·</span><a href="mailto:brampek@gmail.com">Contact</a>
+    <a href="index.html">Uncoil</a><span class="sep">·</span><a href="terms.html">Terms</a><span class="sep">·</span><a href="feedback.html">Feedback</a>
     <p style="margin:.6rem 0 0">Uncoil provides general exercise and injury-prevention information. It is not medical advice.</p>
   </div>
 </div>

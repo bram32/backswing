@@ -18,7 +18,34 @@ python3 -m http.server 8765
 - **Prevent**. The seven common golf injuries, ten swing faults with body causes and fixes, and round-day habits.
 - **Log**. Pain after each round, warm-up yes or no, how you got around. A chart shows whether warming up is paying off.
 
-Everything is saved in the browser with `localStorage`. Nothing leaves your device.
+Everything is saved in the browser with `localStorage`. Nothing leaves your device — except a
+feedback message, if you write one and press Send.
+
+## Feedback
+
+`#feedback` in the app, `feedback.html` on the web (also the App Store support URL). Both post
+the same JSON to `POST /api/feedback`, a Cloudflare Pages Function in `functions/api/feedback.js`
+that forwards it to an e-mail relay. The endpoint is called with an absolute URL so it works
+from inside the iOS wrapper, where the page is served from a custom scheme and the request is
+cross-origin with a `null` Origin.
+
+The destination address is never in this repository, in the app bundle or on the site. It lives
+in a Pages secret and is read only inside the Function:
+
+```
+npx wrangler pages secret put FEEDBACK_TO   --project-name backswing   # destination address
+npx wrangler pages secret put WEB3FORMS_KEY --project-name backswing   # preferred relay
+```
+
+Two relays, chosen at runtime. `WEB3FORMS_KEY` wins when it is set: it authenticates with a key,
+so it does not care what IP the request comes from. Without it the Function falls back to
+FormSubmit, which rate-limits by source IP — and since every Cloudflare Worker shares an egress
+IP, that path answers `{"ok":false,"reason":"relay_rate_limited"}` in practice. Setting the
+Web3Forms key is the whole fix; no code change is needed.
+
+Nothing about the sender is added on the way through: no IP, no user agent, no headers. Only the
+message, the category, and — if the golfer ticks the box — one line naming the app version and
+the device family.
 
 ## Files
 

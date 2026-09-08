@@ -344,8 +344,10 @@ known and accepted trade for now.
 
 ## Support and marketing URLs
 
-- Support URL: required. Point it at a page on the Cloudflare Pages site with an
-  email address and a short FAQ. A bare mailto is not accepted.
+- Support URL: `https://backswing-dkg.pages.dev/feedback` — a real page on the
+  Cloudflare Pages site carrying the anonymous feedback form. A bare mailto is
+  not accepted, and publishing a personal address is not necessary: the form
+  relays to a private inbox held in a Pages secret.
 - Marketing URL: `https://backswing-dkg.pages.dev` (optional; note the domain
   still says backswing, which looks careless next to the name Uncoil.
   Register and point a real domain before launch if possible.)

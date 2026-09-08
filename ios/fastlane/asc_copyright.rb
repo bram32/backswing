@@ -2,7 +2,7 @@
 require 'openssl'; require 'json'; require 'net/http'; require 'base64'
 KEY_ID = ENV.fetch('ASC_KEY_ID'); ISSUER = ENV.fetch('ASC_ISSUER_ID'); KEY_PATH = ENV.fetch('ASC_KEY_PATH')
 VERSION_ID = ENV.fetch('ASC_VERSION_ID', 'b140d279-61fb-44da-b050-809e3325d701')
-COPYRIGHT = ENV.fetch('ASC_COPYRIGHT', "#{Time.now.year} Bram Pek")
+COPYRIGHT = ENV.fetch('ASC_COPYRIGHT', "#{Time.now.year} Uncoil")
 def b64(s) = Base64.urlsafe_encode64(s, padding: false)
 def jwt
   key = OpenSSL::PKey::EC.new(File.read(KEY_PATH)); now = Time.now.to_i
