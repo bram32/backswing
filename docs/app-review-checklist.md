@@ -1,11 +1,11 @@
-# Free Relief — App Review risk memo
+# Uncoil — App Review risk memo
 
 Written 6 September 2026, against the working tree at marketing version 1.0.0, bundle
 `com.brampek.backswing` (builds 1-6 are on TestFlight; the next upload will be 7). Verified by
 building, installing and running the app in the iOS 26 Simulator on iPhone 17 Pro Max and iPad Air
 13-inch — screenshots of that run are in `docs/simulator/`.
 
-Free Relief is a web app in a `WKWebView`. That single fact drives most of the review risk, so it
+Uncoil is a web app in a `WKWebView`. That single fact drives most of the review risk, so it
 is worth being honest about the shape of the exposure before the detail:
 
 | Risk | Guideline | Where we stand |
@@ -39,7 +39,7 @@ is worth being honest about the shape of the exposure before the detail:
 > "Your app should include features, content, and UI that elevate it beyond a repackaged website."
 
 This is the guideline the app is most likely to be rejected under, because the wrapper is exactly
-what 4.2 is aimed at. The defence is that Free Relief behaves like an app, not like a bookmark.
+what 4.2 is aimed at. The defence is that Uncoil behaves like an app, not like a bookmark.
 
 ### Native integrations present today
 
@@ -95,7 +95,7 @@ iPad layout.
 > "Medical apps that could provide inaccurate data or information … will receive additional
 > scrutiny."
 
-Free Relief is a **general wellness** app, not a medical one, and everything must keep reading that
+Uncoil is a **general wellness** app, not a medical one, and everything must keep reading that
 way. The distinction Apple cares about is diagnosis and treatment versus general fitness
 information.
 
@@ -113,8 +113,8 @@ What to watch:
 
 - **The App Store description and promotional text.** Never say the app treats, cures, heals, fixes
   or prevents pain or injury, and never promise "relief" as an outcome. "General fitness and
-  wellness information for golfers" is the register. The app is *named* Free Relief, which is fine
-  — a name is not a claim — but the copy around it must not turn the name into one.
+  wellness information for golfers" is the register. The app is *named* Uncoil, which says turn
+  and tempo rather than relief — but the copy around it must not turn any of it into a claim.
 - **Screenshot captions.** Same rule; six words is enough room to make a medical claim by accident.
 - **Never name a condition as something the app addresses.** No disc herniation, no sciatica, no
   stenosis, no "SI joint dysfunction" as a thing the app fixes.
@@ -201,8 +201,8 @@ Two things must be committed for that push to work:
 After deploying, confirm all three by hand — a 200 is not proof of anything on this host:
 
 ```sh
-curl -s https://backswing-dkg.pages.dev/privacy.html | grep -o '<title>[^<]*</title>'   # expect "Privacy Policy — Free Relief"
-curl -s https://backswing-dkg.pages.dev/terms.html   | grep -o '<title>[^<]*</title>'   # expect "Terms of Use — Free Relief"
+curl -s https://backswing-dkg.pages.dev/privacy.html | grep -o '<title>[^<]*</title>'   # expect "Privacy Policy — Uncoil"
+curl -s https://backswing-dkg.pages.dev/terms.html   | grep -o '<title>[^<]*</title>'   # expect "Terms of Use — Uncoil"
 curl -s https://backswing-dkg.pages.dev/privacy.html | grep -c 'id="contact"'           # expect 1, the support-URL anchor
 ```
 
@@ -264,7 +264,7 @@ Website-only steps are marked **[web]** — they cannot be done through the API.
 
 - [x] Privacy policy and terms written, linked from the in-app disclaimer, staged by `build.js`
 - [x] three.js and both font families vendored — no CDN, no network, no CDN outage during review
-- [x] Service worker precaches the vendored assets; cache version bumped to `freerelief-v3`
+- [x] Service worker precaches the vendored assets; cache version bumped to `uncoil-v4`
 - [x] `PrivacyInfo.xcprivacy` at the bundle root, declaring the UserDefaults required-reason API
 - [x] `ITSAppUsesNonExemptEncryption: false`
 - [x] `UIRequiresFullScreen: false`, orientations set, launch-screen colour set

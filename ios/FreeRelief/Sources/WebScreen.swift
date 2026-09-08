@@ -100,7 +100,7 @@ struct WebScreen: UIViewRepresentable {
     ///
     ///     xcrun simctl launch booted com.brampek.backswing -route "fix?plan=lowback,after,stiff"
     ///
-    /// This exists because `simctl openurl` puts an "Open in Free Relief?" system prompt in front
+    /// This exists because `simctl openurl` puts an "Open in Uncoil?" system prompt in front
     /// of every deep link, which no unattended screenshot run can dismiss. Launch arguments come
     /// from whoever started the process, so this grants nothing a user could not already reach by
     /// tapping - it only skips the taps.

@@ -1,6 +1,6 @@
 # Credits and licences
 
-Free Relief is built on other people's work. This file is the full notice; a short credit line
+Uncoil is built on other people's work. This file is the full notice; a short credit line
 also appears in the app itself, under the swing lab, which is where the anatomy is on screen.
 
 ## Anatomy
@@ -18,7 +18,7 @@ also appears in the app itself, under the swing lab, which is where the anatomy 
 **Changes made.** This material has been modified. The BodyParts3D 4.0 meshes were first adapted
 in the Human Atlas project: units and axes converted from millimetres/Z-up to metres/Y-up,
 geometry simplified with meshoptimizer under a 0.2% per-structure relative error limit, normals
-quantised to signed 16-bit, and the meshes packed into binary chunks. Free Relief then adapted
+quantised to signed 16-bit, and the meshes packed into binary chunks. Uncoil then adapted
 that work further: a subset of skeletal structures was selected (the twenty-four vertebrae, the
 intervertebral discs, the sacrum, the hip bones, the ribcage and the sternum), the meshes were
 simplified again and re-centred for real-time rendering on a phone, split and rigged for
@@ -31,17 +31,17 @@ with no representations or warranties of any kind, and with liability excluded t
 possible, under Sections 5 and 6 of the Creative Commons Attribution 4.0 International licence.
 
 **Scope.** BodyParts3D is an adult male reference anatomy based on TARO MRI data with anatomical
-refinements. It does not represent every human structure or variation. The figure in Free Relief
+refinements. It does not represent every human structure or variation. The figure in Uncoil
 is an illustration of how rotation is shared between the hips, the thoracic spine and the lumbar
 spine. It is not a scan of you, not a measurement of you, and not a diagnostic tool.
 
-**Availability.** The adapted geometry is served by the Free Relief web app over plain HTTPS with
+**Availability.** The adapted geometry is served by the Uncoil web app over plain HTTPS with
 no technological protection measure of any kind, so any recipient can obtain the exact adapted
 asset unencumbered, whichever way they got the app.
 
 ## Software
 
-Free Relief's 3D anatomy pipeline is derived from Human Atlas by ashemag
+Uncoil's 3D anatomy pipeline is derived from Human Atlas by ashemag
 (<https://github.com/ashemag/human-atlas>), used under the MIT Licence.
 
 ```

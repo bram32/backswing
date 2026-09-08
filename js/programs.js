@@ -1,4 +1,4 @@
-/* Free Relief — Programs, Tempo trainer, Voice coach.
+/* Uncoil — Programs, Tempo trainer, Voice coach.
    Three features registered through the FR plugin API in js/app.js:
      - view 'programs': multi-week progressions built from the existing exercise library
      - view 'tempo':    a 3:1 swing tempo metronome and a tap-to-measure mode

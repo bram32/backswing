@@ -3,7 +3,7 @@
     Modified: subset selected, re-simplified, re-rigged. Via Human Atlas (MIT, (c) 2026 ashemag).
     Full notice: see "Credits and licences" in the app. */
 /*
- * anatomy.js — loader for the Free Relief anatomical spine asset (assets/anatomy/spine.bin).
+ * anatomy.js — loader for the Uncoil anatomical spine asset (assets/anatomy/spine.bin).
  *
  *   Anatomy.load('assets/anatomy/spine.bin').then(onReady, onFail);
  *

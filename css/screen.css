@@ -1,4 +1,4 @@
-/* Free Relief — mobility screen. Tokens and shared classes come from css/styles.css;
+/* Uncoil — mobility screen. Tokens and shared classes come from css/styles.css;
    everything private to this module is prefixed .screen-. */
 
 .screen-eyebrow { color: var(--accent-text); font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 6px; }

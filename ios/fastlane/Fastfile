@@ -1,4 +1,4 @@
-# Free Relief – fastlane
+# Uncoil – fastlane
 #
 # Authenticates to App Store Connect with an API key read from the environment:
 #   ASC_KEY_ID      the Key ID
@@ -21,8 +21,8 @@ SCHEME   = "FreeRelief"
 BUNDLE   = "com.brampek.backswing"
 TEAM_ID  = "JYMA2YQJV9"
 TESTER   = { email: "brampek@gmail.com", first_name: "Bram", last_name: "Pek" }
-INTERNAL_GROUP = "Free Relief internal"
-EXTERNAL_GROUP = "Free Relief testers"
+INTERNAL_GROUP = "Uncoil internal"
+EXTERNAL_GROUP = "Uncoil testers"
 
 # Certificates and profiles land outside the repo so no signing material is ever committed.
 SIGNING_DIR = File.join(Dir.tmpdir, "freerelief-signing")
@@ -49,7 +49,7 @@ def ensure_bundle_id!
   end
 
   created = Spaceship::ConnectAPI::BundleId.create(
-    name: "Free Relief",
+    name: "Uncoil",
     identifier: BUNDLE,
     platform: Spaceship::ConnectAPI::BundleIdPlatform::IOS,
     seed_id: TEAM_ID
@@ -68,7 +68,7 @@ MISSING_APP_RECORD = <<~MSG.freeze
   Create the record once by hand, then every lane here works unattended:
     App Store Connect -> Apps -> "+" -> New App
       Platform  : iOS
-      Name      : Free Relief      (or "Free Relief Golf" / "Free Relief Back Care" if taken)
+      Name      : Uncoil      (or "Uncoil Golf" / "Uncoil: Golf Mobility" if taken)
       Language  : English (U.S.)
       Bundle ID : #{BUNDLE}  (already registered, it is in the dropdown)
       SKU       : freerelief-ios

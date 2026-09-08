@@ -1,4 +1,4 @@
-# Free Relief — iOS wrapper
+# Uncoil — iOS wrapper
 
 A thin SwiftUI shell around the web app. The web app is built by `../build.js` into `dist/site`,
 copied into `FreeRelief/web` by `./sync-web.sh`, and served inside a `WKWebView` by a custom
@@ -87,7 +87,7 @@ xcrun simctl openurl booted "freerelief://app/index.html#lab"
 the 3D scene and the user's place in a routine survive. A link that arrives before the web view
 exists is held and replayed once it does.
 
-Note: iOS puts an **"Open in Free Relief?" system alert** in front of every cross-app URL open, so
+Note: iOS puts an **"Open in Uncoil?" system alert** in front of every cross-app URL open, so
 `simctl openurl` cannot be used unattended. Use the launch argument below instead.
 
 ## Testing hooks
@@ -138,7 +138,7 @@ Set in `project.yml` (which generates `Info.plist`):
 - No usage-description keys: the app uses no camera, microphone, photos, location, contacts,
   motion or HealthKit, so it asks for no permissions at all and shows no permission prompts.
 
-The bundle id stays `com.brampek.backswing` even though the app is now called Free Relief: the App
+The bundle id stays `com.brampek.backswing` even though the app is now called Uncoil: the App
 Store Connect record and the existing TestFlight testers are tied to it, and the API cannot create
 a replacement record.
 

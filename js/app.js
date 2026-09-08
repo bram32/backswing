@@ -1,4 +1,4 @@
-/* Free Relief — app
+/* Uncoil — app
    Router, views, symptom planner, guided player, pain log, storage. No framework. */
 
 (() => {
@@ -494,7 +494,7 @@
       <div class="view-head"><div><h1>Where does it hurt?</h1><p>Three quick questions. Then a plan you can start right now, and what to change so it does not come back.</p></div></div>
       <div class="callout warn redflags">
         <h3>Before you start</h3>
-        <p>Free Relief gives general mobility and fitness information. It cannot examine you and it cannot rule out a serious cause of pain. Speak to a doctor or physiotherapist first, rather than using the app, if any of these apply:</p>
+        <p>Uncoil gives general mobility and fitness information. It cannot examine you and it cannot rule out a serious cause of pain. Speak to a doctor or physiotherapist first, rather than using the app, if any of these apply:</p>
         <ul class="plan-list stop">
           <li>Numbness, weakness, or trouble controlling your bladder or bowel.</li>
           <li>Pain after a fall, a heavy lift or a knock.</li>
@@ -513,7 +513,7 @@
           <div id="plan">${ready ? renderPlan(p.area, p.timing, p.feel) : `<div class="empty">${p.area ? 'Answer the two questions above to get your plan.' : 'Tap the body or pick a spot to begin.'}</div>`}</div>
         </div>
       </div>
-      <p class="disclaimer">Free Relief gives general exercise and injury-prevention guidance for golfers. It is for education, mobility and warm-up, not diagnosis or treatment. It is not medical advice and cannot examine you. If you are unsure, in a lot of pain, or any of the "see someone" signs apply, get assessed by a doctor or physiotherapist.</p>`;
+      <p class="disclaimer">Uncoil gives general exercise and injury-prevention guidance for golfers. It is for education, mobility and warm-up, not diagnosis or treatment. It is not medical advice and cannot examine you. If you are unsure, in a lot of pain, or any of the "see someone" signs apply, get assessed by a doctor or physiotherapist.</p>`;
     const setArea = (a) => { p.area = a; save(); renderFix(); };
     $$('#bodymap .bm-hot').forEach(g => { g.addEventListener('click', () => setArea(g.dataset.area)); g.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setArea(g.dataset.area); } }); });
     $$('#area-chips .chip').forEach(b => b.addEventListener('click', () => setArea(b.dataset.area)));

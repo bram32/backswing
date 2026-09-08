@@ -1,4 +1,4 @@
-# Free Relief: App Store Connect listing copy
+# Uncoil: App Store Connect listing copy
 
 Draft for App Store Connect. Every field below carries a character count.
 Counts were measured on the exact text in the fenced block, excluding the fence.
@@ -10,17 +10,19 @@ Counts were measured on the exact text in the fenced block, excluding the fence.
 Field limit: 30 characters.
 
 ```
-Free Relief: Golf Back Care
+Uncoil: Golf Mobility
 ```
 
-Count: 27 / 30.
+Count: 21 / 30.
 
 Notes: the name field is indexed for search, so the two words that carry search
-weight (golf, back) sit inside it. "Free Relief" alone is 11 characters and
+weight (golf, mobility) sit inside it. "Uncoil" alone is 6 characters and
 searchable by nobody. Apple rejects names that read as keyword strings, so keep
-it to one descriptive clause after the colon.
+it to one descriptive clause after the colon. "Uncoil" is what a golfer does
+from the top of the backswing, so the name says rotation and tempo and makes no
+health claim at all, which is the point of moving off "Free Relief".
 
-Fallback if App Review objects to the descriptor: `Free Relief: Golf Back` (22).
+Fallback if App Review objects to the descriptor: `Uncoil` (6).
 
 ---
 
@@ -30,15 +32,17 @@ Field limit: 30 characters. Indexed for search, so every word here should be a
 word the app name does not already contain.
 
 ```
-Stretches for lower back pain
+Golf mobility and swing tempo
 ```
 
 Count: 29 / 30.
 
-The name contributes *free, relief, golf, back, care*. This subtitle adds
-*stretches, lower, pain*. Apple combines terms across fields automatically, so
-the pair manufactures "golf back pain", "golf stretches", "lower back pain" and
-"golf lower back" without spending a single keyword byte on them.
+The name contributes *uncoil, golf, mobility*. This subtitle adds *swing,
+tempo*. Apple combines terms across fields automatically, so the pair
+manufactures "golf mobility", "golf swing", "swing tempo" and "golf swing
+tempo" without spending a single keyword byte on them. What the pair no longer
+buys is *back* and *pain*, the highest-intent words available; the keyword field
+now has to carry them.
 
 Alternates, all inside the limit:
 
@@ -128,9 +132,9 @@ app's search ranking". So this is written for the human who is deciding, not for
 the algorithm. The first three lines are what shows above the fold.
 
 ```
-Most golf back pain is not a mystery. It is the lower back doing a job the mid back and hips were meant to do.
+Turn freely. Play longer. Most golf back pain is not a mystery: it is the lower back doing a job the mid back and hips were meant to do.
 
-Free Relief shows you that in three dimensions, then gives you something to do about it. No account. No subscription. Nothing leaves your phone.
+Uncoil shows you that in three dimensions, then gives you something to do about it. No account. No subscription. Nothing leaves your phone.
 
 THE SWING LAB
 A golfer with a real anatomical spine, 24 vertebrae and discs, rendered on your device. Play the swing, then switch on stiff hips, a stiff mid back, or a reverse spine angle and watch the rotation get pushed down into the lumbar spine, which lights up as it passes its roughly 10 degrees of capacity. Orbit it, scrub it, watch it face on or down the line. Tap any part of the body to start a plan for that part.
@@ -159,10 +163,10 @@ There is no account, no sign-up, no server, and no analytics. Everything you ent
 A HONEST NOTE ON WHAT THIS IS
 This is general exercise and injury-prevention guidance for golfers, the kind a good physiotherapist gives everyone before they get to the specifics of you. It is not a diagnosis, it is not physiotherapy, and it cannot examine you. Exercise helps non-specific back pain on average, and the average effect in the research is real but modest. If you have leg weakness, numbness in the saddle area, unexplained weight loss, pain that wakes you every night, or pain after a fall, the app will tell you to stop and see a doctor. Please do.
 
-Free Relief is also free. There is no paywall, no trial, and no upsell.
+Uncoil is free. There is no paywall, no trial, and no upsell.
 ```
 
-Count: 2,913 / 4000.
+Count: 2,924 / 4000.
 
 ---
 
@@ -230,7 +234,7 @@ Paste into the "Notes" field of App Review Information.
 
 ```
 WHAT THE APP IS
-Free Relief is a general wellness app for recreational golfers. It contains an interactive 3D anatomy visualisation of a golf swing, a library of 45 stretching and mobility exercises, seven guided timed routines, an educational guide to common golf injuries and swing faults, and a personal round log.
+Uncoil is a general wellness app for recreational golfers. It contains an interactive 3D anatomy visualisation of a golf swing, a library of 45 stretching and mobility exercises, seven guided timed routines, an educational guide to common golf injuries and swing faults, and a personal round log.
 
 NO ACCOUNT, NO SERVER, NO DATA COLLECTION
 There is no sign-in, no registration, and no back end. All user input is stored locally on device via the web view's local storage and never leaves the device. The app makes no network requests to any server operated by us. The privacy nutrition label is therefore "Data Not Collected". No demo account is needed; every feature is available immediately on first launch.
@@ -254,7 +258,7 @@ HOW TO TEST THE MAIN FEATURE
 On launch, press the play button under the 3D figure to run the swing, then tap "Stiff hips" and "Stiff mid back" under "What if" and watch the "Lumbar rotation" readout move past 10 degrees. Tap the lower back on the 3D figure to generate a plan.
 ```
 
-Count: 3,377 characters (the field has no published hard limit; keep it under
+Count: 3,372 characters (the field has no published hard limit; keep it under
 4,000 to be safe).
 
 ---
@@ -317,7 +321,7 @@ Marketing role. Submit at least three weeks before launch; Apple suggests up to
 three months for wider consideration.
 
 - **Nomination type:** App Launch
-- **Nomination name** (60 chars): `Free Relief: golf back care in 3D` (33)
+- **Nomination name** (60 chars): `Uncoil: golf mobility in 3D` (27)
 - **Nomination description** (1000 chars): lead with the mechanism. A real
   anatomical spine, 24 vertebrae, rendered on device, showing where a golf swing
   puts load on the lower back and what happens to that load when the hips or the
@@ -343,7 +347,7 @@ known and accepted trade for now.
 - Support URL: required. Point it at a page on the Cloudflare Pages site with an
   email address and a short FAQ. A bare mailto is not accepted.
 - Marketing URL: `https://backswing-dkg.pages.dev` (optional; note the domain
-  still says backswing, which looks careless next to the name Free Relief.
+  still says backswing, which looks careless next to the name Uncoil.
   Register and point a real domain before launch if possible.)
 - Privacy Policy URL: **required even when the app collects nothing.** Publish a
   short page saying exactly that.

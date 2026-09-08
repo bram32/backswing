@@ -1,4 +1,4 @@
-/* Free Relief — content data
+/* Uncoil — content data
    Exercises, routines, symptom planner, injury guide, swing faults, habits.
    Plain-language, physio-informed. Not a substitute for a clinician. */
 

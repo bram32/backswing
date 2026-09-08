@@ -30,8 +30,8 @@ targets:
     info:
       path: FreeRelief/Info.plist
       properties:
-        CFBundleDisplayName: Free Relief
-        CFBundleName: Free Relief
+        CFBundleDisplayName: Uncoil
+        CFBundleName: Uncoil
         CFBundleShortVersionString: $(MARKETING_VERSION)
         CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         LSRequiresIPhoneOS: true

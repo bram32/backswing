@@ -1,4 +1,4 @@
-# Sets App Store metadata for Free Relief through the App Store Connect REST API.
+# Sets App Store metadata for Uncoil through the App Store Connect REST API.
 # Idempotent and safe to re-run: every write is a PATCH/POST of the desired end state,
 # no field aborts the run, and everything is read back and printed at the end.
 # It never uploads a build and never submits for review.
@@ -22,10 +22,10 @@ EDITABLE     = %w[PREPARE_FOR_SUBMISSION DEVELOPER_REJECTED REJECTED METADATA_RE
 
 # --- copy -------------------------------------------------------------------
 
-SUBTITLE = 'Golf back care and swing lab'
+SUBTITLE = 'Golf mobility and swing tempo'
 
 DESCRIPTION = <<~TXT.strip
-  Free Relief is a back care companion for golfers. It brings the mobility work, the warm-up and the background reading into one app you can open on the way to the first tee.
+  Uncoil is a golf mobility companion. Turn freely, play longer: it brings the mobility work, the warm-up and the background reading into one app you can open on the way to the first tee.
 
   See the swing in 3D. The interactive swing lab draws a golfer through the full motion, from address to the top to follow-through, and shades the spine to show where load gathers as the body turns. Scrub through the swing at your own pace, rotate the model to any angle, and toggle stiff hips or a stiff mid-back to watch the picture change. When one area stops moving, the rest of the back takes up the slack, and the swing lab is the clearest way to see that happen.
 
@@ -35,9 +35,9 @@ DESCRIPTION = <<~TXT.strip
 
   The exercise library covers every movement in the app with plain coaching cues and the mistakes people usually make. The mobility self-screen walks you through a handful of tests so you can see which areas move freely and which feel tight. A multi-week program stacks the work into a routine you can actually follow. The injury-prevention guide covers the habits around golf, how you lift the bag, how you practise, how you recover, that matter as much as the exercises do. And the round log records the rounds you play and keeps a streak, so the routine has something to hold on to.
 
-  Built to stay out of the way. Free Relief works fully offline, because every routine, model, page and font is bundled inside the app, so it runs on the plane, in the car park, or anywhere with no signal. Everything you enter stays on your device. There is no account to create, nothing to sign in to, no server behind it, and no data is collected or sent anywhere. It is free, with no ads and nothing to unlock.
+  Built to stay out of the way. Uncoil works fully offline, because every routine, model, page and font is bundled inside the app, so it runs on the plane, in the car park, or anywhere with no signal. Everything you enter stays on your device. There is no account to create, nothing to sign in to, no server behind it, and no data is collected or sent anywhere. It is free, with no ads and nothing to unlock.
 
-  Free Relief offers general fitness and wellness information for golfers. It is not medical advice, it is not a diagnosis, and it is not a substitute for care from a qualified clinician. See a doctor or a physiotherapist before you start if anything concerns you, and especially with symptoms after a fall or an injury, symptoms that wake you at night or keep getting worse, numbness, weakness, or trouble controlling the bladder or bowel. Work in a comfortable range and stop anything that does not feel right.
+  Uncoil offers general fitness and wellness information for golfers. It is not medical advice, it is not a diagnosis, and it is not a substitute for care from a qualified clinician. See a doctor or a physiotherapist before you start if anything concerns you, and especially with symptoms after a fall or an injury, symptoms that wake you at night or keep getting worse, numbness, weakness, or trouble controlling the bladder or bowel. Work in a comfortable range and stop anything that does not feel right.
 
   Anatomy geometry from BodyParts3D, licensed CC BY 4.0, credited in the app.
 TXT
@@ -47,7 +47,7 @@ KEYWORDS = 'golf,golfer,back,spine,hips,mobility,stretching,warmup,cooldown,flex
 PROMOTIONAL = 'A 3D swing lab that shows where load goes in the spine, a Fix it planner, timed warm-ups, an exercise library and a round log. Offline, no account, free.'
 
 REVIEW_NOTES = <<~TXT.strip
-  Free Relief is a general wellness and fitness guide for golfers: mobility routines, timed warm-ups and cool-downs, an exercise library, a mobility self-screen, a multi-week program, an injury-prevention guide and a round log.
+  Uncoil is a general wellness and fitness guide for golfers: mobility routines, timed warm-ups and cool-downs, an exercise library, a mobility self-screen, a multi-week program, an injury-prevention guide and a round log.
 
   No account and no login. There is no server, no analytics and no data collection of any kind. Everything the user enters stays on the device in localStorage. The app works fully offline: three.js and the web fonts are bundled in the binary, and nothing is fetched at runtime. The 3D swing lab renders locally with WebGL on Metal.
 

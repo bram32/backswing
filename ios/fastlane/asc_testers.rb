@@ -3,7 +3,7 @@
 require 'openssl'; require 'json'; require 'net/http'; require 'base64'
 KEY_ID = ENV.fetch('ASC_KEY_ID'); ISSUER = ENV.fetch('ASC_ISSUER_ID'); KEY_PATH = ENV.fetch('ASC_KEY_PATH')
 BUNDLE = 'com.brampek.backswing'; EMAIL = 'brampek@gmail.com'; FIRST = 'Bram'; LAST = 'Pek'
-INTERNAL = 'Free Relief internal'; EXTERNAL = 'Free Relief testers'
+INTERNAL = 'Uncoil internal'; EXTERNAL = 'Uncoil testers'
 def b64(s) = Base64.urlsafe_encode64(s, padding: false)
 def jwt
   key = OpenSSL::PKey::EC.new(File.read(KEY_PATH)); now = Time.now.to_i

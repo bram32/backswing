@@ -1,5 +1,5 @@
-/* Free Relief service worker: offline-capable static app shell. */
-const VERSION = 'freerelief-v3';
+/* Uncoil service worker: offline-capable static app shell. */
+const VERSION = 'uncoil-v4';
 const SHELL = `${VERSION}-shell`;
 const VENDOR = `${VERSION}-vendor`;
 const KEEP = [SHELL, VENDOR];

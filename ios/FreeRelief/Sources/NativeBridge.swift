@@ -28,7 +28,7 @@ final class NativeBridge: NSObject, WKScriptMessageHandler {
       if (!ok) return;
       window.FreeRelief.haptic('selection');
       window.FreeRelief.keepAwake(true);
-      window.FreeRelief.share({ title: 'Free Relief', text: 'bridge self-test', url: 'https://backswing-dkg.pages.dev' });
+      window.FreeRelief.share({ title: 'Uncoil', text: 'bridge self-test', url: 'https://backswing-dkg.pages.dev' });
       window.webkit.messageHandlers.native.postMessage({ action: 'keepAwake', on: false });
     })();
     """

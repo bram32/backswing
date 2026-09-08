@@ -2,7 +2,7 @@
 #   set -a; source .env; set +a; ruby ios/fastlane/asc_rename_groups.rb
 require 'openssl'; require 'json'; require 'net/http'; require 'base64'
 KEY_ID = ENV.fetch('ASC_KEY_ID'); ISSUER = ENV.fetch('ASC_ISSUER_ID'); KEY_PATH = ENV.fetch('ASC_KEY_PATH')
-BUNDLE = ENV['ASC_BUNDLE'] || 'com.brampek.backswing'; NEW_NAME = ENV['ASC_APP_NAME'] || 'Free Relief'
+BUNDLE = ENV['ASC_BUNDLE'] || 'com.brampek.backswing'; NEW_NAME = ENV['ASC_APP_NAME'] || 'Uncoil: Golf Mobility'
 def b64(s) = Base64.urlsafe_encode64(s, padding: false)
 def jwt
   key = OpenSSL::PKey::EC.new(File.read(KEY_PATH)); now = Time.now.to_i
@@ -21,7 +21,8 @@ def api(method, path, body = nil)
 end
 def errs(d) = (d['errors'] || []).map { |e| "#{e['title']}: #{e['detail']}" }.join('; ')
 
-RENAMES = { 'Backswing internal' => 'Free Relief internal', 'Backswing testers' => 'Free Relief testers' }
+RENAMES = { 'Backswing internal' => 'Uncoil internal', 'Backswing testers' => 'Uncoil testers',
+            'Free Relief internal' => 'Uncoil internal', 'Free Relief testers' => 'Uncoil testers' }
 _, d = api('GET', "apps?filter[bundleId]=#{BUNDLE}")
 app = d.dig('data', 0) or abort('app record not found')
 app_id = app['id']

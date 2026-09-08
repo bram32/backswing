@@ -1,0 +1,89 @@
+Uncoil app icon and brand mark - method and prompt log
+Finalised 2026-09-08. Source concept: assets/brand/candidates/uncoil-mark-3.png
+(runner-up assets/brand/candidates/fullturn-mark-1.png, not used).
+
+=== Generative image prompts used: NONE ===
+No Grok image_gen / image_edit call was made for the final artwork, deliberately.
+The art director's first and highest-priority fix was "rebuild as vector ... draw a
+true Archimedean spiral that exits tangentially into the straight stroke, uniform
+width, round caps, and export the 1024 PNG from that so the whole iOS icon set comes
+from one source". A generative model cannot hold a constant spiral pitch, a constant
+stroke width or an exact tangency, which is precisely what the candidate raster got
+wrong (stroke wobbling 51-57 px, uneven turn spacing, caps that are not semicircles).
+Every pixel shipped here is rasterised from hand-authored maths in mark-geometry.py.
+The candidate PNG was used only as the compositional reference and as the "before"
+column in check-small-sizes.png.
+
+=== The geometry ===
+One continuous path. Archimedean spiral r(t) = a + b.t drawn in screen coordinates as
+P(t) = C + r(t).(cos t, -sin t), then a straight line for the shaft.
+
+  b = (1 + gap_ratio) / 2pi        constant pitch, so every gap is identical
+  t_end = alpha - atan2(r_end, b)  the one angle where the spiral tangent is exactly
+                                   parallel to the shaft -> a seamless release
+  t_start = t_end - 2pi * turns
+
+The spiral is emitted as cubic Beziers of <= 22 degrees each, using the exact point and
+exact derivative at both ends of every segment (Hermite -> Bezier), so the drawn curve
+sits within about 0.01 px of the true spiral at 1024. Stroke is a single uniform width
+with round caps and round joins; there is nothing to break or mis-join.
+
+Locked parameters (mark-geometry.py):
+  turns      1.20        gap_ratio 1.00 stroke width   alpha 60 deg
+  r_start    0.50 w      optical_k 0.20
+  stroke     9.0% of the tile = 92.16 px at 1024
+  span       71.5% of the tile = 732.2 px at 1024
+
+Measured on the exported icon-1024.png:
+  stroke 92.16 px uniform. The shaft's horizontal cut is 106-107 px at every height,
+    which is exactly 92.16 / sin 60 - the width does not drift.
+  green gap between turns 92.2 px = 1.00 stroke width; pitch 184.3 px
+  coil outer diameter 626.7 px, spiral radius 46.1 -> 267.3 px
+  shaft 411.7 px beyond the release point, tip cap centre (842, 264)
+  mark 732 x 576 px, margins L156 R136 T218 B230
+  gold coverage 14.9% (candidate was 12.6%)
+  exit tangent 60.0000000000 deg against a 60 deg shaft (error 7e-15 deg)
+
+=== Why 1.20 turns and not the requested 1.5 ===
+Coil outer diameter = (1 + 2.r_start + 2.turns.(1 + gap)) x stroke width. With the
+other three fixes applied - gap >= 1 stroke width, stroke 9% of the tile, mark <= 72%
+of the tile - that is:
+  1.50 turns -> coil 8.0 strokes = 737 px = 72% of the canvas on its own, no shaft left
+  1.25 turns -> coil 7.0 strokes = 645 px, shaft 377 px
+  1.20 turns -> coil 6.8 strokes = 627 px, shaft 412 px   <- shipped
+  1.00 turns -> coil 6.0 strokes = 553 px, shaft 532 px, reads as a loop, not a coil
+1.5 turns is only reachable by giving up either the full-width gap (the thing that
+fused at 29 px) or the shaft. 1.20 keeps a wrap, a centre and a release, and is still
+a large simplification from the candidate's ~2 turns.
+
+=== Options tested and rejected ===
+- Pennant at the tip (the flagstick cue, optional item 5). Built and rendered at 60 and
+  29 px. It reads, but it turns the silhouette into a French horn - the same trap that
+  fullturn-mark-3 fell into - and the pennant's straight edges fight the single-stroke
+  logic. Dropped: the palette already says golf.
+- Flattening the coil's lower outer curve into a sole line (the alternative cue).
+  Rejected on principle: it breaks the constant pitch, which is the whole point of
+  rebuilding this as a true spiral.
+- Shaft at 55-57 deg (the low end of the brief's range): the bbox drops to 732 x 532
+  and the tile reads bottom-heavy. 60 deg, the top of the range, fills the square best
+  while staying inside it.
+- Shaft at 62-65 deg: fills better still, but leaves the brief's range. Not shipped.
+- Turn counts 1.0 / 1.15 / 1.25 / 1.4 / 1.5, gap 1.0 and 1.15 strokes, stroke 8.6-9.4%,
+  optical_k 0.0 / 0.2 / 0.38 were all rendered at 1024 / 60 / 29 and compared.
+
+=== Rasterising ===
+Chrome's software rasteriser does not antialias an SVG rendered at its natural size, so
+the master is rendered 8x and box-filtered down, which is exact area antialiasing with
+no Lanczos ringing:
+  chrome --headless=new --force-device-scale-factor=1 --force-color-profile=srgb \
+         --window-size=8192,8192 --screenshot=raw8192.png <icon-master at 8192>
+  magick raw8192.png -filter Box -resize 1024x1024 -background '#0e261b' \
+         -alpha remove -alpha off -depth 8 -define png:color-type=2 icon-1024.png
+  sips -s format png -z 512 512 icon-1024.png --out icon-512.png
+  sips -s format png -z 192 192 icon-1024.png --out icon-192.png
+  sips -s format png -z 180 180 icon-1024.png --out apple-touch-icon-180.png
+  sips -s format png -z 410 410 icon-1024.png --out tmp.png
+  sips --padToHeightWidth 512 512 --padColor 0E261B tmp.png --out icon-maskable-512.png
+Result: PNG24, no alpha, all four corners exactly #0E261B, only #0E261B and #F6C544 as
+solid colours (edge antialiasing aside). The 60 and 29 px checks are Lanczos, which is
+closer to what iOS does when it scales the asset itself.

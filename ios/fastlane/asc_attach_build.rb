@@ -2,7 +2,7 @@
 #   set -a; source .env; set +a; BUILD_NUMBER=8 ruby ios/fastlane/asc_attach_build.rb
 require 'openssl'; require 'json'; require 'net/http'; require 'base64'
 KEY_ID = ENV.fetch('ASC_KEY_ID'); ISSUER = ENV.fetch('ASC_ISSUER_ID'); KEY_PATH = ENV.fetch('ASC_KEY_PATH')
-BUNDLE = ENV['ASC_BUNDLE'] || 'com.brampek.backswing'; NEW_NAME = ENV['ASC_APP_NAME'] || 'Free Relief'
+BUNDLE = ENV['ASC_BUNDLE'] || 'com.brampek.backswing'; NEW_NAME = ENV['ASC_APP_NAME'] || 'Uncoil: Golf Mobility'
 def b64(s) = Base64.urlsafe_encode64(s, padding: false)
 def jwt
   key = OpenSSL::PKey::EC.new(File.read(KEY_PATH)); now = Time.now.to_i

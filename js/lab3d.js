@@ -1,4 +1,4 @@
-/* Free Relief — 3D swing lab
+/* Uncoil — 3D swing lab
    A holographic golfer with a fully articulated spine. Built procedurally with three.js r147:
    the spine is a chain of 24 bones; the swing's rotation is distributed across hips, thoracic
    spine, lumbar spine and shoulder girdle according to how compliant each region is. Stiff

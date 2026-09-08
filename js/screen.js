@@ -1,4 +1,4 @@
-/* Free Relief — mobility screen
+/* Uncoil — mobility screen
    A TPI-style physical screen, cut down so a golfer can run it alone at home with a phone.
 
    Six tests, each scored pass / limited / fail (or skipped if it hurts). Out of them come

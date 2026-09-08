@@ -1,4 +1,4 @@
-/* Free Relief — growth module. Registers its views through window.FR (see js/app.js plugin API).
+/* Uncoil — growth module. Registers its views through window.FR (see js/app.js plugin API).
    Home (launch screen), onboarding, achievements, share cards and the evidence page.
    Everything is content: no build step, no dependencies, no network. */
 
@@ -250,18 +250,15 @@
     x.lineTo(a, b + r); x.quadraticCurveTo(a, b, a + r, b); x.closePath();
   }
 
+  /* the app mark: one unbroken gold stroke, an Archimedean coil releasing at 60 degrees.
+     Same path data as assets/brand/final/mark.svg, in a 32-unit box. */
+  const MARK_D = 'M 10.874 17.909 C 11.095 18.083 11.378 18.217 11.702 18.282 C 12.027 18.347 12.391 18.342 12.762 18.248 C 13.133 18.154 13.508 17.972 13.848 17.699 C 14.187 17.427 14.489 17.065 14.714 16.630 C 14.938 16.196 15.085 15.690 15.121 15.148 C 15.158 14.605 15.085 14.028 14.888 13.463 C 14.691 12.898 14.369 12.346 13.931 11.862 C 13.493 11.377 12.938 10.959 12.296 10.657 C 11.655 10.354 10.927 10.168 10.163 10.132 C 9.400 10.095 8.600 10.209 7.827 10.485 C 7.054 10.761 6.309 11.200 5.657 11.786 C 5.004 12.372 4.446 13.105 4.039 13.945 C 3.633 14.784 3.378 15.730 3.314 16.717 C 3.249 17.704 3.376 18.732 3.706 19.724 C 4.035 20.716 4.567 21.672 5.280 22.511 C 5.994 23.350 6.890 24.073 7.916 24.610 C 8.942 25.147 10.098 25.498 11.307 25.618 C 12.516 25.739 13.777 25.627 14.997 25.272 C 16.218 24.916 17.397 24.316 18.442 23.497 C 19.486 22.677 20.395 21.637 21.087 20.438 L 29.522 5.829';
   function drawMark(x, cx, cy, size) {
-    /* the app icon: a ball seam drawn as two arcs with a dot in the middle */
     const s = size / 32;
     x.save();
     x.translate(cx - size / 2, cy - size / 2); x.scale(s, s);
-    x.lineWidth = 2.4; x.strokeStyle = BRAND.gold; x.lineJoin = 'round';
-    x.beginPath();
-    x.moveTo(16, 5);
-    x.bezierCurveTo(13, 8, 11, 12, 11, 16); x.bezierCurveTo(11, 20, 13, 24, 16, 27);
-    x.bezierCurveTo(19, 24, 21, 20, 21, 16); x.bezierCurveTo(21, 12, 19, 8, 16, 5);
-    x.closePath(); x.stroke();
-    x.beginPath(); x.arc(16, 16, 2.2, 0, Math.PI * 2); x.fillStyle = BRAND.gold; x.fill();
+    x.lineWidth = 3.776; x.strokeStyle = BRAND.gold; x.lineJoin = 'round'; x.lineCap = 'round';
+    try { x.stroke(new Path2D(MARK_D)); } catch (e) { /* no Path2D: the card just loses its mark */ }
     x.restore();
   }
 
@@ -297,7 +294,7 @@
     x.fillStyle = BRAND.ink; x.textBaseline = 'middle'; x.textAlign = 'left';
     x.font = '800 34px ' + DISPLAY;
     x.letterSpacing && (x.letterSpacing = '2px');
-    x.fillText('FREE RELIEF', 140, 106);
+    x.fillText('UNCOIL', 140, 106);
     x.letterSpacing && (x.letterSpacing = '0px');
 
     /* eyebrow */
@@ -337,7 +334,7 @@
     x.fillStyle = 'rgba(246,197,68,0.14)';
     roundRect(x, 96, H - 190, 480, 84, 42); x.fill();
     x.fillStyle = BRAND.gold; x.font = '700 30px ' + BODY;
-    x.fillText(spec.foot || 'Golf back care, free', 132, H - 148);
+    x.fillText(spec.foot || 'Turn freely. Play longer.', 132, H - 148);
     return c;
   }
 
@@ -348,7 +345,7 @@
       return {
         eyebrow: 'Streak', big: String(n), label: n === 1 ? 'day in a row' : 'days in a row',
         caption: n >= 2 ? `${n} days of back care in a row. Ten minutes a day so the golf keeps happening.` : 'Day one of looking after my back so I can keep playing.',
-        foot: 'Free Relief · golf back care', file: 'free-relief-streak.png'
+        foot: 'Uncoil · Turn freely. Play longer.', file: 'uncoil-streak.png'
       };
     }
     if (kind === 'round') {
@@ -357,8 +354,8 @@
       const AREAS = FR.data().AREAS;
       return {
         eyebrow: fmtDay(r.date), big: r.pain + '/10', label: 'back pain after the round',
-        caption: `${r.warm ? 'Warmed up' : 'No warm-up'} · ${r.holes} holes · ${(AREAS[r.area] || {}).short || 'Back'}${r.sample ? ' · sample round' : ''}. Logged in Free Relief.`,
-        foot: 'Free Relief · round log', file: 'free-relief-round.png'
+        caption: `${r.warm ? 'Warmed up' : 'No warm-up'} · ${r.holes} holes · ${(AREAS[r.area] || {}).short || 'Back'}${r.sample ? ' · sample round' : ''}. Logged in Uncoil.`,
+        foot: 'Uncoil · round log', file: 'uncoil-round.png'
       };
     }
     if (kind === 'mobility') {
@@ -366,14 +363,14 @@
       return {
         eyebrow: 'Mobility screen', big: String(Math.round(m.score)), label: 'out of 100',
         caption: `Five-minute golf mobility screen, ${fmtDay(m.date || FR.todayISO())}. Hips and mid back measured, then the plan built around them.`,
-        foot: 'Free Relief · 5-minute screen', file: 'free-relief-mobility.png'
+        foot: 'Uncoil · 5-minute screen', file: 'uncoil-mobility.png'
       };
     }
     if (kind === 'badge') {
       const b = BADGE[extra && extra.id]; if (!b) return null;
       return {
-        eyebrow: 'Badge unlocked', big: b.name, label: 'Free Relief', caption: b.blurb,
-        foot: 'Free Relief · golf back care', file: 'free-relief-badge.png'
+        eyebrow: 'Badge unlocked', big: b.name, label: 'Uncoil', caption: b.blurb,
+        foot: 'Uncoil · Turn freely. Play longer.', file: 'uncoil-badge.png'
       };
     }
     return null;
@@ -397,7 +394,7 @@
       if (window.File && navigator.canShare && navigator.share) {
         const file = new File([blob], spec.file, { type: 'image/png' });
         if (navigator.canShare({ files: [file] })) {
-          await navigator.share({ files: [file], title: 'Free Relief', text: spec.caption });
+          await navigator.share({ files: [file], title: 'Uncoil', text: spec.caption });
           return;
         }
       }
@@ -406,7 +403,7 @@
     }
     /* inside the iOS app a download link does nothing, but the system share sheet is one call away */
     if (window.FreeRelief && window.FreeRelief.isNative && typeof window.FreeRelief.share === 'function') {
-      window.FreeRelief.share({ title: 'Free Relief', text: spec.caption, url: 'https://backswing-dkg.pages.dev' });
+      window.FreeRelief.share({ title: 'Uncoil', text: spec.caption, url: 'https://backswing-dkg.pages.dev' });
       return;
     }
     /* everywhere else: download it */
@@ -478,7 +475,7 @@
         ${COMPLAINTS.map(a => `<button class="chip" type="button" role="radio" aria-checked="${p.complaint === a}" aria-pressed="${p.complaint === a}" data-field="complaint" data-value="${a}" data-noadvance="1">${esc(AREAS[a].label)}</button>`).join('')}
         <button class="chip" type="button" role="radio" aria-checked="${p.complaint === null}" aria-pressed="${p.complaint === null}" data-field="complaint" data-value="" data-noadvance="1">Nothing right now</button>
       </div>
-      <p class="small muted onb-note">Nothing hurting is the best answer there is. Free Relief will point you at prevention instead.</p>`;
+      <p class="small muted onb-note">Nothing hurting is the best answer there is. Uncoil will point you at prevention instead.</p>`;
     if (i === 3) return `
       <p class="onb-eyebrow small">Question 4 of 4</p>
       <h2>How often do you play?</h2>
@@ -575,12 +572,12 @@
     };
     const m = document.createElement('div');
     m.className = 'modal onb'; m.id = 'onb-modal';
-    m.setAttribute('role', 'dialog'); m.setAttribute('aria-modal', 'true'); m.setAttribute('aria-label', edit ? 'Edit your profile' : 'Welcome to Free Relief');
+    m.setAttribute('role', 'dialog'); m.setAttribute('aria-modal', 'true'); m.setAttribute('aria-label', edit ? 'Edit your profile' : 'Welcome to Uncoil');
     m.innerHTML = `<div class="modal-card onb-card">
       <div class="onb-top">
         <div class="onb-brand">
-          <svg class="onb-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 5c-3 3-5 7-5 11s2 8 5 11c3-3 5-7 5-11s-2-8-5-11z" fill="none" stroke="currentColor" stroke-width="2.4"/><circle cx="16" cy="16" r="2.2" fill="currentColor"/></svg>
-          <span>${edit ? 'Your profile' : 'Free Relief'}</span>
+          <svg class="onb-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M 10.874 17.909 C 11.095 18.083 11.378 18.217 11.702 18.282 C 12.027 18.347 12.391 18.342 12.762 18.248 C 13.133 18.154 13.508 17.972 13.848 17.699 C 14.187 17.427 14.489 17.065 14.714 16.630 C 14.938 16.196 15.085 15.690 15.121 15.148 C 15.158 14.605 15.085 14.028 14.888 13.463 C 14.691 12.898 14.369 12.346 13.931 11.862 C 13.493 11.377 12.938 10.959 12.296 10.657 C 11.655 10.354 10.927 10.168 10.163 10.132 C 9.400 10.095 8.600 10.209 7.827 10.485 C 7.054 10.761 6.309 11.200 5.657 11.786 C 5.004 12.372 4.446 13.105 4.039 13.945 C 3.633 14.784 3.378 15.730 3.314 16.717 C 3.249 17.704 3.376 18.732 3.706 19.724 C 4.035 20.716 4.567 21.672 5.280 22.511 C 5.994 23.350 6.890 24.073 7.916 24.610 C 8.942 25.147 10.098 25.498 11.307 25.618 C 12.516 25.739 13.777 25.627 14.997 25.272 C 16.218 24.916 17.397 24.316 18.442 23.497 C 19.486 22.677 20.395 21.637 21.087 20.438 L 29.522 5.829" fill="none" stroke="currentColor" stroke-width="3.776" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span>${edit ? 'Your profile' : 'Uncoil'}</span>
         </div>
         <div class="onb-dots" aria-hidden="true"></div>
         <button class="btn btn-ghost btn-sm" type="button" data-onb="later" aria-label="Close">${ICON.x}</button>
@@ -850,7 +847,7 @@
 
       ${achSectionHTML()}
 
-      <p class="disclaimer">Free Relief gives general exercise and injury-prevention guidance for golfers. It is not medical advice and cannot examine you. If you are unsure, in a lot of pain, or any of the “see someone” signs apply, get assessed by a doctor or physiotherapist. <a href="#evidence">The evidence behind it</a>.</p>`;
+      <p class="disclaimer">Uncoil gives general exercise and injury-prevention guidance for golfers. It is not medical advice and cannot examine you. If you are unsure, in a lot of pain, or any of the “see someone” signs apply, get assessed by a doctor or physiotherapist. <a href="#evidence">The evidence behind it</a>.</p>`;
 
     $$('[data-routine]', el).forEach(b => b.addEventListener('click', (e) => { e.preventDefault(); FR.startRoutine(b.dataset.routine); }));
     const edit = $('#home-edit', el);
@@ -1043,7 +1040,7 @@
       <div class="view-head">
         <div>
           <h1>Where this comes from.</h1>
-          <p>Every claim Free Relief makes, with the paper behind it. We checked each reference against PubMed or the publisher before writing it down. Where the popular version of a claim did not survive that check, we say so instead of quietly rounding it up.</p>
+          <p>Every claim Uncoil makes, with the paper behind it. We checked each reference against PubMed or the publisher before writing it down. Where the popular version of a claim did not survive that check, we say so instead of quietly rounding it up.</p>
         </div>
         <p class="small muted">${EVIDENCE.length} claims · checked ${esc(fmtDay(FR.todayISO()))}</p>
       </div>
@@ -1057,7 +1054,7 @@
       </section>
 
       <section class="plan-section ev-about" id="about">
-        <h3>About Free Relief</h3>
+        <h3>About Uncoil</h3>
         <div class="ev-about-grid">
           <div>
             <h4>What this is</h4>
